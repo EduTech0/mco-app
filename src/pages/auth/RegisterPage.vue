@@ -14,12 +14,11 @@
             <q-form class="q-px-sm q-pt-xl">
               <!-- Username -->
               <q-input
-                ref="username"
                 square
                 clearable
                 v-model="username"
                 lazy-rules
-                :rules="[this.required, this.short]"
+                :rules="usernameRules"
                 type="username"
                 label="Username"
               >
@@ -30,13 +29,12 @@
 
               <!-- Email -->
               <q-input
-                ref="email"
                 square
                 clearable
                 v-model="email"
                 type="email"
                 lazy-rules
-                :rules="[this.required, this.isEmail, this.short]"
+                :rules="emailRules"
                 label="Email"
               >
                 <template v-slot:prepend>
@@ -46,13 +44,12 @@
 
               <!-- Password -->
               <q-input
-                ref="password"
                 square
                 clearable
                 v-model="password"
                 :type="passwordFieldType"
                 lazy-rules
-                :rules="[this.required, this.short]"
+                :rules="passwordRules"
                 label="Password"
               >
                 <template v-slot:prepend>
@@ -69,13 +66,12 @@
 
               <!-- Password Confirmation -->
               <q-input
-                ref="repassword"
                 square
                 clearable
                 v-model="repassword"
                 :type="passwordFieldType"
                 lazy-rules
-                :rules="[this.required, this.short, this.diffPassword]"
+                :rules="repasswordRules"
                 label="Password Confirmation"
               >
                 <template v-slot:prepend>
@@ -118,98 +114,84 @@
   </q-page>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
+import { ref } from "vue";
 import axios from "axios";
 import { LocalStorage } from "quasar";
 
-export default defineComponent({
-  name: "RegisterPage",
+const username = ref("");
+const email = ref("");
+const password = ref("");
+const repassword = ref("");
+const passwordFieldType = ref("password");
+const loading = ref(false);
+const visibility = ref(false);
+const visibilityIcon = ref("visibility");
 
-  data() {
-    return {
-      username: "",
-      email: "",
-      password: "",
-      repassword: "",
-      passwordFieldType: "password",
-      loading: false,
-      visibility: false,
-      visibilityIcon: "visibility",
-    };
-  },
+// Validate
+const usernameRules = ref([
+  (v) => !!v || "Username harus diisi",
+  (v) => v.length >= 6 || "Username minimal harus 6 karakter",
+]);
+const emailRules = [
+  (v) => !!v || "Email harus diisi",
+  (v) => /.+@.+/.test(v) || "Email tidak valid",
+];
+const passwordRules = ref([
+  (v) => !!v || "Password harus diisi",
+  (v) => v.length >= 6 || "Password minimal harus 6 karakter",
+]);
+const repasswordRules = ref([
+  (v) => !!v || "Password harus diisi",
+  (v) => v.length >= 6 || "Password minimal harus 6 karakter",
+  (v) => v === password.value || "Password tidak cocok",
+]);
 
-  methods: {
-    required(val) {
-      return (val && val.length > 0) || "Kolom harus diisi";
-    },
-    diffPassword(val) {
-      const val2 = this.password;
-      return (val && val === val2) || "Kata sandi tidak cocok!";
-    },
-    short(val) {
-      return (val && val.length > 6) || "Harus lebih dari 6 karakter";
-    },
-    isEmail(val) {
-      const emailPattern =
-        /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/;
-      return emailPattern.test(val) || "Email tidak valid";
-    },
-
-    async submit() {
-      this.$refs.username.validate();
-      this.$refs.email.validate();
-      this.$refs.password.validate();
-      this.$refs.repassword.validate();
-      this.loading = true;
-
-      if (!this.$refs.email.hasError && !this.$refs.password.hasError) {
-        try {
-          const response = await axios.post(
-            "http://localhost:8000/api/auth/register",
-            {
-              name: this.username,
-              email: this.email,
-              password: this.password,
-              c_password: this.repassword,
-            }
-          );
-
-          if (response.data.status === "Success") {
-            // Successful login
-            LocalStorage.set("token", response.data.data.token);
-
-            this.$router.push("/beranda");
-            window.location.reload();
-
-            this.$q.notify({
-              message: response.data.message,
-              icon: "check",
-              color: "positive",
-            });
-          } else {
-            // Failed login
-            this.$q.notify({
-              icon: "warning",
-              color: "negative",
-              message: response.data.message,
-            });
-          }
-        } catch (error) {
-          // Handle any network or server errors here
-          console.error(error);
-        }
+const submit = async () => {
+  loading.value = true;
+  try {
+    const response = await axios.post(
+      "http://localhost:8000/api/auth/register",
+      {
+        name: username.value,
+        email: email.value,
+        password: password.value,
+        c_password: repassword.value,
       }
-      this.loading = false;
-    },
+    );
 
-    switchVisibility() {
-      this.visibility = !this.visibility;
-      this.passwordFieldType = this.visibility ? "text" : "password";
-      this.visibilityIcon = this.visibility ? "visibility_off" : "visibility";
-    },
-  },
-});
+    if (response.data.status === "Success") {
+      // Successful login
+      LocalStorage.set("token", response.data.data.token);
+
+      $router.push("/beranda");
+      window.location.reload();
+
+      $q.notify({
+        message: response.data.message,
+        icon: "check",
+        color: "positive",
+      });
+    } else {
+      // Failed login
+      $q.notify({
+        icon: "warning",
+        color: "negative",
+        message: response.data.message,
+      });
+    }
+  } catch (error) {
+    // Handle any network or server errors here
+    console.error(error);
+  }
+  loading.value = false;
+};
+
+const switchVisibility = () => {
+  visibility.value = !visibility.value;
+  passwordFieldType.value = visibility.value ? "text" : "password";
+  visibilityIcon.value = visibility.value ? "visibility_off" : "visibility";
+};
 </script>
 
 <style scoped>

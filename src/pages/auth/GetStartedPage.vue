@@ -70,35 +70,24 @@
   </q-page>
 </template>
 
-<script>
+<script setup>
 import { ref } from "vue";
 
-export default {
-  setup() {
-    const slide = ref("style");
+const slide = ref("style");
 
-    const prevSlide = () => {
-      if (slide.value === "style") {
-        slide.value = "tv";
-      } else {
-        slide.value = "style";
-      }
-    };
-
-    const nextSlide = () => {
-      if (slide.value === "style") {
-        slide.value = "tv";
-      } else {
-        slide.value = "style";
-      }
-    };
-
-    return {
-      slide,
-      prevSlide,
-      nextSlide,
-    };
-  },
+const prevSlide = () => {
+  if (slide.value === "style") {
+    slide.value = "tv";
+  } else {
+    slide.value = "style";
+  }
+};
+const nextSlide = () => {
+  if (slide.value === "style") {
+    slide.value = "tv";
+  } else {
+    slide.value = "style";
+  }
 };
 </script>
 

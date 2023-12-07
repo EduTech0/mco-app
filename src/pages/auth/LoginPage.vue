@@ -14,13 +14,12 @@
             <q-form class="q-px-sm q-pt-xl">
               <!-- Email -->
               <q-input
-                ref="email"
                 square
                 clearable
                 v-model="email"
                 type="email"
                 lazy-rules
-                :rules="[this.required, this.isEmail, this.short]"
+                :rules="emailRules"
                 label="Email"
               >
                 <template v-slot:prepend>
@@ -30,13 +29,12 @@
 
               <!-- Password -->
               <q-input
-                ref="password"
                 square
                 clearable
                 v-model="password"
                 :type="passwordFieldType"
                 lazy-rules
-                :rules="[this.required, this.short]"
+                :rules="passwordRules"
                 label="Password"
               >
                 <template v-slot:prepend>
@@ -79,89 +77,79 @@
   </q-page>
 </template>
 
-<script>
-import { useQuasar, LocalStorage } from "quasar";
-import { defineComponent } from "vue";
+<script setup>
+import { useQuasar } from "quasar";
 import axios from "axios";
+import { useRouter } from "vue-router";
+import { ref } from "vue";
 
-export default defineComponent({
-  name: "LoginPage",
+const $q = useQuasar();
+const router = useRouter();
 
-  data() {
-    return {
-      email: "",
-      password: "",
-      passwordFieldType: "password",
-      loading: false,
-      visibility: false,
-      visibilityIcon: "visibility",
-      $q: useQuasar(),
-    };
-  },
+const email = ref("");
+const password = ref("");
+const loading = ref(false);
 
-  methods: {
-    required(val) {
-      return (val && val.length > 0) || "Kolom harus diisi";
-    },
-    short(val) {
-      return (val && val.length > 6) || "Password harus lebih dari 6 karakter";
-    },
-    isEmail(val) {
-      const emailPattern =
-        /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/;
-      return emailPattern.test(val) || "Email tidak valid";
-    },
+const passwordFieldType = ref("password");
+const visibility = ref(false);
+const visibilityIcon = ref("visibility");
 
-    async submit() {
-      this.$refs.email.validate();
-      this.$refs.password.validate();
-      this.loading = true;
+// Validate
+const emailRules = [
+  (v) => !!v || "Email harus diisi",
+  (v) => /.+@.+/.test(v) || "Email tidak valid",
+];
+const passwordRules = ref([
+  (v) => !!v || "Password harus diisi",
+  (v) => v.length >= 6 || "Password minimal harus 6 karakter",
+]);
 
-      if (!this.$refs.email.hasError && !this.$refs.password.hasError) {
-        try {
-          const response = await axios.post(
-            "http://localhost:8000/api/auth/login",
-            {
-              email: this.email,
-              password: this.password,
-            }
-          );
+// Submit
+const submit = async () => {
+  loading.value = true;
+  try {
+    const response = await axios.post("http://localhost:8000/api/auth/login", {
+      email: email.value,
+      password: password.value,
+    });
 
-          if (response.data.status === "Success") {
-            // Successful login
-            LocalStorage.set("token", response.data.data.token);
+    if (response.data.status === "Success") {
+      // Successful login
+      localStorage.setItem("token", response.data.data.token);
 
-            this.$router.push("/beranda");
-            window.location.reload();
+      router.push({ name: "beranda" });
+      window.location.reload();
 
-            this.$q.notify({
-              message: response.data.message,
-              icon: "check",
-              color: "positive",
-            });
-          } else {
-            // Failed login
-            this.$q.notify({
-              icon: "warning",
-              color: "negative",
-              message: "Email or Password Failed, Please try again later.",
-            });
-          }
-        } catch (error) {
-          // Handle any network or server errors here
-          console.error(error);
-        }
-      }
-      this.loading = false;
-    },
+      $q.notify({
+        message: response.data.message,
+        icon: "check",
+        color: "positive",
+      });
+    } else {
+      $q.notify({
+        icon: "warning",
+        color: "negative",
+        message: "Email atau Password salah, silahkan coba lagi",
+      });
+    }
+  } catch (error) {
+    $q.notify({
+      icon: "warning",
+      color: "negative",
+      message: "Email atau Password salah, silahkan coba lagi",
+    });
+    // Handle any network or server errors here
+    console.error(error);
+  }
+  loading.value = false;
+};
 
-    switchVisibility() {
-      this.visibility = !this.visibility;
-      this.passwordFieldType = this.visibility ? "text" : "password";
-      this.visibilityIcon = this.visibility ? "visibility_off" : "visibility";
-    },
-  },
-});
+// Visibility Password
+const switchVisibility = () => {
+  visibility.value = !visibility.value;
+  passwordFieldType.value = visibility.value ? "text" : "password";
+  visibilityIcon.value = visibility.value ? "visibility_off" : "visibility";
+};
 </script>
 
 <style scoped>
