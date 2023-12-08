@@ -3,7 +3,7 @@
     <div class="text-subtitle1 text-center q-pa-sm">Akun Saya</div>
     <div class="text-center q-mt-lg">
       <img
-        src="../assets/profile.jpg"
+        src="../../assets/profile.jpg"
         alt=""
         width="50"
         class="profile q-mt-lg"
@@ -103,114 +103,90 @@
     </q-card>
   </q-dialog>
   <!-- Syarat dan Ketentuan -->
-  <SnK
-    :dialogsnk="dialogsnk"
-    :maximizedToggle="maximizedToggle"
-    @update:dialogsnk="updateDialogsnk"
-  ></SnK>
+  <q-dialog
+    v-model="dialogsnk"
+    persistent
+    :maximized="maximizedToggle"
+    transition-show="slide-up"
+    transition-hide="slide-down"
+  >
+    <SnK />
+  </q-dialog>
   <!-- Location -->
-  <Location
-    :dialoglocation="dialoglocation"
-    :maximizedToggle="maximizedToggle"
-    @update:dialoglocation="updateDialoglocation"
-  ></Location>
+  <q-dialog
+    v-model="dialoglocation"
+    persistent
+    :maximized="maximizedToggle"
+    transition-show="slide-up"
+    transition-hide="slide-down"
+  >
+    <Location />
+  </q-dialog>
   <!-- Tutorial -->
-  <Tutorial
-    :dialogtutorial="dialogtutorial"
-    :maximizedToggle="maximizedToggle"
-    @update:dialogtutorial="updateDialogtutorial"
-  ></Tutorial>
+  <q-dialog
+    v-model="dialogtutorial"
+    persistent
+    :maximized="maximizedToggle"
+    transition-show="slide-up"
+    transition-hide="slide-down"
+  >
+    <Tutorial />
+  </q-dialog>
 </template>
 
-<script>
-import { defineComponent, ref, onMounted } from "vue";
+<script setup>
+import { useQuasar } from "quasar";
+import { useRouter } from "vue-router";
+import { ref, onMounted } from "vue";
 import axios from "axios";
-import { LocalStorage } from "quasar";
-import SnK from "components/saya/SnK.vue";
-import Location from "components/saya/Location.vue";
-import Tutorial from "components/saya/Tutorial.vue";
 
-export default defineComponent({
-  name: "SayaPage",
+import SnK from "components/saya/SnKDialog.vue";
+import Location from "components/saya/LocationDialog.vue";
+import Tutorial from "components/saya/TutorialDialog.vue";
 
-  components: {
-    SnK,
-    Location,
-    Tutorial,
-  },
+const $q = useQuasar();
+const router = useRouter();
+const token = localStorage.getItem("token");
+const profile = ref("");
+const isLoading = ref(true);
+const confirm = ref(false);
 
-  setup() {
-    const token = LocalStorage.getItem("token");
-    const profile = ref("");
-    const isLoading = ref(true);
+const dialogsnk = ref(false);
+const dialoglocation = ref(false);
+const dialogtutorial = ref(false);
+const maximizedToggle = ref(true);
 
-    const dialogsnk = ref(false);
-    const dialoglocation = ref(false);
-    const dialogtutorial = ref(false);
-    const maximizedToggle = ref(true);
+// Profile
+onMounted(async () => {
+  try {
+    const response = await axios.get("http://localhost:8000/api/profile", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    profile.value = response.data.data;
+    isLoading.value = false;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    isLoading.value = false;
+  }
+});
 
-    const updateDialogsnk = (value) => {
-      dialogsnk.value = value;
-    };
-    const updateDialoglocation = (value) => {
-      dialoglocation.value = value;
-    };
-    const updateDialogtutorial = (value) => {
-      dialogtutorial.value = value;
-    };
-
-    // Profile
-    onMounted(async () => {
-      try {
-        const response = await axios.get("http://localhost:8000/api/profile", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        profile.value = response.data.data;
-        isLoading.value = false;
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        isLoading.value = false;
-      }
+const submit = async () => {
+  try {
+    localStorage.removeItem("token");
+    $q.notify({
+      message: "Logout Successfully.",
+      icon: "check",
+      color: "positive",
     });
 
-    return {
-      profile,
-      isLoading,
-      // Logout
-      alert: ref(false),
-      confirm: ref(false),
-      prompt: ref(false),
-      address: ref(""),
-      dialogsnk,
-      dialoglocation,
-      dialogtutorial,
-      maximizedToggle,
-      updateDialogsnk,
-      updateDialoglocation,
-      updateDialogtutorial,
-    };
-  },
-
-  methods: {
-    async submit() {
-      try {
-        LocalStorage.remove("token");
-        this.$q.notify({
-          message: "Logout Successfully.",
-          icon: "check",
-          color: "positive",
-        });
-
-        this.$router.push("/login");
-        window.location.reload();
-      } catch (error) {
-        console.error(error);
-      }
-    },
-  },
-});
+    router.push("/login");
+    window.location.reload();
+  } catch (error) {
+    console.error(error);
+  }
+};
 </script>
 
 <style scoped>

@@ -5,15 +5,9 @@
 
   <q-page class="q-pa-sm">
     <div class="absolute-center">
-      <img src="../assets/notifikasi.png" alt="" width="300" />
+      <img src="../../assets/notifikasi.png" alt="" width="300" />
     </div>
   </q-page>
 </template>
 
-<script>
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  name: "NotifikasiPage",
-});
-</script>
+<script setup></script>

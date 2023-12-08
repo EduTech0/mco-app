@@ -29,7 +29,7 @@
     <q-page class="q-pa-sm">
       <!-- Banner -->
       <div class="row q-pa-sm">
-        <q-img src="../assets/banner.jpg" style="border-radius: 20px">
+        <q-img src="../../assets/banner.jpg" style="border-radius: 20px">
           <!-- <div class="text-h5 absolute-bottom text-right">Title</div> -->
         </q-img>
       </div>
@@ -46,50 +46,31 @@
   </div>
 </template>
 
-<script>
-import { defineComponent, ref, onMounted } from "vue";
+<script setup>
+import { ref, onMounted } from "vue";
 import axios from "axios";
-import { LocalStorage } from "quasar";
 import LoadingPage from "components/beranda/LoadingPage.vue";
 import ListAntrian from "components/beranda/ListAntrian.vue";
 import ItemList from "components/beranda/ItemList.vue";
 import PendaftaranSaya from "components/beranda/PendaftaranSaya.vue";
 
-export default defineComponent({
-  name: "BerandaPage",
+const token = localStorage.getItem("token");
+const profile = ref("");
+const isLoading = ref(true);
 
-  components: {
-    LoadingPage,
-    ListAntrian,
-    ItemList,
-    PendaftaranSaya,
-  },
-
-  setup() {
-    const token = LocalStorage.getItem("token");
-    const profile = ref("");
-    const isLoading = ref(true);
-
-    // Profile
-    onMounted(async () => {
-      try {
-        const response = await axios.get("http://localhost:8000/api/profile", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        profile.value = response.data.data;
-        isLoading.value = false;
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        isLoading.value = false;
-      }
+// Profile
+onMounted(async () => {
+  try {
+    const response = await axios.get("http://localhost:8000/api/profile", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
-
-    return {
-      profile,
-      isLoading,
-    };
-  },
+    profile.value = response.data.data;
+    isLoading.value = false;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    isLoading.value = false;
+  }
 });
 </script>
