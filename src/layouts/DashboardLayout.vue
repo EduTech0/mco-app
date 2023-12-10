@@ -27,16 +27,14 @@
               <q-item-section avatar>
                 <q-icon name="home" />
               </q-item-section>
-
               <q-item-section> Home </q-item-section>
             </q-item>
 
-            <!-- Customers -->
+            <!-- Customer -->
             <q-item exact clickable to="/dashboard/customer" v-ripple>
               <q-item-section avatar>
                 <q-icon name="people" />
               </q-item-section>
-
               <q-item-section> Customer </q-item-section>
             </q-item>
 
@@ -45,7 +43,6 @@
               <q-item-section avatar>
                 <q-icon name="assist_walker" />
               </q-item-section>
-
               <q-item-section> Cedera </q-item-section>
             </q-item>
 
@@ -54,7 +51,6 @@
               <q-item-section avatar>
                 <q-icon name="date_range" />
               </q-item-section>
-
               <q-item-section> Jadwal </q-item-section>
             </q-item>
 
@@ -66,7 +62,6 @@
                   <q-item-section avatar>
                     <q-icon name="clear_all" />
                   </q-item-section>
-
                   <q-item-section> Semua </q-item-section>
                 </q-item>
                 <!-- Belum Terverifikasi -->
@@ -79,7 +74,6 @@
                   <q-item-section avatar>
                     <q-icon name="highlight_off" />
                   </q-item-section>
-
                   <q-item-section> Belum Disetujui </q-item-section>
                 </q-item>
                 <!-- Sudah Terverifikasi -->
@@ -92,7 +86,6 @@
                   <q-item-section avatar>
                     <q-icon name="done_all" />
                   </q-item-section>
-
                   <q-item-section> Sudah Disetujui </q-item-section>
                 </q-item>
                 <!-- Selesai -->
@@ -105,7 +98,6 @@
                   <q-item-section avatar>
                     <q-icon name="domain_verification" />
                   </q-item-section>
-
                   <q-item-section> Selesai </q-item-section>
                 </q-item>
               </div>
@@ -118,7 +110,6 @@
               <q-item-section avatar>
                 <q-icon name="reply_all" />
               </q-item-section>
-
               <q-item-section> Ke Beranda </q-item-section>
             </q-item>
           </q-list>
@@ -138,7 +129,7 @@
               rounded
               class="column self-center"
               size="30px"
-              v-if="isLoading"
+              v-if="loading"
             />
             <div v-else>
               <div class="text-weight-bold">{{ profile.name }}</div>
@@ -159,40 +150,26 @@
   </div>
 </template>
 
-<script>
-import { ref, defineComponent, onMounted } from "vue";
-import axios from "axios";
-import { LocalStorage } from "quasar";
+<script setup>
+import { ref, onMounted } from "vue";
+import { useCustomerStore } from "src/stores/customer-store";
 
-export default defineComponent({
-  name: "DashboardLayout",
+const drawer = ref(false);
+const customerStore = useCustomerStore();
+const loading = ref(true);
+const profile = ref("");
 
-  setup() {
-    const token = LocalStorage.getItem("token");
-    const profile = ref("");
-    const isLoading = ref(true);
-
-    // Profile
-    onMounted(async () => {
-      try {
-        const response = await axios.get("http://localhost:8000/api/profile", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        profile.value = response.data.data;
-        isLoading.value = false;
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        isLoading.value = false;
-      }
-    });
-
-    return {
-      profile,
-      isLoading,
-      drawer: ref(false),
-    };
-  },
+// Profile
+const getProfile = async () => {
+  try {
+    const res = await customerStore.profile();
+    profile.value = res.data.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+  loading.value = false;
+};
+onMounted(() => {
+  getProfile();
 });
 </script>

@@ -1,6 +1,6 @@
 <template>
   <!-- Loading -->
-  <div v-if="isLoading">
+  <div v-if="loading">
     <LoadingPage />
   </div>
 
@@ -48,25 +48,25 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import { useAuthStore } from "src/stores/auth-store";
+import { useCustomerStore } from "src/stores/customer-store";
 import LoadingPage from "components/beranda/LoadingPage.vue";
 import ListAntrian from "components/beranda/ListAntrian.vue";
 import ItemList from "components/beranda/ItemList.vue";
 import PendaftaranSaya from "components/beranda/PendaftaranSaya.vue";
 
-const authStore = useAuthStore();
+const customerStore = useCustomerStore();
+const loading = ref(true);
 const profile = ref("");
-const isLoading = ref(true);
 
 // Profile
 const getProfile = async () => {
   try {
-    const res = await authStore.profile();
+    const res = await customerStore.profile();
     profile.value = res.data.data;
   } catch (error) {
     console.error("Error fetching data:", error);
   }
-  isLoading.value = false;
+  loading.value = false;
 };
 onMounted(() => {
   getProfile();

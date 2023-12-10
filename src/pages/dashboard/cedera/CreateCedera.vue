@@ -83,13 +83,12 @@ import { ref } from "vue";
 const $q = useQuasar();
 const cederaStore = useCederaStore();
 const emits = defineEmits(["added"]);
-
+const loading = ref(false);
 const data = ref({
   name: "",
   harga: null,
   image: null,
 });
-const loading = ref(false);
 
 // Validate
 const nameRules = [

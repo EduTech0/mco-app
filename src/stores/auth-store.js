@@ -49,13 +49,5 @@ export const useAuthStore = defineStore("auth", {
         if (error) throw error;
       }
     },
-
-    async profile() {
-      try {
-        return await server.get("api/profile", { headers });
-      } catch (error) {
-        if (error) throw error;
-      }
-    },
   },
 });

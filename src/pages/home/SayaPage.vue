@@ -138,17 +138,17 @@
 import { useQuasar } from "quasar";
 import { useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
-import { useAuthStore } from "src/stores/auth-store";
+import { useCustomerStore } from "src/stores/customer-store";
 import SnK from "components/saya/SnKDialog.vue";
 import Location from "components/saya/LocationDialog.vue";
 import Tutorial from "components/saya/TutorialDialog.vue";
 
 const $q = useQuasar();
 const router = useRouter();
-const authStore = useAuthStore();
+const customerStore = useCustomerStore();
 
-const profile = ref("");
 const loading = ref(true);
+const profile = ref("");
 const confirm = ref(false);
 
 const maximizedToggle = ref(true);
@@ -159,12 +159,12 @@ const dialogtutorial = ref(false);
 // Profile
 const getProfile = async () => {
   try {
-    const res = await authStore.profile();
+    const res = await customerStore.profile();
     profile.value = res.data.data;
   } catch (error) {
     console.error("Error fetching data:", error);
   }
-  loading.value = false;
+  isLoading.value = false;
 };
 onMounted(() => {
   getProfile();

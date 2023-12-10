@@ -111,14 +111,13 @@ import { ref } from "vue";
 const $q = useQuasar();
 const jadwalStore = useJadwalStore();
 const emits = defineEmits(["added"]);
-
+const loading = ref(false);
 const data = ref({
   tanggal: ref("2023/09/01"),
   waktu_1: ref("00:00"),
   waktu_2: ref("00:00"),
   kuota: ref(null),
 });
-const loading = ref(false);
 
 // Create Jadwal
 const addJadwal = async () => {
