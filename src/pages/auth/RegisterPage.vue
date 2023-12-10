@@ -12,15 +12,15 @@
 
           <q-card-section>
             <q-form class="q-px-sm q-pt-xl">
-              <!-- Username -->
+              <!-- name -->
               <q-input
                 square
                 clearable
-                v-model="username"
+                v-model="name"
                 lazy-rules
-                :rules="usernameRules"
-                type="username"
-                label="Username"
+                :rules="nameRules"
+                type="name"
+                label="name"
               >
                 <template v-slot:prepend>
                   <q-icon name="person" />
@@ -115,23 +115,36 @@
 </template>
 
 <script setup>
+import { useQuasar } from "quasar";
+import { useRouter } from "vue-router";
 import { ref } from "vue";
-import axios from "axios";
-import { LocalStorage } from "quasar";
+import { useAuthStore } from "src/stores/auth-store";
 
-const username = ref("");
+const $q = useQuasar();
+const router = useRouter();
+const authStore = useAuthStore();
+
+const name = ref("");
 const email = ref("");
 const password = ref("");
 const repassword = ref("");
+
 const passwordFieldType = ref("password");
-const loading = ref(false);
 const visibility = ref(false);
 const visibilityIcon = ref("visibility");
+const loading = ref(false);
+
+// Visibility Password
+const switchVisibility = () => {
+  visibility.value = !visibility.value;
+  passwordFieldType.value = visibility.value ? "text" : "password";
+  visibilityIcon.value = visibility.value ? "visibility_off" : "visibility";
+};
 
 // Validate
-const usernameRules = ref([
-  (v) => !!v || "Username harus diisi",
-  (v) => v.length >= 6 || "Username minimal harus 6 karakter",
+const nameRules = ref([
+  (v) => !!v || "name harus diisi",
+  (v) => v.length >= 6 || "name minimal harus 6 karakter",
 ]);
 const emailRules = [
   (v) => !!v || "Email harus diisi",
@@ -147,50 +160,43 @@ const repasswordRules = ref([
   (v) => v === password.value || "Password tidak cocok",
 ]);
 
+// Submit
 const submit = async () => {
   loading.value = true;
   try {
-    const response = await axios.post(
-      "http://localhost:8000/api/auth/register",
-      {
-        name: username.value,
-        email: email.value,
-        password: password.value,
-        c_password: repassword.value,
-      }
+    const res = await authStore.register(
+      name.value,
+      email.value,
+      password.value,
+      repassword.value
     );
 
-    if (response.data.status === "Success") {
-      // Successful login
-      LocalStorage.set("token", response.data.data.token);
-
-      $router.push("/beranda");
+    if (res.data.status === "Success") {
+      localStorage.setItem("token", res.data.data.token);
+      router.push({ name: "beranda" });
       window.location.reload();
 
       $q.notify({
-        message: response.data.message,
+        message: res.data.message,
         icon: "check",
         color: "positive",
       });
     } else {
-      // Failed login
       $q.notify({
         icon: "warning",
         color: "negative",
-        message: response.data.message,
+        message: res.data.message,
       });
     }
   } catch (error) {
-    // Handle any network or server errors here
+    $q.notify({
+      icon: "warning",
+      color: "negative",
+      message: "Format masih salah, silahkan coba lagi",
+    });
     console.error(error);
   }
   loading.value = false;
-};
-
-const switchVisibility = () => {
-  visibility.value = !visibility.value;
-  passwordFieldType.value = visibility.value ? "text" : "password";
-  visibilityIcon.value = visibility.value ? "visibility_off" : "visibility";
 };
 </script>
 

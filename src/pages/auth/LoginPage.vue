@@ -81,18 +81,26 @@
 import { useQuasar } from "quasar";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
-import axios from "axios";
+import { useAuthStore } from "src/stores/auth-store";
 
 const $q = useQuasar();
 const router = useRouter();
+const authStore = useAuthStore();
 
 const email = ref("");
 const password = ref("");
-const loading = ref(false);
 
 const passwordFieldType = ref("password");
 const visibility = ref(false);
 const visibilityIcon = ref("visibility");
+const loading = ref(false);
+
+// Visibility Password
+const switchVisibility = () => {
+  visibility.value = !visibility.value;
+  passwordFieldType.value = visibility.value ? "text" : "password";
+  visibilityIcon.value = visibility.value ? "visibility_off" : "visibility";
+};
 
 // Validate
 const emailRules = [
@@ -108,20 +116,15 @@ const passwordRules = ref([
 const submit = async () => {
   loading.value = true;
   try {
-    const response = await axios.post("http://localhost:8000/api/auth/login", {
-      email: email.value,
-      password: password.value,
-    });
+    const res = await authStore.login(email.value, password.value);
 
-    if (response.data.status === "Success") {
-      // Successful login
-      localStorage.setItem("token", response.data.data.token);
-
+    if (res.data.status === "Success") {
+      localStorage.setItem("token", res.data.data.token)
       router.push({ name: "beranda" });
       window.location.reload();
 
       $q.notify({
-        message: response.data.message,
+        message: res.data.message,
         icon: "check",
         color: "positive",
       });
@@ -138,17 +141,9 @@ const submit = async () => {
       color: "negative",
       message: "Email atau Password salah, silahkan coba lagi",
     });
-    // Handle any network or server errors here
     console.error(error);
   }
   loading.value = false;
-};
-
-// Visibility Password
-const switchVisibility = () => {
-  visibility.value = !visibility.value;
-  passwordFieldType.value = visibility.value ? "text" : "password";
-  visibilityIcon.value = visibility.value ? "visibility_off" : "visibility";
 };
 </script>
 

@@ -80,90 +80,76 @@
   </div>
 </template>
 
-<script>
-import { defineComponent, ref, onMounted } from "vue";
+<script setup>
+import { ref, onMounted } from "vue";
 import axios from "axios";
-import { LocalStorage } from "quasar";
 
-export default defineComponent({
-  data() {
-    const tickets = ref([]);
-    const token = LocalStorage.getItem("token");
-    const isLoading = ref(true);
+const tickets = ref([]);
+const token = localStorage.getItem("token");
+const isLoading = ref(true);
 
-    // Function to fetch data from Laravel API
-    onMounted(async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:8000/api/pendaftaran/ticket",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        tickets.value = response.data.data;
-        isLoading.value = false;
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        isLoading.value = false;
+// Function to fetch data from Laravel API
+onMounted(async () => {
+  try {
+    const response = await axios.get(
+      "http://localhost:8000/api/pendaftaran/ticket",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    });
-
-    return {
-      token,
-      tickets,
-      isLoading,
-    };
-  },
-
-  methods: {
-    choose(ticket) {
-      if (ticket.status === "Terverifikasi") {
-        this.$q.dialog({
-          title: "Coming Soon!",
-          message: "",
-          persistent: true,
-          ok: {
-            label: "ok",
-            color: "primary",
-          },
-        });
-      } else {
-        this.$q.dialog({
-          title: "Gagal",
-          message: "Silakan menunggu pendaftaran ini disetujui.",
-          persistent: true,
-          ok: {
-            label: "ok",
-            color: "primary",
-          },
-        });
-      }
-    },
-    // Load Ticket
-    async loadData() {
-      try {
-        // Mengambil data dari API
-        const response = await axios.get(
-          "http://localhost:8000/api/pendaftaran/ticket",
-          {
-            headers: {
-              Authorization: `Bearer ${this.token}`,
-            },
-          }
-        );
-        // Simpan data yang diambil dari API ke dalam properti ticket
-        this.tickets = response.data.data;
-      } catch (error) {
-        console.error("Error saat mengambil data:", error);
-      }
-    },
-    mounted() {
-      this.loadData();
-    },
-  },
+    );
+    tickets.value = response.data.data;
+    isLoading.value = false;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    isLoading.value = false;
+  }
+  loadData();
 });
+
+const choose = (ticket) => {
+  if (ticket.status === "Terverifikasi") {
+    $q.dialog({
+      title: "Coming Soon!",
+      message: "",
+      persistent: true,
+      ok: {
+        label: "ok",
+        color: "primary",
+      },
+    });
+  } else {
+    $q.dialog({
+      title: "Gagal",
+      message: "Silakan menunggu pendaftaran ini disetujui.",
+      persistent: true,
+      ok: {
+        label: "ok",
+        color: "primary",
+      },
+    });
+  }
+};
+
+// Load Ticket
+const loadData = async () => {
+  try {
+    // Mengambil data dari API
+    const response = await axios.get(
+      "http://localhost:8000/api/pendaftaran/ticket",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    // Simpan data yang diambil dari API ke dalam properti ticket
+    tickets.value = response.data.data;
+  } catch (error) {
+    console.error("Error saat mengambil data:", error);
+  }
+};
 </script>
 
 <style scoped>

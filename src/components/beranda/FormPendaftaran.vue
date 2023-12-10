@@ -1,203 +1,201 @@
 <template>
-  <q-dialog
-    :model-value="formPendaftaran"
-    @update:model-value="$emit('update:formPendaftaran', $event)"
-    persistent
-    :maximized="maximizedToggle"
-    transition-show="slide-up"
-    transition-hide="slide-down"
-    class="high"
-  >
-    <q-card>
-      <q-card-section class="bg-primary q-py-sm text-white shadow">
-        <q-btn
-          dense
-          flat
-          icon="arrow_back"
-          v-close-popup
-          class="absolute-left"
+  <q-card>
+    <q-card-section class="bg-primary q-py-sm text-white shadow">
+      <q-btn dense flat icon="arrow_back" v-close-popup class="absolute-left" />
+      <q-tabs class="float-right" @click="danger = true"
+        ><q-icon name="info" size="20px" class="iconInfo"
+      /></q-tabs>
+      <div class="text-subtitle1 text-center">Pendaftaran</div>
+    </q-card-section>
+
+    <q-card-section>
+      <br />
+    </q-card-section>
+
+    <q-card-section class="q-pt-none">
+      <q-form @submit="submitForm" class="q-gutter-sm">
+        <!-- Nama Lengkap -->
+        <q-input
+          v-model="data.nama_lengkap"
+          label="Nama Lengkap*"
+          lazy-rules
+          :rules="[(val) => (val && val.length > 0) || 'Masukkan nama lengkap']"
         />
-        <q-tabs class="float-right" @click="warning('bottom')"
-          ><q-icon name="info" size="20px" class="iconInfo"
-        /></q-tabs>
-        <div class="text-subtitle1 text-center">Pendaftaran</div>
-      </q-card-section>
 
-      <q-card-section>
-        <br />
-      </q-card-section>
-
-      <q-card-section class="q-pt-none">
-        <q-form @submit="submitForm" @reset="onReset" class="q-gutter-sm">
-          <!-- Nama Lengkap -->
-          <q-input
-            v-model="nama_lengkap"
-            label="Nama Lengkap*"
-            lazy-rules
-            :rules="[
-              (val) => (val && val.length > 0) || 'Masukkan nama lengkap',
-            ]"
+        <!-- Jenis Kelamin -->
+        <div>
+          <label class="text-grey-7">Jenis Kelamin*</label>
+          <q-option-group
+            :options="genders"
+            type="radio"
+            v-model="data.jenis_kelamin"
           />
+        </div>
 
-          <!-- Jenis Kelamin -->
-          <div>
-            <label class="text-grey-7">Jenis Kelamin*</label>
-            <q-option-group :options="gender" type="radio" v-model="genders" />
-          </div>
-
-          <!-- Berat dan Tinggi Badan -->
-          <div class="row">
-            <!-- Berat -->
-            <div class="col-6 q-pr-sm">
-              <q-input
-                type="number"
-                v-model="berat"
-                label="Berat Badan*"
-                lazy-rules
-                :rules="[
-                  (val) => (val && val.length > 0) || 'Masukkan berat badan',
-                ]"
-              />
-            </div>
-            <!-- Tinggi -->
-            <div class="col-6 q-pl-sm">
-              <q-input
-                type="number"
-                v-model="tinggi"
-                label="Tinggi Badan*"
-                lazy-rules
-                :rules="[
-                  (val) => (val && val.length > 0) || 'Masukkan tinggi badan',
-                ]"
-              />
-            </div>
-          </div>
-
-          <!-- Usia -->
-          <q-input
-            type="number"
-            v-model="usia"
-            label="Usia*"
-            lazy-rules
-            :rules="[
-              (val) => (val !== null && val !== '') || 'Masukkan usia',
-              (val) =>
-                (val > 0 && val < 100) || 'Masukkan usia anda yang sekarang',
-            ]"
-          />
-
-          <!-- Pekerjaan -->
-          <q-input
-            v-model="pekerjaan"
-            label="Pekerjaan*"
-            lazy-rules
-            :rules="[(val) => (val && val.length > 0) || 'Masukkan pekerjaan']"
-          />
-
-          <!-- Alamat -->
-          <q-input
-            v-model="alamat"
-            label="Alamat*"
-            lazy-rules
-            :rules="[
-              (val) => (val && val.length > 0) || 'Masukkan alamat lengkap',
-            ]"
-          />
-
-          <!-- No.Hp -->
-          <q-input
-            v-model="nomor"
-            label="No.Hp*"
-            lazy-rules
-            :rules="[(val) => (val && val.length > 0) || 'Masukkan nomor hp']"
-          />
-
-          <!-- Status Olahraga -->
-          <div>
-            <label class="text-grey-7">Status Olahraga*</label>
-            <q-option-group :options="olahraga" type="radio" v-model="sport" />
-          </div>
-
-          <!-- Cabang Olahraga -->
-          <q-input
-            v-model="cabang"
-            label="Cabang Olahraga*"
-            lazy-rules
-            :rules="[
-              (val) => (val && val.length > 0) || 'Masukkan cabang olahraga',
-            ]"
-          />
-
-          <!-- Keluhan -->
-          <q-select
-            icon="keyboard_arrow_down"
-            color="primary"
-            @click="open('bottom')"
-            filled
-            v-model="keluhans"
-            multiple
-            use-chips
-            stack-label
-            label="Keluhan*"
-            :rules="[(val) => (val && val.length > 0) || 'Pilih titik cedera']"
-          />
-
-          <!-- Penyebab -->
-          <q-input
-            v-model="penyebab"
-            label="Penyebab*"
-            lazy-rules
-            :rules="[
-              (val) => (val && val.length > 0) || 'Masukkan penyebab cedera',
-            ]"
-          />
-
-          <!-- Lama Cedera -->
-          <div>
-            <label class="text-grey-7">Lama Cedera*</label>
-            <q-option-group :options="lama" type="radio" v-model="long" />
-          </div>
-
-          <!-- Sudah Berapakali diterapi -->
-          <div>
-            <label class="text-grey-7">Sudah Berapakali diterapi*</label>
-            <q-option-group :options="terapi" type="radio" v-model="massage" />
-          </div>
-
-          <!-- Hasil rontgen atau MRI (jika ada) -->
-          <q-file
-            bottom-slots
-            v-model="image"
-            label="Hasil rontgen atau MRI (jika ada)"
-            counter
-          >
-            <template v-slot:prepend>
-              <q-icon name="cloud_upload" @click.stop.prevent />
-            </template>
-            <template v-slot:append>
-              <q-icon
-                name="close"
-                @click.stop.prevent="model = null"
-                class="cursor-pointer"
-              />
-            </template>
-
-            <template v-slot:hint></template>
-          </q-file>
-
-          <!-- Submit -->
-          <div class="column items-center">
-            <q-btn
-              label="Submit"
-              :disable="loading"
-              type="submit"
-              class="button bg-orange-10 text-white"
+        <!-- Berat dan Tinggi Badan -->
+        <div class="row">
+          <!-- Berat -->
+          <div class="col-6 q-pr-sm">
+            <q-input
+              type="number"
+              v-model="data.berat"
+              label="Berat Badan*"
+              lazy-rules
+              :rules="[
+                (val) => (val && val.length > 0) || 'Masukkan berat badan',
+              ]"
             />
           </div>
-        </q-form>
-      </q-card-section>
-    </q-card>
-  </q-dialog>
+          <!-- Tinggi -->
+          <div class="col-6 q-pl-sm">
+            <q-input
+              type="number"
+              v-model="data.tinggi"
+              label="Tinggi Badan*"
+              lazy-rules
+              :rules="[
+                (val) => (val && val.length > 0) || 'Masukkan tinggi badan',
+              ]"
+            />
+          </div>
+        </div>
+
+        <!-- Usia -->
+        <q-input
+          type="number"
+          v-model="data.usia"
+          label="Usia*"
+          lazy-rules
+          :rules="[
+            (val) => (val !== null && val !== '') || 'Masukkan usia',
+            (val) =>
+              (val > 0 && val < 100) || 'Masukkan usia anda yang sekarang',
+          ]"
+        />
+
+        <!-- Pekerjaan -->
+        <q-input
+          v-model="data.pekerjaan"
+          label="Pekerjaan*"
+          lazy-rules
+          :rules="[(val) => (val && val.length > 0) || 'Masukkan pekerjaan']"
+        />
+
+        <!-- Alamat -->
+        <q-input
+          v-model="data.alamat"
+          label="Alamat*"
+          lazy-rules
+          :rules="[
+            (val) => (val && val.length > 0) || 'Masukkan alamat lengkap',
+          ]"
+        />
+
+        <!-- No.Hp -->
+        <q-input
+          v-model="data.nomor"
+          label="No.Hp*"
+          lazy-rules
+          :rules="[(val) => (val && val.length > 0) || 'Masukkan nomor hp']"
+        />
+
+        <!-- Status Olahraga -->
+        <div>
+          <label class="text-grey-7">Status Olahraga*</label>
+          <q-option-group
+            :options="sports"
+            type="radio"
+            v-model="data.olahraga"
+          />
+        </div>
+
+        <!-- Cabang Olahraga -->
+        <q-input
+          v-model="data.cabang"
+          label="Cabang Olahraga*"
+          lazy-rules
+          :rules="[
+            (val) => (val && val.length > 0) || 'Masukkan cabang olahraga',
+          ]"
+        />
+
+        <!-- Keluhan -->
+        <q-select
+          icon="keyboard_arrow_down"
+          color="primary"
+          @click="open('bottom')"
+          filled
+          v-model="cederas"
+          multiple
+          use-chips
+          stack-label
+          label="Keluhan*"
+          :rules="[(val) => (val && val.length > 0) || 'Pilih titik cedera']"
+        />
+
+        <!-- Penyebab -->
+        <q-input
+          v-model="data.penyebab"
+          label="Penyebab*"
+          lazy-rules
+          :rules="[
+            (val) => (val && val.length > 0) || 'Masukkan penyebab cedera',
+          ]"
+        />
+
+        <!-- Lama Cedera -->
+        <div>
+          <label class="text-grey-7">Lama Cedera*</label>
+          <q-option-group
+            :options="lamaOptions"
+            type="radio"
+            v-model="data.lama_cedera"
+          />
+        </div>
+
+        <!-- Sudah Berapakali diterapi -->
+        <div>
+          <label class="text-grey-7">Sudah Berapakali diterapi*</label>
+          <q-option-group
+            :options="terapi"
+            type="radio"
+            v-model="data.jumlah_terapi"
+          />
+        </div>
+
+        <!-- Hasil rontgen atau MRI (jika ada) -->
+        <q-file
+          bottom-slots
+          v-model="image"
+          label="Hasil rontgen atau MRI (jika ada)"
+          counter
+        >
+          <template v-slot:prepend>
+            <q-icon name="cloud_upload" @click.stop.prevent />
+          </template>
+          <template v-slot:append>
+            <q-icon
+              name="close"
+              @click.stop.prevent="model = null"
+              class="cursor-pointer"
+            />
+          </template>
+
+          <template v-slot:hint></template>
+        </q-file>
+
+        <!-- Submit -->
+        <div class="column items-center">
+          <q-btn
+            label="Submit"
+            :disable="loading"
+            type="submit"
+            class="button bg-orange-10 text-white"
+          />
+        </div>
+      </q-form>
+    </q-card-section>
+  </q-card>
 
   <!-- Warning -->
   <q-dialog v-model="danger" :position="bot">
@@ -215,14 +213,14 @@
           color="primary"
           size="12px"
           label="Ok, Mengerti"
-          @click="close('bottom')"
+          @click="danger = false"
         />
       </div>
     </q-card>
   </q-dialog>
 
   <!-- Keluhan -->
-  <q-dialog v-model="dialog" :position="position">
+  <q-dialog v-model="keluhan" :position="bot">
     <q-card>
       <div v-for="cedera in cederas" :key="cedera.id">
         <q-item tag="label" v-ripple>
@@ -235,7 +233,7 @@
             <q-item-label caption>Rp.{{ cedera.harga }}</q-item-label>
           </q-item-section>
           <q-item-section avatar>
-            <q-checkbox v-model="keluhans" :val="cedera.id" />
+            <q-checkbox v-model="cederas" :val="cedera.id" />
           </q-item-section>
         </q-item>
       </div>
@@ -294,215 +292,134 @@
   </q-dialog>
 </template>
 
-<script>
-import { useQuasar, LocalStorage } from "quasar";
-import { ref, computed, onMounted } from "vue";
+<script setup>
+import { ref, onMounted } from "vue";
 import axios from "axios";
+import { useQuasar } from "quasar";
 
-export default {
-  name: "FormPendaftaranPage",
+const $q = useQuasar();
+const loading = ref(false);
+const token = localStorage.getItem("token");
 
-  props: {
-    formPendaftaran: Boolean,
-    maximizedToggle: Boolean,
-  },
+const bot = ref("bottom");
+const maximizedToggle = ref(true);
+const danger = ref(false);
+const keluhan = ref(false);
+const success = ref(false);
 
-  setup(props, { emit }) {
-    const internalPendaftaran = computed({
-      get: () => props.formPendaftaran,
-      set: (value) => emit("update:formPendaftaran", value),
-    });
-    const $q = useQuasar();
-    const loading = ref(false);
+const data = ref({
+  nama_lengkap: "",
+  jenis_kelamin: "",
+  berat: null,
+  tinggi: null,
+  usia: null,
+  pekerjaan: "",
+  alamat: "",
+  nomor: "",
+  olahraga: "",
+  cabang: "",
+  penyebab: "",
+  lama_cedera: "",
+  jumlah_terapi: "",
+});
 
-    // token
-    const token = LocalStorage.getItem("token");
+// Keluhan
+const cederas = ref([]);
+const fetchData = async () => {
+  try {
+    const response = await axios.get("http://localhost:8000/api/cederas");
+    cederas.value = response.data.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+};
+onMounted(() => {
+  fetchData();
+});
 
-    // Warning
-    const danger = ref(false);
-    const bot = ref("top");
+const genders = [
+  { label: "Laki-Laki", value: "Laki-laki" },
+  { label: "Perempuan", value: "Perempuan" },
+];
 
-    // Form
-    const nama_lengkap = ref("");
-    const genders = ref("");
-    const berat = ref(null);
-    const tinggi = ref(null);
-    const usia = ref(null);
-    const pekerjaan = ref("");
-    const alamat = ref("");
-    const nomor = ref("");
-    const sport = ref("");
-    const cabang = ref("");
-    const penyebab = ref("");
-    const long = ref("");
-    const massage = ref("");
+const sports = [
+  { label: "Hobi Olahraga", value: "Hobi" },
+  { label: "Atlet", value: "Atlet" },
+  { label: "Lainnya", value: "Lainnya" },
+];
 
-    // Keluhan
-    const cederas = ref([]);
-    const dialog = ref(false);
-    const position = ref("top");
-    const fetchData = async () => {
-      try {
-        const response = await axios.get("http://localhost:8000/api/cederas");
-        cederas.value = response.data.data;
-      } catch (error) {
-        console.error("Error fetching data:", error);
+const lamaOptions = [
+  { label: "< 1 minggu", value: "<1 Minggu" },
+  { label: "< 1 bulan>", value: "<1 Bulan" },
+  { label: "< 1 tahun>", value: "<1 Tahun" },
+  { label: "> 1 tahun", value: ">1 Tahun" },
+];
+
+const terapi = [
+  { label: "Belum Pernah", value: "Belum" },
+  { label: "1 kali", value: "1 Kali" },
+  { label: "> 1 kali", value: ">1 Kali" },
+];
+
+// File
+const image = ref(null);
+
+const submitForm = async () => {
+  loading.value = true;
+  try {
+    const formData = new FormData();
+    for (const key in data.value) {
+      if (data.value.hasOwnProperty(key)) {
+        formData.append(key, data.value[key]);
       }
-    };
-    onMounted(() => {
-      fetchData();
-    });
+    }
+    cederas.value.forEach((id) => formData.append("cederas[]", id));
 
-    return {
-      internalPendaftaran,
-      $q,
-      token,
-      loading,
-      success: ref(false),
-
-      // Warning
-      danger,
-      bot,
-
-      // Form
-      nama_lengkap,
-      genders,
-      berat,
-      tinggi,
-      usia,
-      pekerjaan,
-      alamat,
-      nomor,
-      sport,
-      cabang,
-      penyebab,
-      long,
-      massage,
-
-      // Gender
-      gender: [
-        { label: "Laki-Laki", value: "Laki-laki" },
-        { label: "Perempuan", value: "Perempuan" },
-      ],
-      // Olahraga
-      olahraga: [
-        { label: "Hobi Olahraga", value: "Hobi" },
-        { label: "Atlet", value: "Atlet" },
-        { label: "Lainnya", value: "Lainnya" },
-      ],
-      // Keluhan
-      dialog,
-      position,
-      cederas,
-      keluhans: ref([]),
-      open(pos) {
-        position.value = pos;
-        dialog.value = true;
-      },
-      // Lama Cedera
-      lama: [
-        { label: "< 1 minggu", value: "<1minggu" },
-        { label: "< 1 bulan>", value: "<1bulan" },
-        { label: "< 1 tahun>", value: "<1tahun" },
-        { label: "> 1 tahun", value: ">1tahun" },
-      ],
-      // Terapi
-      terapi: [
-        { label: "Belum Pernah", value: "belum" },
-        { label: "1 kali", value: "1kali" },
-        { label: "> 1 kali", value: ">1kali" },
-      ],
-      // File
-      image: ref(null),
-    };
-  },
-
-  methods: {
-    cekKeluhan() {
-      console.log(this.keluhans);
-    },
-    async submitForm() {
-      this.loading = true;
-      try {
-        const formData = new FormData();
-        formData.append("nama_lengkap", this.nama_lengkap);
-        formData.append("jenis_kelamin", this.genders);
-        formData.append("berat", this.berat);
-        formData.append("tinggi", this.tinggi);
-        formData.append("usia", this.usia);
-        formData.append("pekerjaan", this.pekerjaan);
-        formData.append("alamat", this.alamat);
-        formData.append("nomor", this.nomor);
-        formData.append("olahraga", this.sport);
-        formData.append("cabang", this.cabang);
-        formData.append("cederas", this.keluhans);
-        this.keluhans.forEach((id) => formData.append("cederas[]", id));
-        formData.append("penyebab", this.penyebab);
-        formData.append("lama_cedera", this.long);
-        formData.append("jumlah_terapi", this.massage);
-
-        const response = await axios.post(
-          "http://localhost:8000/api/pendaftaran/create",
-          formData,
-          {
-            headers: {
-              Authorization: `Bearer ${this.token}`,
-            },
-          }
-        );
-
-        if (response.data.status === "Success") {
-          this.$q.notify({
-            color: "positive",
-            position: "top",
-            message: response.data.message,
-          });
-          this.loading = false;
-          this.success = true;
-          // Reset form values
-          this.nama_lengkap = null;
-          this.genders = null;
-          this.berat = null;
-          this.tinggi = null;
-          this.usia = null;
-          this.pekerjaan = null;
-          this.alamat = null;
-          this.nomor = null;
-          this.sport = null;
-          this.cabang = null;
-          this.keluhans = null;
-          this.penyebab = null;
-          this.long = null;
-          this.massage = null;
-        } else {
-          this.$q.notify({
-            color: "negative",
-            position: "top",
-            message: "Pendaftaran gagal. Mohon coba lagi.",
-          });
-        }
-      } catch (error) {
-        console.error("Error submitting form:", error);
-
-        if (error.response && error.response.data) {
-          const errorMessage = error.response.data.message;
-          this.$q.notify({
-            color: "negative",
-            position: "top",
-            message: errorMessage || "Terjadi kesalahan. Mohon coba lagi.",
-          });
-          console.error(errorMessage);
-        } else {
-          this.$q.notify({
-            color: "negative",
-            position: "top",
-            message: "Terjadi kesalahan. Mohon coba lagi.",
-          });
-        }
-        this.loading = false;
+    const response = await axios.post(
+      "http://localhost:8000/api/pendaftaran/create",
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
       }
-    },
-  },
+    );
+
+    if (response.data.status === "Success") {
+      $q.notify({
+        color: "positive",
+        position: "top",
+        message: response.data.message,
+      });
+      success.value = true;
+    } else {
+      $q.notify({
+        color: "negative",
+        position: "top",
+        message: "Pendaftaran gagal. Mohon coba lagi.",
+      });
+    }
+  } catch (error) {
+    console.error("Error submitting form:", error);
+
+    if (error.response && error.response.data) {
+      const errorMessage = error.response.data.message;
+      $q.notify({
+        color: "negative",
+        position: "top",
+        message: errorMessage || "Terjadi kesalahan. Mohon coba lagi.",
+      });
+      console.error(errorMessage);
+    } else {
+      $q.notify({
+        color: "negative",
+        position: "top",
+        message: "Terjadi kesalahan. Mohon coba lagi.",
+      });
+    }
+    loading.value = false;
+  }
 };
 </script>
 

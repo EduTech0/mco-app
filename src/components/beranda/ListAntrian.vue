@@ -10,6 +10,7 @@
         </q-card-section>
       </div>
     </div>
+
     <div class="col q-pb-sm q-pr-sm">
       <div class="glow-card-2">
         <q-card-section class="bg-orange-2">
@@ -26,6 +27,7 @@
       </div>
     </div>
   </div>
+
   <div class="row">
     <div class="col q-pb-sm q-pr-sm q-pl-sm">
       <div class="glow-card-3">
@@ -42,6 +44,7 @@
         </q-card-section>
       </div>
     </div>
+
     <div class="col q-pb-sm q-pr-sm">
       <div class="glow-card-4">
         <q-card-section class="bg-green-2">

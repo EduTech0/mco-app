@@ -56,7 +56,7 @@ const routes = [
       },
       {
         path: "cedera",
-        component: () => import("pages/dashboard/Cedera.vue"),
+        component: () => import("pages/dashboard/cedera/IndexCedera.vue"),
       },
       {
         path: "pendaftaran",
@@ -82,7 +82,7 @@ const routes = [
       },
       {
         path: "jadwal",
-        component: () => import("pages/dashboard/Jadwal.vue"),
+        component: () => import("pages/dashboard/jadwal/IndexJadwal.vue"),
       },
     ],
   },

@@ -138,40 +138,39 @@
 import { useQuasar } from "quasar";
 import { useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
-import axios from "axios";
-
+import { useAuthStore } from "src/stores/auth-store";
 import SnK from "components/saya/SnKDialog.vue";
 import Location from "components/saya/LocationDialog.vue";
 import Tutorial from "components/saya/TutorialDialog.vue";
 
 const $q = useQuasar();
 const router = useRouter();
-const token = localStorage.getItem("token");
+const authStore = useAuthStore();
+
 const profile = ref("");
 const isLoading = ref(true);
 const confirm = ref(false);
 
+const maximizedToggle = ref(true);
 const dialogsnk = ref(false);
 const dialoglocation = ref(false);
 const dialogtutorial = ref(false);
-const maximizedToggle = ref(true);
 
 // Profile
-onMounted(async () => {
+const getProfile = async () => {
   try {
-    const response = await axios.get("http://localhost:8000/api/profile", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    profile.value = response.data.data;
-    isLoading.value = false;
+    const res = await authStore.profile();
+    profile.value = res.data.data;
   } catch (error) {
     console.error("Error fetching data:", error);
-    isLoading.value = false;
   }
+  isLoading.value = false;
+};
+onMounted(() => {
+  getProfile();
 });
 
+// Logout
 const submit = async () => {
   try {
     localStorage.removeItem("token");

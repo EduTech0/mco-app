@@ -3,7 +3,7 @@
     <!-- Form Pendaftaran -->
     <q-card
       class="col-4 text-center hover card"
-      @click="(formPendaftaran = true), warning('bottom')"
+      @click="(formPendaftaran = true), (danger = true)"
     >
       <q-card-section>
         <q-icon
@@ -14,13 +14,15 @@
         />
         <div class="text-subtitle2">Form Pendaftaran</div>
       </q-card-section>
-      <FormPendaftaran
-        :formPendaftaran="formPendaftaran"
-        :maximizedToggle="maximizedToggle"
-        @update:formPendaftaran="updateFormPendaftaran"
-        :danger="danger"
-        :bot="bot"
-      ></FormPendaftaran>
+      <q-dialog
+        v-model="formPendaftaran"
+        persistent
+        :maximized="maximizedToggle"
+        transition-show="slide-up"
+        transition-hide="slide-down"
+      >
+        <FormPendaftaran />
+      </q-dialog>
       <!-- Warning -->
       <q-dialog v-model="danger" :position="bot">
         <q-card class="q-pa-lg" style="border-radius: 20px 20px 0 0">
@@ -37,7 +39,7 @@
               color="primary"
               size="12px"
               label="Ok, Mengerti"
-              @click="close('bottom')"
+              @click="danger = false"
             />
           </div>
         </q-card>
@@ -58,11 +60,15 @@
         />
         <div class="text-subtitle2">Status Registrasi</div>
       </q-card-section>
-      <StatusRegistrasi
-        :statusRegistrasi="statusRegistrasi"
-        :maximizedToggle="maximizedToggle"
-        @update:statusRegistrasi="updateStatusRegistrasi"
-      ></StatusRegistrasi>
+      <q-dialog
+        v-model="statusRegistrasi"
+        persistent
+        :maximized="maximizedToggle"
+        transition-show="slide-up"
+        transition-hide="slide-down"
+      >
+        <StatusRegistrasi />
+      </q-dialog>
     </q-card>
 
     <!-- Biaya Penanganan -->
@@ -79,11 +85,15 @@
         />
         <div class="text-subtitle2">Biaya Penanganan</div>
       </q-card-section>
-      <BiayaPenanganan
-        :biayaPenanganan="biayaPenanganan"
-        :maximizedToggle="maximizedToggle"
-        @update:biayaPenanganan="updateBiayaPenanganan"
-      ></BiayaPenanganan>
+      <q-dialog
+        v-model="biayaPenanganan"
+        persistent
+        :maximized="maximizedToggle"
+        transition-show="slide-up"
+        transition-hide="slide-down"
+      >
+        <BiayaPenanganan />
+      </q-dialog>
     </q-card>
 
     <!-- Informasi Jadwal -->
@@ -95,15 +105,19 @@
         <q-icon class="q-mb-sm" color="indigo-10" name="info" size="32px" />
         <div class="text-subtitle2">Informasi Jadwal</div>
       </q-card-section>
-      <InformasiJadwal
-        :informasiJadwal="informasiJadwal"
-        :maximizedToggle="maximizedToggle"
-        @update:informasiJadwal="updateInformasiJadwal"
-      ></InformasiJadwal>
+      <q-dialog
+        v-model="informasiJadwal"
+        persistent
+        :maximized="maximizedToggle"
+        transition-show="slide-up"
+        transition-hide="slide-down"
+      >
+        <InformasiJadwal />
+      </q-dialog>
     </q-card>
 
     <!-- FAQ -->
-    <q-card class="col-4 text-center hover card" @click="FAQ = true">
+    <q-card class="col-4 text-center hover card" @click="faq = true">
       <q-card-section>
         <q-icon
           class="q-mb-sm"
@@ -113,83 +127,36 @@
         />
         <div class="text-subtitle2">FAQ</div>
       </q-card-section>
-      <FAQ
-        :FAQ="FAQ"
-        :maximizedToggle="maximizedToggle"
-        @update:FAQ="updateFAQ"
-      ></FAQ>
+      <q-dialog
+        v-model="faq"
+        persistent
+        :maximized="maximizedToggle"
+        transition-show="slide-up"
+        transition-hide="slide-down"
+      >
+        <FAQ />
+      </q-dialog>
     </q-card>
   </div>
 </template>
 
-<script>
-import { defineComponent, ref, onMounted } from "vue";
-import axios from "axios";
+<script setup>
+import { ref } from "vue";
 import FormPendaftaran from "components/beranda/FormPendaftaran.vue";
 import StatusRegistrasi from "components/beranda/StatusRegistrasi.vue";
 import BiayaPenanganan from "components/beranda/BiayaPenanganan.vue";
 import InformasiJadwal from "components/beranda/InformasiJadwal.vue";
 import FAQ from "components/beranda/FAQ.vue";
 
-export default defineComponent({
-  components: {
-    FormPendaftaran,
-    StatusRegistrasi,
-    BiayaPenanganan,
-    InformasiJadwal,
-    FAQ,
-  },
+const bot = ref("bottom");
+const danger = ref(false);
+const maximizedToggle = ref(true);
 
-  setup() {
-    const danger = ref(false);
-    const bot = ref("top");
-    const maximizedToggle = ref(true);
-    const formPendaftaran = ref(false);
-    const statusRegistrasi = ref(false);
-    const biayaPenanganan = ref(false);
-    const informasiJadwal = ref(false);
-    const FAQ = ref(false);
-
-    const updateFormPendaftaran = (value) => {
-      formPendaftaran.value = value;
-    };
-    const updateStatusRegistrasi = (value) => {
-      statusRegistrasi.value = value;
-    };
-    const updateBiayaPenanganan = (value) => {
-      biayaPenanganan.value = value;
-    };
-    const updateInformasiJadwal = (value) => {
-      informasiJadwal.value = value;
-    };
-    const updateFAQ = (value) => {
-      FAQ.value = value;
-    };
-
-    return {
-      danger,
-      bot,
-      warning(pos) {
-        bot.value = pos;
-        danger.value = true;
-      },
-      close(pos) {
-        danger.value = false;
-      },
-      formPendaftaran,
-      statusRegistrasi,
-      biayaPenanganan,
-      informasiJadwal,
-      FAQ,
-      maximizedToggle,
-      updateFormPendaftaran,
-      updateStatusRegistrasi,
-      updateBiayaPenanganan,
-      updateInformasiJadwal,
-      updateFAQ,
-    };
-  },
-});
+const formPendaftaran = ref(false);
+const statusRegistrasi = ref(false);
+const biayaPenanganan = ref(false);
+const informasiJadwal = ref(false);
+const faq = ref(false);
 </script>
 
 <style scoped>

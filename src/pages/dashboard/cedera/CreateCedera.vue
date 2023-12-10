@@ -11,37 +11,40 @@
             <!-- Nama -->
             <div class="col-5 q-mr-sm">
               <q-input
-                v-model="cedera.name"
+                v-model="data.name"
                 label="Nama"
                 class="q-my-sm"
                 dense
                 autofocus
                 required
+                :rules="nameRules"
               ></q-input>
             </div>
             <!-- Harga -->
             <div class="col-5 q-ml-sm">
               <q-input
-                v-model="cedera.harga"
+                v-model="data.harga"
                 label="Harga"
                 class="q-my-sm"
                 outlined
                 dense
                 type="number"
                 required
+                :rules="hargaRules"
               ></q-input>
             </div>
           </div>
 
-          <!-- Images -->
+          <!-- Image -->
           <q-file
             filled
             bottom-slots
-            v-model="cedera.images"
+            v-model="data.image"
             class="q-my-sm"
-            label="Images"
+            label="Image"
             counter
             accept=".jpg, .jpeg, .png, .gif, .svg"
+            :rules="imageRules"
           >
             <template v-slot:prepend>
               <q-icon name="cloud_upload" @click.stop.prevent />
@@ -49,7 +52,7 @@
             <template v-slot:append>
               <q-icon
                 name="close"
-                @click.stop.prevent="model = null"
+                @click.stop.prevent="data.image = null"
                 class="cursor-pointer"
               />
             </template>
@@ -64,7 +67,7 @@
             type="submit"
             label="Tambah Cedera"
             color="dark"
-            :disable="isSubmitting"
+            :disable="loading"
           ></q-btn>
         </q-card-actions>
       </q-card>
@@ -72,61 +75,48 @@
   </div>
 </template>
 
-<script>
-import axios from "axios";
-import { LocalStorage } from "quasar";
+<script setup>
+import { useQuasar } from "quasar";
+import { useCederaStore } from "src/stores/cedera-store";
+import { ref } from "vue";
 
-export default {
-  data() {
-    return {
-      cedera: {
-        name: "",
-        harga: null,
-        images: null,
-      },
-      isSubmitting: false,
-    };
-  },
+const $q = useQuasar();
+const cederaStore = useCederaStore();
+const emits = defineEmits(["added"]);
 
-  methods: {
-    addCedera() {
-      this.isSubmitting = true;
+const data = ref({
+  name: "",
+  harga: null,
+  image: null,
+});
+const loading = ref(false);
 
-      const formData = new FormData();
-      formData.append("name", this.cedera.name);
-      formData.append("harga", this.cedera.harga);
-      formData.append("images", this.cedera.images);
+// Validate
+const nameRules = [
+  (v) => !!v || "Nama harus diisi",
+  (v) => (v && v.length <= 255) || "Nama tidak boleh lebih dari 255 karakter",
+];
+const hargaRules = [
+  (v) => !!v || "Harga harus diisi",
+  (v) => (!isNaN(parseFloat(v)) && isFinite(v)) || "Harga harus berupa angka",
+];
+const imageRules = [
+  (v) => !!v || "Image harus diisi",
+  (v) => (v && v.size <= 2048 * 1024) || "Image size harus dibawah 2048 KB",
+];
 
-      const token = LocalStorage.getItem("token");
-      const headers = {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "multipart/form-data",
-      };
-
-      // Kirim permintaan ke API Laravel untuk menambahkan cedera
-      axios
-        .post("http://localhost:8000/api/cederas/create", formData, { headers })
-        .then((response) => {
-          // Handle respons dari server (berhasil atau gagal)
-          console.log(response.data);
-          this.$q.notify({
-            color: "positive",
-            message: response.data.message,
-          });
-          this.$emit("added", response.data.data);
-          // Reset formulir setelah berhasil menambahkan
-          this.cedera.name = "";
-          this.cedera.harga = null;
-          this.cedera.images = null;
-        })
-        .catch((error) => {
-          // Handle kesalahan jika ada
-          console.error(error);
-        })
-        .finally(() => {
-          this.isSubmitting = false;
-        });
-    },
-  },
+const addCedera = async () => {
+  loading.value = true;
+  try {
+    const res = await cederaStore.createCedera(data.value);
+    $q.notify({
+      color: "positive",
+      message: res.data.message,
+    });
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+  loading.value = false;
+  emits("added");
 };
 </script>

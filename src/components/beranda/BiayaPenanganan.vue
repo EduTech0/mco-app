@@ -1,85 +1,53 @@
 <template>
-  <q-dialog
-    :model-value="biayaPenanganan"
-    @update:model-value="$emit('update:biayaPenanganan', $event)"
-    persistent
-    :maximized="maximizedToggle"
-    transition-show="slide-up"
-    transition-hide="slide-down"
-  >
-    <q-card>
-      <q-card-section class="bg-primary q-py-sm text-white shadow">
-        <q-btn
-          dense
-          flat
-          icon="arrow_back"
-          v-close-popup
-          class="absolute-left"
-        />
-        <div class="text-subtitle1 text-center">Biaya Penanganan</div>
-      </q-card-section>
+  <q-card>
+    <q-card-section class="bg-primary q-py-sm text-white shadow">
+      <q-btn dense flat icon="arrow_back" v-close-popup class="absolute-left" />
+      <div class="text-subtitle1 text-center">Biaya Penanganan</div>
+    </q-card-section>
 
-      <q-card-section class="q-pt-lg"></q-card-section>
+    <q-card-section class="q-pt-lg"></q-card-section>
 
-      <q-card-section class="q-pa-lg">
-        <div v-for="cedera in cederas" :key="cedera.id">
-          <q-card class="my-card q-my-md">
-            <q-card-section horizontal>
-              <q-img class="col-2 q-ma-sm" :src="cedera.images" />
-              <q-card-section>
-                <div>{{ cedera.name }}</div>
-                <div class="text-grey-6 text-caption">
-                  {{ cedera.harga }}
-                </div>
-              </q-card-section>
+    <q-card-section class="q-pa-lg">
+      <div v-for="cedera in cederas" :key="cedera.id">
+        <q-card class="my-card q-my-md">
+          <q-card-section horizontal>
+            <img
+              :src="'http://localhost:8000/storage/cederas/' + cedera.image"
+              alt="Cedera Image"
+              width="80"
+            />
+            <q-card-section>
+              <div>{{ cedera.name }}</div>
+              <div class="text-grey-6 text-caption">
+                {{ cedera.harga }}
+              </div>
             </q-card-section>
-          </q-card>
-        </div>
-      </q-card-section>
-    </q-card>
-  </q-dialog>
+          </q-card-section>
+        </q-card>
+      </div>
+    </q-card-section>
+  </q-card>
 </template>
 
-<script>
-import { ref, computed, onMounted } from "vue";
-import axios from "axios";
+<script setup>
+import { ref, onMounted } from "vue";
+import { useCederaStore } from "src/stores/cedera-store";
 
-export default {
-  name: "BiayaPenangananPage",
+const cederaStore = useCederaStore();
+const cederas = ref([]);
 
-  props: {
-    biayaPenanganan: Boolean,
-    maximizedToggle: Boolean,
-  },
-
-  setup(props, { emit }) {
-    const cederas = ref([]);
-
-    const internalBiaya = computed({
-      get: () => props.biayaPenanganan,
-      set: (value) => emit("update:biayaPenanganan", value),
-    });
-
-    // Function to fetch data from your Laravel API
-    const fetchData = async () => {
-      try {
-        const response = await axios.get("http://localhost:8000/api/cederas");
-        cederas.value = response.data.data;
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    onMounted(() => {
-      fetchData();
-    });
-
-    return {
-      internalBiaya,
-      cederas,
-    };
-  },
+// Get Cedera
+const getCedera = async () => {
+  try {
+    const res = await cederaStore.allCedera();
+    cederas.value = res.data.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
 };
+onMounted(() => {
+  getCedera();
+});
 </script>
 
 <style scoped>

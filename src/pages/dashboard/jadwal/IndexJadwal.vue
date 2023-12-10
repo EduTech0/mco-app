@@ -4,7 +4,7 @@
       flat
       bordered
       class="statement-table"
-      title="Customers"
+      title="Jadwal"
       :rows="currencyData"
       :hide-header="grid"
       :columns="currencyColumns"
@@ -55,16 +55,16 @@
         </q-btn>
         <div class="q-pa-sm q-gutter-sm"></div>
 
-        <!-- Add Customer -->
+        <!-- Add Jadwal -->
         <q-btn
           @click="showDialog = true"
           color="black"
           icon="add"
           class="q-my-sm q-px-lg"
-          ><q-tooltip>Add Customer</q-tooltip></q-btn
+          ><q-tooltip>Add Jadwal</q-tooltip></q-btn
         >
         <q-dialog v-model="showDialog">
-          <CustomerForm @added="handleCustomerAdded" />
+          <JadwalForm @added="handleJadwalAdded" />
         </q-dialog>
       </template>
 
@@ -74,27 +74,6 @@
         <q-td :props="props">
           <div text-color="white" dense square>
             {{ props.rowIndex + 1 }}
-          </div>
-        </q-td>
-      </template>
-      <!-- Name -->
-      <template #body-cell-name="props">
-        <q-td :props="props">
-          <div text-color="white" dense class="text-bold text-black" square>
-            {{ props.row.name }}
-          </div>
-        </q-td>
-      </template>
-      <!-- Status -->
-      <template #body-cell-status="props">
-        <q-td :props="props">
-          <div
-            text-color="white"
-            dense
-            class="text-weight-bolder text-red"
-            square
-          >
-            {{ props.row.status }}
           </div>
         </q-td>
       </template>
@@ -137,30 +116,8 @@
 
                 <q-item-section side>
                   <!-- ID -->
-                  <!-- <div v-if="col.name === 'id'" text-color="white" dense square>
+                  <div v-if="col.name === 'id'" text-color="white" dense square>
                     {{ props.row.id }}
-                  </div> -->
-
-                  <!-- Name -->
-                  <div
-                    v-if="col.name === 'name'"
-                    text-color="white"
-                    dense
-                    class="text-bold text-black"
-                    square
-                  >
-                    {{ props.row.name }}
-                  </div>
-
-                  <!-- Status -->
-                  <div
-                    v-else-if="col.name === 'status'"
-                    text-color="white"
-                    dense
-                    class="text-red text-bold"
-                    square
-                  >
-                    {{ props.row.status }}
                   </div>
 
                   <!-- Action -->
@@ -204,31 +161,31 @@
 import { defineComponent, ref, onMounted } from "vue";
 import axios from "axios";
 import { LocalStorage } from "quasar";
-import CustomerForm from "../../store/CustomerForm.vue";
+import JadwalForm from "./CreateJadwal.vue";
 
 export default defineComponent({
-  name: "CustomerDashboardPage",
+  name: "JadwalDashboardPage",
 
   components: {
-    CustomerForm,
+    JadwalForm,
   },
 
   data() {
-    const customers = ref([]);
+    const jadwals = ref([]);
     const token = LocalStorage.getItem("token");
 
     // Function to fetch data from Laravel API
     onMounted(async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/customers");
-        customers.value = response.data.data;
+        const response = await axios.get("http://localhost:8000/api/jadwal");
+        jadwals.value = response.data.data;
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     });
 
     return {
-      currencyData: customers,
+      currencyData: jadwals,
       currencyColumns: [
         {
           name: "id",
@@ -236,45 +193,31 @@ export default defineComponent({
           label: "ID",
         },
         {
-          name: "name",
-          field: "name",
-          label: "Name",
+          name: "tanggal",
+          field: "tanggal",
+          label: "Tanggal",
           align: "left",
           sortable: true,
         },
         {
-          name: "email",
-          field: "email",
-          label: "Email",
+          name: "waktu",
+          field: "waktu",
+          label: "Waktu",
           align: "left",
           sortable: true,
         },
         {
-          name: "tanggal_lahir",
-          field: "tanggal_lahir",
-          label: "Tanggal Lahir",
+          name: "kuota",
+          field: "kuota",
+          label: "Kuota",
           align: "center",
           sortable: true,
         },
         {
-          name: "jenis_kelamin",
-          field: "jenis_kelamin",
-          label: "Jenis Kelamin",
+          name: "tersisa",
+          field: "tersisa",
+          label: "Tersisa",
           align: "center",
-          sortable: true,
-        },
-        {
-          name: "role",
-          field: "role",
-          label: "Role",
-          align: "center",
-          sortable: true,
-        },
-        {
-          name: "address",
-          field: "address",
-          label: "Address",
-          align: "left",
           sortable: true,
         },
         {
@@ -296,19 +239,19 @@ export default defineComponent({
   },
 
   methods: {
-    // Add Customer
-    handleCustomerAdded() {
+    // Add Jadwal
+    handleJadwalAdded() {
       this.showDialog = false;
       this.loadData();
     },
 
-    // Edit Customer
+    // Edit Jadwal
     editItem(row) {
       // Navigasi ke halaman edit dengan menggunakan router Quasar
       // this.$router.push(`/edit/${row.id}`);
     },
 
-    // Delete Customers
+    // Delete Jadwal
     async showDeleteDialog(row) {
       await this.$q
         .dialog({
@@ -341,7 +284,7 @@ export default defineComponent({
     async deleteItem(row) {
       try {
         const response = await axios.delete(
-          `http://localhost:8000/api/customers/delete/${row.id}`,
+          `http://localhost:8000/api/jadwal/delete/${row.id}`,
           {
             headers: {
               Authorization: `Bearer ${this.token}`,
@@ -364,18 +307,15 @@ export default defineComponent({
       }
     },
 
-    // Load Customers
+    // Load Cedera
     async loadData() {
       try {
         // Mengambil data dari API
-        const response = await axios.get(
-          "http://localhost:8000/api/customers",
-          {
-            headers: {
-              Authorization: `Bearer ${this.token}`,
-            },
-          }
-        );
+        const response = await axios.get("http://localhost:8000/api/jadwal", {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
         // Simpan data yang diambil dari API ke dalam properti currencyData
         this.currencyData = response.data.data;
       } catch (error) {

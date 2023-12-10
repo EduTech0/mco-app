@@ -57,14 +57,14 @@
 
         <!-- Add Cedera -->
         <q-btn
-          @click="showDialog = true"
+          @click="addCederaDialog = true"
           color="black"
           icon="add"
           class="q-my-sm q-px-lg"
           ><q-tooltip>Add Cedera</q-tooltip></q-btn
         >
-        <q-dialog v-model="showDialog">
-          <CederaForm @added="handleCederaAdded" />
+        <q-dialog v-model="addCederaDialog">
+          <AddCedera @added="cederaAdded" />
         </q-dialog>
       </template>
 
@@ -77,14 +77,7 @@
           </div>
         </q-td>
       </template>
-      <!-- Name -->
-      <template #body-cell-name="props">
-        <q-td :props="props">
-          <div text-color="white" dense class="text-bold text-black" square>
-            {{ props.row.name }}
-          </div>
-        </q-td>
-      </template>
+
       <!-- Harga -->
       <template #body-cell-harga="props">
         <q-td :props="props">
@@ -98,14 +91,20 @@
           </div>
         </q-td>
       </template>
-      <!-- Images -->
-      <template #body-cell-images="props">
+
+      <!-- Image -->
+      <template #body-cell-image="props">
         <q-td :props="props">
           <div text-color="white" dense square>
-            {{ props.row.images }}
+            <img
+              :src="'http://localhost:8000/storage/cederas/' + props.row.image"
+              alt="Cedera Image"
+              width="80"
+            />
           </div>
         </q-td>
       </template>
+
       <!-- Action -->
       <template #body-cell-action="props">
         <q-td :props="props">
@@ -125,7 +124,7 @@
             color="red"
             field="delete"
             icon="delete"
-            @click="showDeleteDialog(props.row)"
+            @click="deleteCederaDialog(props.row)"
           ></q-btn>
         </q-td>
       </template>
@@ -146,18 +145,7 @@
                 <q-item-section side>
                   <!-- ID -->
                   <div v-if="col.name === 'id'" text-color="white" dense square>
-                    {{ props.row.id }}
-                  </div>
-
-                  <!-- Name -->
-                  <div
-                    v-if="col.name === 'name'"
-                    text-color="white"
-                    dense
-                    class="text-bold text-black"
-                    square
-                  >
-                    {{ props.row.name }}
+                    {{ props.rowIndex + 1 }}
                   </div>
 
                   <!-- Harga -->
@@ -173,12 +161,19 @@
 
                   <!-- Image -->
                   <div
-                    v-else-if="col.name === 'images'"
+                    v-else-if="col.name === 'image'"
                     text-color="white"
                     dense
                     square
                   >
-                    {{ props.row.images }}
+                    <img
+                      :src="
+                        'http://localhost:8000/storage/cederas/' +
+                        props.row.image
+                      "
+                      alt="Cedera Image"
+                      width="80"
+                    />
                   </div>
 
                   <!-- Action -->
@@ -197,7 +192,7 @@
                       color="red"
                       field="delete"
                       icon="delete"
-                      @click="showDeleteDialog(props.row)"
+                      @click="deleteCederaDialog(props.row)"
                     ></q-btn>
                   </div>
 
@@ -218,167 +213,121 @@
   </q-page>
 </template>
 
-<script>
-import { defineComponent, ref, onMounted } from "vue";
-import axios from "axios";
-import { LocalStorage } from "quasar";
-import CederaForm from "../../store/CederaForm.vue";
+<script setup>
+import { ref, onMounted } from "vue";
+import { useQuasar } from "quasar";
+import { useCederaStore } from "src/stores/cedera-store";
+import AddCedera from "./CreateCedera.vue";
 
-export default defineComponent({
-  name: "CederaDashboardPage",
+const $q = useQuasar();
+const cederaStore = useCederaStore();
 
-  components: {
-    CederaForm,
-  },
-
-  data() {
-    const cederas = ref([]);
-    const token = LocalStorage.getItem("token");
-
-    // Function to fetch data from Laravel API
-    onMounted(async () => {
-      try {
-        const response = await axios.get("http://localhost:8000/api/cederas");
-        cederas.value = response.data.data;
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    });
-
-    return {
-      currencyData: cederas,
-      currencyColumns: [
-        {
-          name: "id",
-          field: "id",
-          label: "ID",
-        },
-        {
-          name: "name",
-          field: "name",
-          label: "Name",
-          align: "left",
-          sortable: true,
-        },
-        {
-          name: "harga",
-          field: "harga",
-          label: "Harga",
-          align: "center",
-          sortable: true,
-        },
-        {
-          name: "images",
-          field: "images",
-          label: "Images",
-          align: "left",
-          sortable: true,
-        },
-        {
-          name: "action",
-          field: "action",
-          label: "Action",
-          align: "center",
-        },
-      ],
-      filter: "",
-      grid: false,
-      setFs(props) {
-        props.toggleFullscreen();
-      },
-      pagination: {},
-      showDialog: false,
-      token,
-    };
-  },
-
-  methods: {
-    // Add Cedera
-    handleCederaAdded() {
-      this.showDialog = false;
-      this.loadData();
-    },
-
-    // Edit Cedera
-    editItem(row) {
-      // Navigasi ke halaman edit dengan menggunakan router Quasar
-      // this.$router.push(`/edit/${row.id}`);
-    },
-
-    // Delete Cedera
-    async showDeleteDialog(row) {
-      await this.$q
-        .dialog({
-          title: "WARNING!",
-          message: "Apakah kamu yakin ingin menghapus data ini?",
-          cancel: true,
-          persistent: true,
-          ok: {
-            label: "Ya",
-            color: "red-7",
-          },
-          cancel: {
-            label: "Tidak",
-            color: "primary",
-          },
-        })
-        .onOk(() => {
-          this.deleteItem(row);
-        })
-        .onCancel(() => {
-          this.$q.notify({
-            color: "negative",
-            message: "Penghapusan dibatalkan",
-          });
-        })
-        .onDismiss(() => {
-          console.log("I am triggered on both OK and Cancel");
-        });
-    },
-    async deleteItem(row) {
-      try {
-        const response = await axios.delete(
-          `http://localhost:8000/api/cederas/delete/${row.id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${this.token}`,
-            },
-          }
-        );
-        if (response.data.status === "Success") {
-          this.$q.notify({
-            color: "positive",
-            message: response.data.message,
-          });
-          this.loadData();
-        }
-      } catch (error) {
-        console.error("Error saat menghapus item:", error);
-        this.$q.notify({
-          color: "negative",
-          message: "Terjadi kesalahan saat menghapus item",
-        });
-      }
-    },
-
-    // Load Cedera
-    async loadData() {
-      try {
-        // Mengambil data dari API
-        const response = await axios.get("http://localhost:8000/api/cederas", {
-          headers: {
-            Authorization: `Bearer ${this.token}`,
-          },
-        });
-        // Simpan data yang diambil dari API ke dalam properti currencyData
-        this.currencyData = response.data.data;
-      } catch (error) {
-        console.error("Error saat mengambil data:", error);
-      }
-    },
-    mounted() {
-      this.loadData();
-    },
-  },
+// Get Cedera
+const cederas = ref([]);
+const getCedera = async () => {
+  try {
+    const res = await cederaStore.allCedera();
+    cederas.value = res.data.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+};
+onMounted(() => {
+  getCedera();
 });
+
+// Add Cedera
+const addCederaDialog = ref(false);
+const cederaAdded = () => {
+  addCederaDialog.value = false;
+  getCedera();
+};
+
+// Edit Cedera
+const editItem = (row) => {
+  // Navigasi ke halaman edit dengan menggunakan router Quasar
+  // $router.push(`/edit/${row.id}`);
+};
+
+// Delete Cedera
+const deleteCederaDialog = async (row) => {
+  await $q
+    .dialog({
+      title: "WARNING!",
+      message: "Apakah kamu yakin ingin menghapus data ini?",
+      cancel: true,
+      persistent: true,
+      ok: {
+        label: "Ya",
+        color: "red-7",
+      },
+      cancel: {
+        label: "Tidak",
+        color: "primary",
+      },
+    })
+    .onOk(() => {
+      deleteCedera(row);
+    });
+};
+const deleteCedera = async (row) => {
+  try {
+    const res = await cederaStore.deleteCedera(row.id);
+    if (res.data.status === "Success") {
+      $q.notify({
+        color: "positive",
+        message: res.data.message,
+      });
+      getCedera();
+    }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    $q.notify({
+      color: "negative",
+      message: "Terjadi kesalahan saat menghapus item",
+    });
+  }
+};
+
+// Table
+const currencyData = cederas;
+const currencyColumns = [
+  {
+    name: "id",
+    field: "id",
+    label: "ID",
+  },
+  {
+    name: "name",
+    field: "name",
+    label: "Name",
+    align: "left",
+    sortable: true,
+  },
+  {
+    name: "harga",
+    field: "harga",
+    label: "Harga",
+    align: "center",
+    sortable: true,
+  },
+  {
+    name: "image",
+    field: "image",
+    label: "Image",
+    align: "left",
+  },
+  {
+    name: "action",
+    field: "action",
+    label: "Action",
+    align: "center",
+  },
+];
+const filter = ref("");
+const grid = ref(false);
+const pagination = ref({});
+const setFs = (props) => {
+  props.toggleFullscreen();
+};
 </script>

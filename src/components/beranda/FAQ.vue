@@ -1,77 +1,46 @@
 <template>
-  <q-dialog
-    :model-value="FAQ"
-    @update:model-value="$emit('update:FAQ', $event)"
-    persistent
-    :maximized="maximizedToggle"
-    transition-show="slide-up"
-    transition-hide="slide-down"
-  >
-    <q-card>
-      <q-card-section class="bg-primary q-py-sm text-white">
-        <q-btn dense flat icon="arrow_back" v-close-popup />
-        <div class="text-subtitle1 absolute-center" style="top: 23px">FAQ</div>
-        <div class="text-center q-mt-lg">
-          <img
-            src="../../assets/notifikasi.png"
-            alt=""
-            width="120"
-            class="profile q-mt-lg"
-          />
-        </div>
-      </q-card-section>
-
-      <div style="font-size: 10px">
-        <div
-          class="text-grey-9 bg-grey-4 q-pa-sm q-py-md q-pl-md border"
-          style="font-size: 10px"
-        >
-          ARTIKEL TERPOPULER
-        </div>
-        <div class="q-pa-sm q-py-md q-pl-md border" style="font-size: 12px">
-          <p class="float-left">Apa itu MCO?</p>
-          <p class="float-right">
-            <q-icon name="chevron_right" size="20px" />
-          </p>
-          <br />
-        </div>
-        <div class="q-pa-sm q-py-md q-pl-md border" style="font-size: 12px">
-          <p class="float-left">
-            Bagaimana pesan jadwal terapi di aplikasi mco lectzz ?
-          </p>
-          <p class="float-right">
-            <q-icon name="chevron_right" size="20px" />
-          </p>
-          <br />
-        </div>
+  <q-card>
+    <q-card-section class="bg-primary q-py-sm text-white">
+      <q-btn dense flat icon="arrow_back" v-close-popup />
+      <div class="text-subtitle1 absolute-center" style="top: 23px">FAQ</div>
+      <div class="text-center q-mt-lg">
+        <img
+          src="../../assets/notifikasi.png"
+          alt=""
+          width="120"
+          class="profile q-mt-lg"
+        />
       </div>
-    </q-card>
-  </q-dialog>
+    </q-card-section>
+
+    <div style="font-size: 10px">
+      <div
+        class="text-grey-9 bg-grey-4 q-pa-sm q-py-md q-pl-md border"
+        style="font-size: 10px"
+      >
+        ARTIKEL TERPOPULER
+      </div>
+      <div class="q-pa-sm q-py-md q-pl-md border" style="font-size: 12px">
+        <p class="float-left">Apa itu MCO?</p>
+        <p class="float-right">
+          <q-icon name="chevron_right" size="20px" />
+        </p>
+        <br />
+      </div>
+      <div class="q-pa-sm q-py-md q-pl-md border" style="font-size: 12px">
+        <p class="float-left">
+          Bagaimana pesan jadwal terapi di aplikasi mco lectzz ?
+        </p>
+        <p class="float-right">
+          <q-icon name="chevron_right" size="20px" />
+        </p>
+        <br />
+      </div>
+    </div>
+  </q-card>
 </template>
 
-<script>
-import { ref, computed } from "vue";
-
-export default {
-  name: "RegistrasiPage",
-
-  props: {
-    FAQ: Boolean,
-    maximizedToggle: Boolean,
-  },
-
-  setup(props, { emit }) {
-    const internalFAQ = computed({
-      get: () => props.FAQ,
-      set: (value) => emit("update:FAQ", value),
-    });
-
-    return {
-      internalFAQ,
-    };
-  },
-};
-</script>
+<script setup></script>
 
 <style scoped>
 .border {

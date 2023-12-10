@@ -48,29 +48,27 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import axios from "axios";
+import { useAuthStore } from "src/stores/auth-store";
 import LoadingPage from "components/beranda/LoadingPage.vue";
 import ListAntrian from "components/beranda/ListAntrian.vue";
 import ItemList from "components/beranda/ItemList.vue";
 import PendaftaranSaya from "components/beranda/PendaftaranSaya.vue";
 
-const token = localStorage.getItem("token");
+const authStore = useAuthStore();
 const profile = ref("");
 const isLoading = ref(true);
 
 // Profile
-onMounted(async () => {
+const getProfile = async () => {
   try {
-    const response = await axios.get("http://localhost:8000/api/profile", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    profile.value = response.data.data;
-    isLoading.value = false;
+    const res = await authStore.profile();
+    profile.value = res.data.data;
   } catch (error) {
     console.error("Error fetching data:", error);
-    isLoading.value = false;
   }
+  isLoading.value = false;
+};
+onMounted(() => {
+  getProfile();
 });
 </script>
