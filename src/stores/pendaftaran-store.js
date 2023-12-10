@@ -73,15 +73,11 @@ export const usePendaftaranStore = defineStore("pendaftaran", {
       }
     },
 
-    async verificationPendaftaran(data) {
+    async verificationPendaftaran(id) {
       try {
-        return await server.put(
-          `api/pendaftaran/verification/${data.id}`,
-          data,
-          {
-            headers,
-          }
-        );
+        return await server.put(`api/pendaftaran/verification/${id}`, {
+          headers,
+        });
       } catch (error) {
         if (error) throw error;
       }

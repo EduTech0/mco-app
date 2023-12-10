@@ -17,19 +17,6 @@
     >
       <!-- Top -->
       <template v-slot:top-right="props">
-        <!-- Search -->
-        <q-input
-          outlined
-          dense
-          debounce="300"
-          v-model="filter"
-          placeholder="Search"
-        >
-          <template v-slot:append>
-            <q-icon name="search" />
-          </template>
-        </q-input>
-
         <!-- Fullscreen -->
         <q-btn
           flat
@@ -50,17 +37,33 @@
           dense
           :icon="grid ? 'list' : 'grid_on'"
           @click="grid = !grid"
+          class="q-mr-sm"
         >
           <q-tooltip>{{ grid ? "List" : "Grid" }}</q-tooltip>
         </q-btn>
-        <div class="q-pa-sm q-gutter-sm"></div>
 
-        <!-- Add Jadwal -->
+        <!-- Search -->
+        <q-input
+          outlined
+          dense
+          debounce="300"
+          v-model="filter"
+          placeholder="Search"
+        >
+          <template v-slot:append>
+            <q-icon name="search" />
+          </template>
+        </q-input>
+      </template>
+
+      <!-- Add Jadwal -->
+      <template v-slot:top-left>
+        <div class="text-h5 q-pr-lg">Jadwals</div>
         <q-btn
           @click="addJadwalDialog = true"
           color="black"
           icon="add"
-          class="q-my-sm q-px-lg"
+          class="q-my-sm q-px-sm"
           ><q-tooltip>Add Jadwal</q-tooltip></q-btn
         >
         <q-dialog v-model="addJadwalDialog">
