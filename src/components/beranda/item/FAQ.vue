@@ -1,6 +1,6 @@
 <template>
-  <q-card>
-    <q-card-section class="bg-primary q-py-sm text-white">
+  <q-card class="high">
+    <q-card-section class="high bg-primary q-py-sm text-white">
       <q-btn dense flat icon="arrow_back" v-close-popup />
       <div class="text-subtitle1 absolute-center" style="top: 23px">FAQ</div>
       <div class="text-center q-mt-lg">
@@ -43,6 +43,10 @@
 <script setup></script>
 
 <style scoped>
+.high {
+  max-width: 500px;
+  margin: auto;
+}
 .border {
   border-top: 1px solid rgb(219, 219, 219);
 }

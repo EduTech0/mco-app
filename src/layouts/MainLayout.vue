@@ -42,9 +42,8 @@
 ::-webkit-scrollbar {
   display: none;
 }
-@media (min-width: 769px) {
-  .high {
-    padding: 0 450px;
-  }
+.high {
+  max-width: 500px;
+  margin: auto;
 }
 </style>

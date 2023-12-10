@@ -1,6 +1,6 @@
 <template>
-  <q-card>
-    <q-card-section class="bg-primary q-py-sm text-white shadow">
+  <q-card class="high">
+    <q-card-section class="high bg-primary q-py-sm text-white shadow">
       <q-btn dense flat icon="arrow_back" v-close-popup class="absolute-left" />
       <div class="text-subtitle1 text-center">Status Registrasi</div>
     </q-card-section>
@@ -164,6 +164,10 @@ const choose = (ticket) => {
 </script>
 
 <style scoped>
+.high {
+  max-width: 500px;
+  margin: auto;
+}
 .shadow {
   position: fixed;
   top: 0;
@@ -191,7 +195,6 @@ const choose = (ticket) => {
 .card-left {
   width: 70%;
 }
-
 .card-right {
   width: 30%;
   border-left: 0.18em dashed #7e7e7e;

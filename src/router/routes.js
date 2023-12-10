@@ -1,4 +1,5 @@
 const routes = [
+  // Authentication
   {
     path: "/",
     component: () => import("layouts/AuthLayout.vue"),
@@ -21,6 +22,7 @@ const routes = [
       },
     ],
   },
+  // Home
   {
     path: "/beranda",
     component: () => import("layouts/MainLayout.vue"),
@@ -43,6 +45,7 @@ const routes = [
       },
     ],
   },
+  // Dashboard
   {
     path: "/dashboard",
     component: () => import("layouts/DashboardLayout.vue"),
@@ -50,7 +53,7 @@ const routes = [
     children: [
       {
         path: "home",
-        component: () => import("pages/dashboard/Home.vue"),
+        component: () => import("pages/dashboard/HomeDashboardPage.vue"),
         name: "home",
       },
       {

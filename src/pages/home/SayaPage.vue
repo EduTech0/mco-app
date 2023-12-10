@@ -89,7 +89,7 @@
           label="Ok"
           class="text-grey-5"
           color="primary"
-          @click="submit"
+          @click="logout"
           v-close-popup
           no-caps
           style="
@@ -138,6 +138,7 @@
 import { useQuasar } from "quasar";
 import { useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
+import { useAuthStore } from "src/stores/auth-store";
 import { useCustomerStore } from "src/stores/customer-store";
 import SnK from "components/saya/SnKDialog.vue";
 import Location from "components/saya/LocationDialog.vue";
@@ -145,6 +146,7 @@ import Tutorial from "components/saya/TutorialDialog.vue";
 
 const $q = useQuasar();
 const router = useRouter();
+const authStore = useAuthStore();
 const customerStore = useCustomerStore();
 
 const loading = ref(true);
@@ -164,14 +166,14 @@ const getProfile = async () => {
   } catch (error) {
     console.error("Error fetching data:", error);
   }
-  isLoading.value = false;
+  loading.value = false;
 };
 onMounted(() => {
   getProfile();
 });
 
 // Logout
-const submit = async () => {
+const logout = async () => {
   try {
     await authStore.logout();
 

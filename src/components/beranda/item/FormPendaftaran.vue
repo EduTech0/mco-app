@@ -1,6 +1,6 @@
 <template>
-  <q-card>
-    <q-card-section class="bg-primary q-py-sm text-white shadow">
+  <q-card class="high">
+    <q-card-section class="high bg-primary q-py-sm text-white shadow">
       <q-btn dense flat icon="arrow_back" v-close-popup class="absolute-left" />
       <q-tabs class="float-right" @click="danger = true"
         ><q-icon name="info" size="20px" class="iconInfo"
@@ -271,8 +271,8 @@
     transition-show="slide-up"
     transition-hide="slide-down"
   >
-    <q-card>
-      <q-card-section class="bg-primary q-py-sm text-white shadow">
+    <q-card class="high">
+      <q-card-section class="high bg-primary q-py-sm text-white shadow">
         <div class="text-center text-bold text-caption" style="font-size: 25px">
           Success
         </div>
@@ -440,6 +440,10 @@ const createPendaftaran = async () => {
 </script>
 
 <style scoped>
+.high {
+  max-width: 500px;
+  margin: auto;
+}
 .shadow {
   position: fixed;
   top: 0;
