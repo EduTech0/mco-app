@@ -105,6 +105,7 @@ const imageRules = [
   (v) => (v && v.size <= 2048 * 1024) || "Image size harus dibawah 2048 KB",
 ];
 
+// Create Cedera
 const addCedera = async () => {
   loading.value = true;
   try {

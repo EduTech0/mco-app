@@ -10,7 +10,7 @@
           <!-- Tanggal -->
           <div class="q-my-md">
             <div class="text-subtitle2">Tanggal :</div>
-            <q-date v-model="jadwal.tanggal" class="q-ml-md" />
+            <q-date v-model="data.tanggal" class="q-ml-md" />
           </div>
 
           <!-- Waktu -->
@@ -20,7 +20,7 @@
               <div class="col-5">
                 <q-input
                   filled
-                  v-model="jadwal.waktu1"
+                  v-model="data.waktu_1"
                   mask="time"
                   :rules="['time']"
                   ><template v-slot:append>
@@ -30,7 +30,7 @@
                         transition-show="scale"
                         transition-hide="scale"
                       >
-                        <q-time v-model="jadwal.waktu1" mask="HH:mm" format24h>
+                        <q-time v-model="data.waktu_1" mask="HH:mm" format24h>
                           <div class="row items-center justify-end">
                             <q-btn
                               v-close-popup
@@ -55,7 +55,7 @@
               <div class="col-5">
                 <q-input
                   filled
-                  v-model="jadwal.waktu2"
+                  v-model="data.waktu_2"
                   mask="time"
                   :rules="['time']"
                   ><template v-slot:append>
@@ -65,7 +65,7 @@
                         transition-show="scale"
                         transition-hide="scale"
                       >
-                        <q-time v-model="jadwal.waktu2" mask="HH:mm" format24h>
+                        <q-time v-model="data.waktu_2" mask="HH:mm" format24h>
                           <div class="row items-center justify-end">
                             <q-btn
                               v-close-popup
@@ -85,12 +85,7 @@
           <!-- Kuota -->
           <div class="q-my-md">
             <div class="text-subtitle2">Kuota :</div>
-            <q-input
-              filled
-              v-model="jadwal.kuota"
-              type="number"
-              label="Kuota"
-            />
+            <q-input filled v-model="data.kuota" type="number" label="Kuota" />
           </div>
         </q-card-section>
 
@@ -100,7 +95,7 @@
             type="submit"
             label="Tambah jadwal"
             color="dark"
-            :disable="isSubmitting"
+            :disable="loading"
           ></q-btn>
         </q-card-actions>
       </q-card>
@@ -108,66 +103,36 @@
   </div>
 </template>
 
-<script>
-import axios from "axios";
-import { LocalStorage } from "quasar";
+<script setup>
+import { useQuasar } from "quasar";
+import { useJadwalStore } from "src/stores/jadwal-store";
 import { ref } from "vue";
 
-export default {
-  data() {
-    return {
-      jadwal: {
-        tanggal: ref("2023/09/01"),
-        waktu1: ref("00:00"),
-        waktu2: ref("00:00"),
-        kuota: ref(null),
-      },
-      isSubmitting: false,
-    };
-  },
+const $q = useQuasar();
+const jadwalStore = useJadwalStore();
+const emits = defineEmits(["added"]);
 
-  methods: {
-    addJadwal() {
-      this.isSubmitting = true;
+const data = ref({
+  tanggal: ref("2023/09/01"),
+  waktu_1: ref("00:00"),
+  waktu_2: ref("00:00"),
+  kuota: ref(null),
+});
+const loading = ref(false);
 
-      const formData = new FormData();
-      formData.append("tanggal", this.jadwal.tanggal);
-      formData.append("waktu1", this.jadwal.waktu1);
-      formData.append("waktu2", this.jadwal.waktu2);
-      formData.append("kuota", this.jadwal.kuota);
-
-      const token = LocalStorage.getItem("token");
-      const headers = {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "multipart/form-data",
-      };
-
-      // Kirim permintaan ke API Laravel untuk menambahkan jadwal
-      axios
-        .post("http://localhost:8000/api/jadwal/create", formData, { headers })
-        .then((response) => {
-          // Handle respons dari server (berhasil atau gagal)
-          console.log(response.data);
-          this.$q.notify({
-            color: "positive",
-            message: response.data.message,
-          });
-          this.$emit("added", response.data.data);
-          // Reset formulir setelah berhasil menambahkan
-          this.jadwal.tanggal = null;
-          this.jadwal.waktu1 = null;
-          this.jadwal.waktu2 = null;
-          this.jadwal.kuota = null;
-          this.jadwal.tersisa = null;
-        })
-        .catch((error) => {
-          // Handle kesalahan jika ada
-          console.error(error);
-        })
-        .finally(() => {
-          this.isSubmitting = false;
-        });
-    },
-  },
+// Create Jadwal
+const addJadwal = async () => {
+  loading.value = true;
+  try {
+    const res = await jadwalStore.createJadwal(data.value);
+    $q.notify({
+      color: "positive",
+      message: res.data.message,
+    });
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+  loading.value = false;
+  emits("added");
 };
 </script>

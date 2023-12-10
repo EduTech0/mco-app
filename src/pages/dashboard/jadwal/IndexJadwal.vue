@@ -57,14 +57,14 @@
 
         <!-- Add Jadwal -->
         <q-btn
-          @click="showDialog = true"
+          @click="addJadwalDialog = true"
           color="black"
           icon="add"
           class="q-my-sm q-px-lg"
           ><q-tooltip>Add Jadwal</q-tooltip></q-btn
         >
-        <q-dialog v-model="showDialog">
-          <JadwalForm @added="handleJadwalAdded" />
+        <q-dialog v-model="addJadwalDialog">
+          <AddJadwal @added="jadwalAdded" />
         </q-dialog>
       </template>
 
@@ -96,7 +96,7 @@
             color="red"
             field="delete"
             icon="delete"
-            @click="showDeleteDialog(props.row)"
+            @click="deleteJadwalDialog(props.row)"
           ></q-btn>
         </q-td>
       </template>
@@ -136,7 +136,7 @@
                       color="red"
                       field="delete"
                       icon="delete"
-                      @click="showDeleteDialog(props.row)"
+                      @click="deleteJadwalDialog(props.row)"
                     ></q-btn>
                   </div>
 
@@ -157,174 +157,129 @@
   </q-page>
 </template>
 
-<script>
-import { defineComponent, ref, onMounted } from "vue";
-import axios from "axios";
-import { LocalStorage } from "quasar";
-import JadwalForm from "./CreateJadwal.vue";
+<script setup>
+import { ref, onMounted } from "vue";
+import { useQuasar } from "quasar";
+import { useJadwalStore } from "src/stores/jadwal-store";
+import AddJadwal from "./CreateJadwal.vue";
 
-export default defineComponent({
-  name: "JadwalDashboardPage",
+const $q = useQuasar();
+const jadwalStore = useJadwalStore();
 
-  components: {
-    JadwalForm,
-  },
-
-  data() {
-    const jadwals = ref([]);
-    const token = LocalStorage.getItem("token");
-
-    // Function to fetch data from Laravel API
-    onMounted(async () => {
-      try {
-        const response = await axios.get("http://localhost:8000/api/jadwal");
-        jadwals.value = response.data.data;
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    });
-
-    return {
-      currencyData: jadwals,
-      currencyColumns: [
-        {
-          name: "id",
-          field: "id",
-          label: "ID",
-        },
-        {
-          name: "tanggal",
-          field: "tanggal",
-          label: "Tanggal",
-          align: "left",
-          sortable: true,
-        },
-        {
-          name: "waktu",
-          field: "waktu",
-          label: "Waktu",
-          align: "left",
-          sortable: true,
-        },
-        {
-          name: "kuota",
-          field: "kuota",
-          label: "Kuota",
-          align: "center",
-          sortable: true,
-        },
-        {
-          name: "tersisa",
-          field: "tersisa",
-          label: "Tersisa",
-          align: "center",
-          sortable: true,
-        },
-        {
-          name: "action",
-          field: "action",
-          label: "Action",
-          align: "center",
-        },
-      ],
-      filter: "",
-      grid: false,
-      setFs(props) {
-        props.toggleFullscreen();
-      },
-      pagination: {},
-      showDialog: false,
-      token,
-    };
-  },
-
-  methods: {
-    // Add Jadwal
-    handleJadwalAdded() {
-      this.showDialog = false;
-      this.loadData();
-    },
-
-    // Edit Jadwal
-    editItem(row) {
-      // Navigasi ke halaman edit dengan menggunakan router Quasar
-      // this.$router.push(`/edit/${row.id}`);
-    },
-
-    // Delete Jadwal
-    async showDeleteDialog(row) {
-      await this.$q
-        .dialog({
-          title: "WARNING!",
-          message: "Apakah kamu yakin ingin menghapus data ini?",
-          cancel: true,
-          persistent: true,
-          ok: {
-            label: "Ya",
-            color: "red-7",
-          },
-          cancel: {
-            label: "Tidak",
-            color: "primary",
-          },
-        })
-        .onOk(() => {
-          this.deleteItem(row);
-        })
-        .onCancel(() => {
-          this.$q.notify({
-            color: "negative",
-            message: "Penghapusan dibatalkan",
-          });
-        })
-        .onDismiss(() => {
-          console.log("I am triggered on both OK and Cancel");
-        });
-    },
-    async deleteItem(row) {
-      try {
-        const response = await axios.delete(
-          `http://localhost:8000/api/jadwal/delete/${row.id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${this.token}`,
-            },
-          }
-        );
-        if (response.data.status === "Success") {
-          this.$q.notify({
-            color: "positive",
-            message: response.data.message,
-          });
-          this.loadData();
-        }
-      } catch (error) {
-        console.error("Error saat menghapus item:", error);
-        this.$q.notify({
-          color: "negative",
-          message: "Terjadi kesalahan saat menghapus item",
-        });
-      }
-    },
-
-    // Load Cedera
-    async loadData() {
-      try {
-        // Mengambil data dari API
-        const response = await axios.get("http://localhost:8000/api/jadwal", {
-          headers: {
-            Authorization: `Bearer ${this.token}`,
-          },
-        });
-        // Simpan data yang diambil dari API ke dalam properti currencyData
-        this.currencyData = response.data.data;
-      } catch (error) {
-        console.error("Error saat mengambil data:", error);
-      }
-    },
-    mounted() {
-      this.loadData();
-    },
-  },
+// Get Jadwal
+const jadwals = ref([]);
+const getJadwal = async () => {
+  try {
+    const res = await jadwalStore.allJadwal();
+    jadwals.value = res.data.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+};
+onMounted(() => {
+  getJadwal();
 });
+
+// Add Jadwal
+const addJadwalDialog = ref(false);
+const jadwalAdded = () => {
+  addJadwalDialog.value = false;
+  getJadwal();
+};
+
+// Edit Jadwal
+const editItem = (row) => {
+  // Navigasi ke halaman edit dengan menggunakan router Quasar
+  // $router.push(`/edit/${row.id}`);
+};
+
+// Delete Jadwal
+const deleteJadwalDialog = async (row) => {
+  await $q
+    .dialog({
+      title: "WARNING!",
+      message: "Apakah kamu yakin ingin menghapus data ini?",
+      cancel: true,
+      persistent: true,
+      ok: {
+        label: "Ya",
+        color: "red-7",
+      },
+      cancel: {
+        label: "Tidak",
+        color: "primary",
+      },
+    })
+    .onOk(() => {
+      deleteJadwal(row);
+    });
+};
+const deleteJadwal = async (row) => {
+  try {
+    const res = await jadwalStore.deleteJadwal(row.id);
+    if (res.data.status === "Success") {
+      $q.notify({
+        color: "positive",
+        message: res.data.message,
+      });
+      getJadwal();
+    }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    $q.notify({
+      color: "negative",
+      message: "Terjadi kesalahan saat menghapus item",
+    });
+  }
+};
+
+// Table
+const currencyData = jadwals;
+const currencyColumns = [
+  {
+    name: "id",
+    field: "id",
+    label: "ID",
+  },
+  {
+    name: "tanggal",
+    field: "tanggal",
+    label: "Tanggal",
+    align: "left",
+    sortable: true,
+  },
+  {
+    name: "waktu",
+    field: "waktu",
+    label: "Waktu",
+    align: "left",
+    sortable: true,
+  },
+  {
+    name: "kuota",
+    field: "kuota",
+    label: "Kuota",
+    align: "center",
+    sortable: true,
+  },
+  {
+    name: "tersisa",
+    field: "tersisa",
+    label: "Tersisa",
+    align: "center",
+    sortable: true,
+  },
+  {
+    name: "action",
+    field: "action",
+    label: "Action",
+    align: "center",
+  },
+];
+const filter = ref("");
+const grid = ref(false);
+const pagination = ref({});
+const setFs = (props) => {
+  props.toggleFullscreen();
+};
 </script>
