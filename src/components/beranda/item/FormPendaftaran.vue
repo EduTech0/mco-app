@@ -13,7 +13,7 @@
     </q-card-section>
 
     <q-card-section class="q-pt-none">
-      <q-form @submit="submitForm" class="q-gutter-sm">
+      <q-form @submit="createPendaftaran" class="q-gutter-sm">
         <!-- Nama Lengkap -->
         <q-input
           v-model="data.nama_lengkap"
@@ -29,7 +29,11 @@
             :options="genders"
             type="radio"
             v-model="data.jenis_kelamin"
+            :rules="[(v) => !!v || 'Pilih jenis kelamin']"
           />
+          <div v-if="!data.jenis_kelamin" class="text-subtitle2 text-negative">
+            Pilih jenis kelamin
+          </div>
         </div>
 
         <!-- Berat dan Tinggi Badan -->
@@ -93,10 +97,16 @@
 
         <!-- No.Hp -->
         <q-input
+          type="number"
           v-model="data.nomor"
           label="No.Hp*"
           lazy-rules
-          :rules="[(val) => (val && val.length > 0) || 'Masukkan nomor hp']"
+          :rules="[
+            (val) => (val && val.length > 0) || 'Masukkan nomor hp',
+            (val) =>
+              (val && val.length >= 8 && val.length <= 14) ||
+              'Nomor hp harus antara 8 dan 14 karakter',
+          ]"
         />
 
         <!-- Status Olahraga -->
@@ -106,7 +116,11 @@
             :options="sports"
             type="radio"
             v-model="data.olahraga"
+            :rules="[(v) => !!v || 'Pilih status olahraga']"
           />
+          <div v-if="!data.olahraga" class="text-subtitle2 text-negative">
+            Pilih status olahraga
+          </div>
         </div>
 
         <!-- Cabang Olahraga -->
@@ -123,9 +137,9 @@
         <q-select
           icon="keyboard_arrow_down"
           color="primary"
-          @click="open('bottom')"
+          @click="cederasList = true"
           filled
-          v-model="cederas"
+          v-model="data.cederas"
           multiple
           use-chips
           stack-label
@@ -150,7 +164,11 @@
             :options="lamaOptions"
             type="radio"
             v-model="data.lama_cedera"
+            :rules="[(v) => !!v || 'Pilih lama cedera']"
           />
+          <div v-if="!data.lama_cedera" class="text-subtitle2 text-negative">
+            Pilih lama cedera
+          </div>
         </div>
 
         <!-- Sudah Berapakali diterapi -->
@@ -160,13 +178,17 @@
             :options="terapi"
             type="radio"
             v-model="data.jumlah_terapi"
+            :rules="[(v) => !!v || 'Pilih jumlah terapi']"
           />
+          <div v-if="!data.jumlah_terapi" class="text-subtitle2 text-negative">
+            Pilih jumlah terapi
+          </div>
         </div>
 
         <!-- Hasil rontgen atau MRI (jika ada) -->
         <q-file
           bottom-slots
-          v-model="image"
+          v-model="data.image"
           label="Hasil rontgen atau MRI (jika ada)"
           counter
         >
@@ -176,7 +198,7 @@
           <template v-slot:append>
             <q-icon
               name="close"
-              @click.stop.prevent="model = null"
+              @click.stop.prevent="data.image = null"
               class="cursor-pointer"
             />
           </template>
@@ -188,9 +210,9 @@
         <div class="column items-center">
           <q-btn
             label="Submit"
-            :disable="loading"
             type="submit"
             class="button bg-orange-10 text-white"
+            :disable="loading || isFormIncomplete"
           />
         </div>
       </q-form>
@@ -198,7 +220,7 @@
   </q-card>
 
   <!-- Warning -->
-  <q-dialog v-model="danger" :position="bot">
+  <q-dialog v-model="warning" :position="dialogPosition">
     <q-card class="q-pa-lg" style="border-radius: 20px 20px 0 0">
       <div class="column items-center">
         <q-icon name="warning" size="50px" />
@@ -220,20 +242,21 @@
   </q-dialog>
 
   <!-- Keluhan -->
-  <q-dialog v-model="keluhan" :position="bot">
+  <q-dialog v-model="cederasList" :position="dialogPosition">
     <q-card>
       <div v-for="cedera in cederas" :key="cedera.id">
         <q-item tag="label" v-ripple>
-          <q-img
-            class="col-2 q-ma-sm"
-            src="http://localhost:8000/storage/cederas/{{ cedera.images }}"
+          <img
+            :src="'http://localhost:8000/storage/cederas/' + cedera.image"
+            alt="Cedera Image"
+            width="80"
           />
           <q-item-section>
             <q-item-label>{{ cedera.name }}</q-item-label>
             <q-item-label caption>Rp.{{ cedera.harga }}</q-item-label>
           </q-item-section>
           <q-item-section avatar>
-            <q-checkbox v-model="cederas" :val="cedera.id" />
+            <q-checkbox v-model="data.cederas" :val="cedera.id" />
           </q-item-section>
         </q-item>
       </div>
@@ -282,9 +305,9 @@
       <q-card-actions class="column items-center q-mt-xl">
         <div class="q-mt-lg">
           <q-btn
-            v-close-popup
             label="Kembali ke Beranda"
             class="button bg-orange-10 text-white"
+            onclick="window.location.reload()"
           />
         </div>
       </q-card-actions>
@@ -293,20 +316,22 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import axios from "axios";
+import { ref, onMounted, computed } from "vue";
 import { useQuasar } from "quasar";
+import { usePendaftaranStore } from "src/stores/pendaftaran-store";
+import { useCederaStore } from "src/stores/cedera-store";
 
 const $q = useQuasar();
-const loading = ref(false);
-const token = localStorage.getItem("token");
+const pendaftaranStore = usePendaftaranStore();
+const cederaStore = useCederaStore();
 
-const bot = ref("bottom");
+const dialogPosition = ref("bottom");
+const warning = ref(false);
+const cederasList = ref(false);
 const maximizedToggle = ref(true);
-const danger = ref(false);
-const keluhan = ref(false);
 const success = ref(false);
 
+// Data
 const data = ref({
   nama_lengkap: "",
   jenis_kelamin: "",
@@ -318,79 +343,71 @@ const data = ref({
   nomor: "",
   olahraga: "",
   cabang: "",
+  cederas: [],
   penyebab: "",
   lama_cedera: "",
   jumlah_terapi: "",
+  image: null,
 });
 
 // Keluhan
 const cederas = ref([]);
-const fetchData = async () => {
+const getCedera = async () => {
   try {
-    const response = await axios.get("http://localhost:8000/api/cederas");
-    cederas.value = response.data.data;
+    const res = await cederaStore.allCedera();
+    cederas.value = res.data.data;
   } catch (error) {
     console.error("Error fetching data:", error);
   }
 };
 onMounted(() => {
-  fetchData();
+  getCedera();
 });
 
+// Options
 const genders = [
   { label: "Laki-Laki", value: "Laki-laki" },
   { label: "Perempuan", value: "Perempuan" },
 ];
-
 const sports = [
   { label: "Hobi Olahraga", value: "Hobi" },
   { label: "Atlet", value: "Atlet" },
   { label: "Lainnya", value: "Lainnya" },
 ];
-
 const lamaOptions = [
   { label: "< 1 minggu", value: "<1 Minggu" },
   { label: "< 1 bulan>", value: "<1 Bulan" },
   { label: "< 1 tahun>", value: "<1 Tahun" },
   { label: "> 1 tahun", value: ">1 Tahun" },
 ];
-
 const terapi = [
   { label: "Belum Pernah", value: "Belum" },
   { label: "1 kali", value: "1 Kali" },
   { label: "> 1 kali", value: ">1 Kali" },
 ];
 
-// File
-const image = ref(null);
+// Disable Submit
+const loading = ref(false);
+const isFormIncomplete = computed(() => {
+  const dataWithoutImage = { ...data.value };
+  delete dataWithoutImage.image;
 
-const submitForm = async () => {
+  return Object.values(dataWithoutImage).some((value) => {
+    return value === null || value === "";
+  });
+});
+
+// Submit
+const createPendaftaran = async () => {
   loading.value = true;
   try {
-    const formData = new FormData();
-    for (const key in data.value) {
-      if (data.value.hasOwnProperty(key)) {
-        formData.append(key, data.value[key]);
-      }
-    }
-    cederas.value.forEach((id) => formData.append("cederas[]", id));
+    const res = await pendaftaranStore.createPendaftaran(data.value);
 
-    const response = await axios.post(
-      "http://localhost:8000/api/pendaftaran/create",
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
-
-    if (response.data.status === "Success") {
+    if (res.data.status === "Success") {
       $q.notify({
         color: "positive",
         position: "top",
-        message: response.data.message,
+        message: res.data.message,
       });
       success.value = true;
     } else {
@@ -403,14 +420,13 @@ const submitForm = async () => {
   } catch (error) {
     console.error("Error submitting form:", error);
 
-    if (error.response && error.response.data) {
-      const errorMessage = error.response.data.message;
+    if (error.res && error.res.data) {
       $q.notify({
         color: "negative",
         position: "top",
-        message: errorMessage || "Terjadi kesalahan. Mohon coba lagi.",
+        message:
+          error.res.data.message || "Terjadi kesalahan. Mohon coba lagi.",
       });
-      console.error(errorMessage);
     } else {
       $q.notify({
         color: "negative",
@@ -418,8 +434,8 @@ const submitForm = async () => {
         message: "Terjadi kesalahan. Mohon coba lagi.",
       });
     }
-    loading.value = false;
   }
+  loading.value = false;
 };
 </script>
 
@@ -444,10 +460,5 @@ const submitForm = async () => {
   scale: 1.1;
   transition: background-color 0.3s ease;
   transition: scale 0.5s ease;
-}
-@media (min-width: 769px) {
-  .high {
-    padding: 0 450px;
-  }
 }
 </style>

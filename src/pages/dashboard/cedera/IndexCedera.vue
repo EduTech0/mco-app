@@ -236,7 +236,7 @@ onMounted(() => {
   getCedera();
 });
 
-// Add Cedera
+// Create Cedera
 const addCederaDialog = ref(false);
 const cederaAdded = () => {
   addCederaDialog.value = false;
@@ -244,31 +244,29 @@ const cederaAdded = () => {
 };
 
 // Edit Cedera
-const editItem = (row) => {
+const editCedera = (row) => {
   // Navigasi ke halaman edit dengan menggunakan router Quasar
   // $router.push(`/edit/${row.id}`);
 };
 
 // Delete Cedera
-const deleteCederaDialog = async (row) => {
-  await $q
-    .dialog({
-      title: "WARNING!",
-      message: "Apakah kamu yakin ingin menghapus data ini?",
-      cancel: true,
-      persistent: true,
-      ok: {
-        label: "Ya",
-        color: "red-7",
-      },
-      cancel: {
-        label: "Tidak",
-        color: "primary",
-      },
-    })
-    .onOk(() => {
-      deleteCedera(row);
-    });
+const deleteCederaDialog = (row) => {
+  $q.dialog({
+    title: "WARNING!",
+    message: "Apakah kamu yakin ingin menghapus data ini?",
+    cancel: true,
+    persistent: true,
+    ok: {
+      label: "Ya",
+      color: "red-7",
+    },
+    cancel: {
+      label: "Tidak",
+      color: "primary",
+    },
+  }).onOk(() => {
+    deleteCedera(row);
+  });
 };
 const deleteCedera = async (row) => {
   try {

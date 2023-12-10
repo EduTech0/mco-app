@@ -5,7 +5,7 @@
       <div class="text-subtitle1 absolute-center" style="top: 23px">FAQ</div>
       <div class="text-center q-mt-lg">
         <img
-          src="../../assets/notifikasi.png"
+          src="src/assets/notifikasi.png"
           alt=""
           width="120"
           class="profile q-mt-lg"

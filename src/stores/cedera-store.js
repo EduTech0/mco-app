@@ -20,7 +20,7 @@ export const useCederaStore = defineStore("cedera", {
   actions: {
     async allCedera() {
       try {
-        return await server.get("api/cedera", { headers });
+        return await server.get("api/cedera");
       } catch (error) {
         if (error) throw error;
       }
@@ -28,7 +28,7 @@ export const useCederaStore = defineStore("cedera", {
 
     async showCedera() {
       try {
-        return await server.get(`api/cedera/${id}`, { headers });
+        return await server.get(`api/cedera/${id}`);
       } catch (error) {
         if (error) throw error;
       }

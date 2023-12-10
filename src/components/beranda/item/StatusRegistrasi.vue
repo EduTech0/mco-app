@@ -1,5 +1,4 @@
 <template>
-  <!-- Tidak ada Data -->
   <q-card>
     <q-card-section class="bg-primary q-py-sm text-white shadow">
       <q-btn dense flat icon="arrow_back" v-close-popup class="absolute-left" />
@@ -7,7 +6,7 @@
     </q-card-section>
 
     <!-- Loading -->
-    <q-card-section v-if="isLoading">
+    <q-card-section v-if="loading">
       <div
         class="text-subtitle2 text-bold"
         style="font-size: 17px; margin-bottom: -20px; margin-top: 30px"
@@ -50,8 +49,9 @@
     <q-card-section v-else class="q-mt-lg">
       <!-- Tidak ada Data -->
       <div class="absolute-center" v-if="tickets.length === 0">
-        <img src="../../assets/registrasi.png" alt="" width="300" />
+        <img src="src/assets/registrasi.png" alt="" width="300" />
       </div>
+
       <!-- Data -->
       <div v-for="ticket in tickets" :key="ticket.id">
         <div
@@ -65,10 +65,13 @@
           "
         >
           <q-card class="card-left">
+            <!-- Nama -->
             <div class="q-my-sm">
               <span class="text-grey" style="font-size: 12px">Nama</span>
               <div>{{ ticket.nama_lengkap }}</div>
             </div>
+
+            <!-- Cedera -->
             <div class="q-my-sm">
               <span class="text-grey" style="font-size: 12px">Keluhan</span>
               <div
@@ -80,6 +83,8 @@
                 </div>
               </div>
             </div>
+
+            <!-- Status -->
             <div class="q-my-sm">
               <span class="text-grey" style="font-size: 12px">Status</span>
               <div>
@@ -95,7 +100,7 @@
           </q-card>
 
           <q-card class="card-right">
-            <div style="cursor: pointer">
+            <div style="cursor: pointer" @click="choose(ticket)">
               <h5 class="text-center text-bold">KLIK DISINI</h5>
             </div>
           </q-card>
@@ -109,31 +114,53 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import axios from "axios";
-import { LocalStorage } from "quasar";
+import { useQuasar } from "quasar";
+import { usePendaftaranStore } from "src/stores/pendaftaran-store";
+
+const $q = useQuasar();
+const pendaftaranStore = usePendaftaranStore();
 
 const tickets = ref([]);
-const token = LocalStorage.getItem("token");
-const isLoading = ref(true);
+const loading = ref(true);
 
-// Function to fetch data from Laravel API
-onMounted(async () => {
+// Get Ticket
+const getTicket = async () => {
   try {
-    const response = await axios.get(
-      "http://localhost:8000/api/pendaftaran/ticket",
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    tickets.value = response.data.data;
-    isLoading.value = false;
+    const res = await pendaftaranStore.ticketPendaftaran();
+    tickets.value = res.data.data;
   } catch (error) {
     console.error("Error fetching data:", error);
-    isLoading.value = false;
   }
+  loading.value = false;
+};
+onMounted(() => {
+  getTicket();
 });
+
+// Choose Ticket
+const choose = (ticket) => {
+  if (ticket.status === "Terverifikasi") {
+    $q.dialog({
+      title: "Coming Soon!",
+      message: "",
+      persistent: true,
+      ok: {
+        label: "ok",
+        color: "primary",
+      },
+    });
+  } else {
+    $q.dialog({
+      title: "Gagal",
+      message: "Silakan menunggu pendaftaran ini disetujui.",
+      persistent: true,
+      ok: {
+        label: "ok",
+        color: "primary",
+      },
+    });
+  }
+};
 </script>
 
 <style scoped>

@@ -21,7 +21,7 @@ export const useJadwalStore = defineStore("jadwal", {
   actions: {
     async allJadwal() {
       try {
-        return await server.get("api/jadwal", { headers });
+        return await server.get("api/jadwal");
       } catch (error) {
         if (error) throw error;
       }
@@ -29,7 +29,7 @@ export const useJadwalStore = defineStore("jadwal", {
 
     async showJadwal() {
       try {
-        return await server.get(`api/jadwal/${id}`, { headers });
+        return await server.get(`api/jadwal/${id}`);
       } catch (error) {
         if (error) throw error;
       }

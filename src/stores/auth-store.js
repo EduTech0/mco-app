@@ -42,6 +42,14 @@ export const useAuthStore = defineStore("auth", {
       }
     },
 
+    async logout() {
+      try {
+        return localStorage.removeItem("token");
+      } catch (error) {
+        if (error) throw error;
+      }
+    },
+
     async profile() {
       try {
         return await server.get("api/profile", { headers });

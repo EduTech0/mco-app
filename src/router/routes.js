@@ -64,19 +64,31 @@ const routes = [
         children: [
           {
             path: "",
-            component: () => import("pages/dashboard/pendaftaran/Semua.vue"),
+            component: () =>
+              import(
+                "pages/dashboard/pendaftaran/IndexPendaftaran/SemuaPendaftaran.vue"
+              ),
           },
           {
             path: "belumSetuju",
-            component: () => import("pages/dashboard/pendaftaran/Belum.vue"),
+            component: () =>
+              import(
+                "pages/dashboard/pendaftaran/IndexPendaftaran/BelumPendaftaran.vue"
+              ),
           },
           {
             path: "sudahSetuju",
-            component: () => import("pages/dashboard/pendaftaran/Sudah.vue"),
+            component: () =>
+              import(
+                "pages/dashboard/pendaftaran/IndexPendaftaran/SudahPendaftaran.vue"
+              ),
           },
           {
             path: "selesai",
-            component: () => import("pages/dashboard/pendaftaran/Selesai.vue"),
+            component: () =>
+              import(
+                "pages/dashboard/pendaftaran/IndexPendaftaran/SelesaiPendaftaran.vue"
+              ),
           },
         ],
       },

@@ -180,7 +180,7 @@ onMounted(() => {
   getJadwal();
 });
 
-// Add Jadwal
+// Create Jadwal
 const addJadwalDialog = ref(false);
 const jadwalAdded = () => {
   addJadwalDialog.value = false;
@@ -188,31 +188,29 @@ const jadwalAdded = () => {
 };
 
 // Edit Jadwal
-const editItem = (row) => {
+const editJadwal = (row) => {
   // Navigasi ke halaman edit dengan menggunakan router Quasar
   // $router.push(`/edit/${row.id}`);
 };
 
 // Delete Jadwal
-const deleteJadwalDialog = async (row) => {
-  await $q
-    .dialog({
-      title: "WARNING!",
-      message: "Apakah kamu yakin ingin menghapus data ini?",
-      cancel: true,
-      persistent: true,
-      ok: {
-        label: "Ya",
-        color: "red-7",
-      },
-      cancel: {
-        label: "Tidak",
-        color: "primary",
-      },
-    })
-    .onOk(() => {
-      deleteJadwal(row);
-    });
+const deleteJadwalDialog = (row) => {
+  $q.dialog({
+    title: "WARNING!",
+    message: "Apakah kamu yakin ingin menghapus data ini?",
+    cancel: true,
+    persistent: true,
+    ok: {
+      label: "Ya",
+      color: "red-7",
+    },
+    cancel: {
+      label: "Tidak",
+      color: "primary",
+    },
+  }).onOk(() => {
+    deleteJadwal(row);
+  });
 };
 const deleteJadwal = async (row) => {
   try {

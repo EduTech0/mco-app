@@ -10,7 +10,7 @@
       />
     </div>
     <div class="row justify-center">
-      <q-item class="column self-center" v-if="isLoading">
+      <q-item class="column self-center" v-if="loading">
         <q-item-section>
           <q-item-label>
             <q-skeleton type="text" width="130px" />
@@ -148,7 +148,7 @@ const router = useRouter();
 const authStore = useAuthStore();
 
 const profile = ref("");
-const isLoading = ref(true);
+const loading = ref(true);
 const confirm = ref(false);
 
 const maximizedToggle = ref(true);
@@ -164,7 +164,7 @@ const getProfile = async () => {
   } catch (error) {
     console.error("Error fetching data:", error);
   }
-  isLoading.value = false;
+  loading.value = false;
 };
 onMounted(() => {
   getProfile();
@@ -173,14 +173,15 @@ onMounted(() => {
 // Logout
 const submit = async () => {
   try {
-    localStorage.removeItem("token");
+    await authStore.logout();
+
     $q.notify({
       message: "Logout Successfully.",
       icon: "check",
       color: "positive",
     });
 
-    router.push("/login");
+    router.push({ name: "login" });
     window.location.reload();
   } catch (error) {
     console.error(error);

@@ -142,11 +142,11 @@
 
 <script setup>
 import { ref } from "vue";
-import FormPendaftaran from "components/beranda/FormPendaftaran.vue";
-import StatusRegistrasi from "components/beranda/StatusRegistrasi.vue";
-import BiayaPenanganan from "components/beranda/BiayaPenanganan.vue";
-import InformasiJadwal from "components/beranda/InformasiJadwal.vue";
-import FAQ from "components/beranda/FAQ.vue";
+import FormPendaftaran from "components/beranda/item/FormPendaftaran.vue";
+import StatusRegistrasi from "components/beranda/item/StatusRegistrasi.vue";
+import BiayaPenanganan from "components/beranda/item/BiayaPenanganan.vue";
+import InformasiJadwal from "components/beranda/item/InformasiJadwal.vue";
+import FAQ from "components/beranda/item/FAQ.vue";
 
 const bot = ref("bottom");
 const danger = ref(false);

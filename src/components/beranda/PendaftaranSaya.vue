@@ -8,7 +8,7 @@
   </div>
 
   <!-- Loading -->
-  <div v-if="isLoading">
+  <div v-if="loading">
     <div
       class="text-subtitle2 text-bold"
       style="font-size: 17px; margin-bottom: -20px; margin-top: 30px"
@@ -39,12 +39,15 @@
       "
     >
       <q-card class="card-left">
+        <!-- Nama -->
         <div>
           <span class="text-grey" style="font-size: 12px">Nama</span>
           <div style="font-size: 11px; font-family: sans-serif">
             {{ ticket.nama_lengkap }}
           </div>
         </div>
+
+        <!-- Cedera -->
         <div class="q-my-sm">
           <span class="text-grey" style="font-size: 12px">Keluhan</span>
           <div v-for="cedera in ticket.cederas.slice(0, 3)" :key="cedera.id">
@@ -53,6 +56,8 @@
             </div>
           </div>
         </div>
+
+        <!-- Status -->
         <div class="q-my-sm">
           <span class="text-grey" style="font-size: 12px">Status</span>
           <div style="font-size: 11px; font-family: sans-serif">
@@ -82,32 +87,30 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import axios from "axios";
+import { useQuasar } from "quasar";
+import { usePendaftaranStore } from "src/stores/pendaftaran-store";
+
+const $q = useQuasar();
+const pendaftaranStore = usePendaftaranStore();
 
 const tickets = ref([]);
-const token = localStorage.getItem("token");
-const isLoading = ref(true);
+const loading = ref(true);
 
-// Function to fetch data from Laravel API
-onMounted(async () => {
+// Get Ticket
+const getTicket = async () => {
   try {
-    const response = await axios.get(
-      "http://localhost:8000/api/pendaftaran/ticket",
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    tickets.value = response.data.data;
-    isLoading.value = false;
+    const res = await pendaftaranStore.ticketPendaftaran();
+    tickets.value = res.data.data;
   } catch (error) {
     console.error("Error fetching data:", error);
-    isLoading.value = false;
   }
-  loadData();
+  loading.value = false;
+};
+onMounted(() => {
+  getTicket();
 });
 
+// Choose Ticket
 const choose = (ticket) => {
   if (ticket.status === "Terverifikasi") {
     $q.dialog({
@@ -129,25 +132,6 @@ const choose = (ticket) => {
         color: "primary",
       },
     });
-  }
-};
-
-// Load Ticket
-const loadData = async () => {
-  try {
-    // Mengambil data dari API
-    const response = await axios.get(
-      "http://localhost:8000/api/pendaftaran/ticket",
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    // Simpan data yang diambil dari API ke dalam properti ticket
-    tickets.value = response.data.data;
-  } catch (error) {
-    console.error("Error saat mengambil data:", error);
   }
 };
 </script>
