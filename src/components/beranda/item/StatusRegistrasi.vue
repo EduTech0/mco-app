@@ -75,7 +75,7 @@
             <div class="q-my-sm">
               <span class="text-grey" style="font-size: 12px">Keluhan</span>
               <div
-                v-for="cedera in ticket.cederas.slice(0, 3)"
+                v-for="cedera in ticket.cederas.slice(0, 2)"
                 :key="cedera.id"
               >
                 <div style="font-size: 11px; font-family: sans-serif">

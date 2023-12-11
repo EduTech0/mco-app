@@ -64,7 +64,7 @@
           @click="addPendaftaranDialog = true"
           color="black"
           icon="add"
-          class="q-my-sm"
+          class="shadow-3"
           ><q-tooltip>Add Pendaftaran</q-tooltip></q-btn
         >
         <q-dialog v-model="addPendaftaranDialog">
@@ -447,14 +447,14 @@ const setFs = (props) => {
 <style lang="sass">
 .statement-table
   thead tr:last-child th:last-child
-    color: #fff
-    background-color: #00000092
-    backdrop-filter: blur(4px)
+    background-color: #bdb9b993
+    backdrop-filter: blur(5px)
+    max-width: 200px
 
   td:last-child
-    color: #fff
-    background-color: #00000092
-    backdrop-filter: blur(4px)
+    background-color: #bdb9b993
+    backdrop-filter: blur(5px)
+    max-width: 200px
 
   th:last-child,
   td:last-child

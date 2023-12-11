@@ -1,175 +1,236 @@
 <template>
-  <div style="height: 100vh">
-    <q-layout
-      view="lHh Lpr lff"
-      container
-      style="height: 100%"
-      class="shadow-2 rounded-borders"
-    >
-      <q-header elevated class="bg-cyan-8">
-        <q-toolbar>
-          <q-btn flat @click="drawer = !drawer" round dense icon="menu" />
-          <q-toolbar-title class="q-ml-md">Dashboard Admin</q-toolbar-title>
-        </q-toolbar>
-      </q-header>
+  <q-layout view="lHh Lpr lFf">
+    <q-header elevated>
+      <q-toolbar>
+        <q-btn
+          flat
+          dense
+          round
+          @click="toggleLeftDrawer"
+          icon="menu"
+          aria-label="Menu"
+        />
+        <q-toolbar-title> Dashboard Admin </q-toolbar-title>
+        <q-space />
+        <div class="q-gutter-sm row items-center no-wrap">
+          <!-- FullScreen -->
+          <q-btn
+            round
+            dense
+            flat
+            color="white"
+            :icon="$q.fullscreen.isActive ? 'fullscreen_exit' : 'fullscreen'"
+            @click="$q.fullscreen.toggle()"
+            v-if="$q.screen.gt.sm"
+          >
+          </q-btn>
 
-      <q-drawer v-model="drawer" show-if-above :width="200" :breakpoint="400">
-        <q-scroll-area
-          style="
-            height: calc(100% - 150px);
-            margin-top: 150px;
-            border-right: 1px solid #ddd;
-          "
-        >
-          <!-- Home -->
-          <q-list padding>
-            <q-item exact clickable to="/dashboard/home" v-ripple>
-              <q-item-section avatar>
-                <q-icon name="home" />
-              </q-item-section>
-              <q-item-section> Home </q-item-section>
-            </q-item>
+          <!-- Notification -->
+          <q-btn round dense flat color="white" icon="notifications">
+            <q-badge color="red" text-color="white" floating> 5 </q-badge>
+            <q-menu>
+              <q-list style="min-width: 100px">
+                <messages></messages>
+                <q-card class="text-center no-shadow no-border">
+                  <q-btn
+                    label="View All"
+                    style="max-width: 120px !important"
+                    flat
+                    dense
+                    class="text-indigo-8"
+                  ></q-btn>
+                </q-card>
+              </q-list>
+            </q-menu>
+          </q-btn>
 
-            <!-- Customer -->
-            <q-item exact clickable to="/dashboard/customer" v-ripple>
-              <q-item-section avatar>
-                <q-icon name="people" />
-              </q-item-section>
-              <q-item-section> Customer </q-item-section>
-            </q-item>
-
-            <!-- Cedera -->
-            <q-item exact clickable to="/dashboard/cedera" v-ripple>
-              <q-item-section avatar>
-                <q-icon name="assist_walker" />
-              </q-item-section>
-              <q-item-section> Cedera </q-item-section>
-            </q-item>
-
-            <!-- Jadwal -->
-            <q-item exact clickable to="/dashboard/jadwal" v-ripple>
-              <q-item-section avatar>
-                <q-icon name="date_range" />
-              </q-item-section>
-              <q-item-section> Jadwal </q-item-section>
-            </q-item>
-
-            <!-- Pendaftaran -->
-            <q-expansion-item icon="description" label="Pendaftaran">
-              <div class="q-pl-md">
-                <!-- Semua -->
-                <q-item exact clickable to="/dashboard/pendaftaran" v-ripple>
-                  <q-item-section avatar>
-                    <q-icon name="clear_all" />
-                  </q-item-section>
-                  <q-item-section> Semua </q-item-section>
-                </q-item>
-                <!-- Belum Terverifikasi -->
-                <q-item
-                  exact
-                  clickable
-                  to="/dashboard/pendaftaran/belumSetuju"
-                  v-ripple
-                >
-                  <q-item-section avatar>
-                    <q-icon name="highlight_off" />
-                  </q-item-section>
-                  <q-item-section> Belum Disetujui </q-item-section>
-                </q-item>
-                <!-- Sudah Terverifikasi -->
-                <q-item
-                  exact
-                  clickable
-                  to="/dashboard/pendaftaran/sudahSetuju"
-                  v-ripple
-                >
-                  <q-item-section avatar>
-                    <q-icon name="done_all" />
-                  </q-item-section>
-                  <q-item-section> Sudah Disetujui </q-item-section>
-                </q-item>
-                <!-- Selesai -->
-                <q-item
-                  exact
-                  clickable
-                  to="/dashboard/pendaftaran/selesai"
-                  v-ripple
-                >
-                  <q-item-section avatar>
-                    <q-icon name="domain_verification" />
-                  </q-item-section>
-                  <q-item-section> Selesai </q-item-section>
-                </q-item>
-              </div>
-            </q-expansion-item>
-
-            <q-separator />
-
-            <!-- Kembali ke Beranda -->
-            <q-item clickable to="/beranda" v-ripple>
-              <q-item-section avatar>
-                <q-icon name="reply_all" />
-              </q-item-section>
-              <q-item-section> Ke Beranda </q-item-section>
-            </q-item>
-          </q-list>
-        </q-scroll-area>
-
-        <q-img
-          class="absolute-top"
-          src="https://cdn.quasar.dev/img/material.png"
-          style="height: 150px"
-        >
-          <div class="absolute-bottom bg-transparent">
-            <q-avatar size="56px" class="q-mb-sm">
+          <!-- Profile -->
+          <q-btn round flat>
+            <q-avatar size="26px">
               <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
             </q-avatar>
-            <q-circular-progress
-              indeterminate
-              rounded
-              class="column self-center"
-              size="30px"
-              v-if="loading"
-            />
-            <div v-else>
-              <div class="text-weight-bold">{{ profile.name }}</div>
-              <div>{{ profile.email }}</div>
-            </div>
-          </div>
-        </q-img>
-      </q-drawer>
+          </q-btn>
+        </div>
+      </q-toolbar>
+    </q-header>
 
-      <q-page-container>
-        <router-view v-slot="{ Component }">
-          <keep-alive>
-            <component :is="Component" />
-          </keep-alive>
-        </router-view>
-      </q-page-container>
-    </q-layout>
-  </div>
+    <q-drawer
+      v-model="leftDrawerOpen"
+      show-if-above
+      bordered
+      class="bg-primary text-white"
+    >
+      <q-list>
+        <!-- Home -->
+        <q-item to="/dashboard/home" active-class="q-item-no-link-highlighting">
+          <q-item-section avatar>
+            <q-icon name="dashboard" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Home</q-item-label>
+          </q-item-section>
+        </q-item>
+
+        <!-- Customer -->
+        <q-item
+          to="/dashboard/customer"
+          active-class="q-item-no-link-highlighting"
+        >
+          <q-item-section avatar>
+            <q-icon name="people" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Customer</q-item-label>
+          </q-item-section>
+        </q-item>
+
+        <!-- Cedera -->
+        <q-item
+          to="/dashboard/cedera"
+          active-class="q-item-no-link-highlighting"
+        >
+          <q-item-section avatar>
+            <q-icon name="assist_walker" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Cedera</q-item-label>
+          </q-item-section>
+        </q-item>
+
+        <!-- Jadwal -->
+        <q-item
+          to="/dashboard/jadwal"
+          active-class="q-item-no-link-highlighting"
+        >
+          <q-item-section avatar>
+            <q-icon name="date_range" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Jadwal</q-item-label>
+          </q-item-section>
+        </q-item>
+
+        <!-- Pendaftaran -->
+        <q-expansion-item icon="description" label="Pendaftaran">
+          <q-list class="q-pl-lg">
+            <!-- Semua -->
+            <q-item
+              to="/dashboard/pendaftaran"
+              active-class="q-item-no-link-highlighting"
+            >
+              <q-item-section avatar>
+                <q-icon name="clear_all" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>Semua</q-item-label>
+              </q-item-section>
+            </q-item>
+            <!-- Belum Terverifikasi -->
+            <q-item
+              to="/dashboard/pendaftaran/belumSetuju"
+              active-class="q-item-no-link-highlighting"
+            >
+              <q-item-section avatar>
+                <q-icon name="highlight_off" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>Belum Disetujui</q-item-label>
+              </q-item-section>
+            </q-item>
+            <!-- Sudah Terverifikasi -->
+            <q-item
+              to="/dashboard/pendaftaran/sudahSetuju"
+              active-class="q-item-no-link-highlighting"
+            >
+              <q-item-section avatar>
+                <q-icon name="done_all" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>Sudah Disetujui</q-item-label>
+              </q-item-section>
+            </q-item>
+            <!-- Selesai -->
+            <q-item
+              to="/dashboard/pendaftaran/selesai"
+              active-class="q-item-no-link-highlighting"
+            >
+              <q-item-section avatar>
+                <q-icon name="domain_verification" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>Selesai</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-expansion-item>
+
+        <q-separator />
+
+        <!-- Kembali ke Beranda -->
+        <q-item to="/beranda" active-class="q-item-no-link-highlighting">
+          <q-item-section avatar>
+            <q-icon name="reply_all" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Ke Beranda</q-item-label>
+          </q-item-section>
+        </q-item>
+      </q-list>
+    </q-drawer>
+
+    <q-page-container class="bg-grey-2">
+      <router-view v-slot="{ Component }">
+        <keep-alive>
+          <component :is="Component" />
+        </keep-alive>
+      </router-view>
+    </q-page-container>
+  </q-layout>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import { useCustomerStore } from "src/stores/customer-store";
+import Messages from "src/components/Messages.vue";
 
-const drawer = ref(false);
-const customerStore = useCustomerStore();
-const loading = ref(true);
-const profile = ref("");
+import { ref } from "vue";
+import { useQuasar } from "quasar";
 
-// Profile
-const getProfile = async () => {
-  try {
-    const res = await customerStore.profile();
-    profile.value = res.data.data;
-  } catch (error) {
-    console.error("Error fetching data:", error);
-  }
-  loading.value = false;
+const leftDrawerOpen = ref(false);
+const $q = useQuasar();
+const toggleLeftDrawer = () => {
+  leftDrawerOpen.value = !leftDrawerOpen.value;
 };
-onMounted(() => {
-  getProfile();
-});
 </script>
+
+<style>
+/* FONT AWESOME GENERIC BEAT */
+.fa-beat {
+  animation: fa-beat 5s ease infinite;
+}
+
+@keyframes fa-beat {
+  0% {
+    transform: scale(1);
+  }
+  5% {
+    transform: scale(1.25);
+  }
+  20% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.25);
+  }
+  50% {
+    transform: scale(1);
+  }
+  55% {
+    transform: scale(1.25);
+  }
+  70% {
+    transform: scale(1);
+  }
+}
+</style>
