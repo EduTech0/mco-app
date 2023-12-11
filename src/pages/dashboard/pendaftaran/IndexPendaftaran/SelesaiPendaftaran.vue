@@ -60,10 +60,11 @@
       <!-- <template v-slot:top-left>
         <div class="text-h5 q-pr-lg">Pendaftarans</div>
         <q-btn
+          dense
           @click="addPendaftaranDialog = true"
           color="black"
           icon="add"
-          class="q-my-sm q-px-sm"
+          class="q-my-sm"
           ><q-tooltip>Add Pendaftaran</q-tooltip></q-btn
         >
         <q-dialog v-model="addPendaftaranDialog">
@@ -78,30 +79,6 @@
           <div text-color="white" dense square>
             {{ props.rowIndex + 1 }}
           </div>
-        </q-td>
-      </template>
-
-      <!-- Action -->
-      <template #body-cell-action="props">
-        <q-td :props="props" field="action">
-          <q-btn
-            dense
-            flat
-            round
-            color="red"
-            icon="delete"
-            @click="deletePendaftaranDialog(props.row)"
-          ></q-btn>
-          <q-btn
-            dense
-            flat
-            round
-            v-if="props.row.status === 'Dalam Antrian'"
-            color="green"
-            icon="task_alt"
-            @click="verificationPendaftaran(props.row)"
-            ><q-tooltip>Verifikasi Pendaftaran</q-tooltip></q-btn
-          >
         </q-td>
       </template>
 
@@ -136,6 +113,30 @@
         </q-td>
       </template>
 
+      <!-- Action -->
+      <template #body-cell-action="props">
+        <q-td :props="props" field="action">
+          <q-btn
+            dense
+            flat
+            round
+            color="red"
+            icon="delete"
+            @click="deletePendaftaranDialog(props.row)"
+          ></q-btn>
+          <q-btn
+            dense
+            flat
+            round
+            v-if="props.row.status === 'Dalam Antrian'"
+            color="green"
+            icon="task_alt"
+            @click="verificationPendaftaran(props.row)"
+            ><q-tooltip>Verifikasi Pendaftaran</q-tooltip></q-btn
+          >
+        </q-td>
+      </template>
+
       <!-- Grid -->
       <template v-slot:item="props">
         <div
@@ -153,26 +154,6 @@
                   <!-- ID -->
                   <div v-if="col.name === 'id'" text-color="white" dense square>
                     {{ props.rowIndex + 1 }}
-                  </div>
-
-                  <!-- Action -->
-                  <div v-else-if="col.name === 'action'" field="action">
-                    <q-btn
-                      dense
-                      flat
-                      color="green"
-                      icon="task_alt"
-                      v-if="props.row.status === 'Dalam Antrian'"
-                      @click="verificationPendaftaran(props.row)"
-                      ><q-tooltip>Verifikasi Pendaftaran</q-tooltip></q-btn
-                    >
-                    <q-btn
-                      dense
-                      flat
-                      color="red"
-                      icon="delete"
-                      @click="deletePendaftaranDialog(props.row)"
-                    ></q-btn>
                   </div>
 
                   <!-- Status -->
@@ -205,6 +186,26 @@
                         ? props.row.cederas[0].name
                         : "Tidak ada cedera"
                     }}
+                  </div>
+
+                  <!-- Action -->
+                  <div v-else-if="col.name === 'action'" field="action">
+                    <q-btn
+                      dense
+                      flat
+                      color="green"
+                      icon="task_alt"
+                      v-if="props.row.status === 'Dalam Antrian'"
+                      @click="verificationPendaftaran(props.row)"
+                      ><q-tooltip>Verifikasi Pendaftaran</q-tooltip></q-btn
+                    >
+                    <q-btn
+                      dense
+                      flat
+                      color="red"
+                      icon="delete"
+                      @click="deletePendaftaranDialog(props.row)"
+                    ></q-btn>
                   </div>
 
                   <!-- DLL -->
@@ -324,12 +325,6 @@ const currencyColumns = [
     label: "ID",
   },
   {
-    name: "action",
-    field: "action",
-    label: "Action",
-    align: "center",
-  },
-  {
     name: "status",
     field: "status",
     label: "Status",
@@ -434,6 +429,12 @@ const currencyColumns = [
     align: "left",
     sortable: true,
   },
+  {
+    name: "action",
+    field: "action",
+    label: "Action",
+    align: "center",
+  },
 ];
 const filter = ref("");
 const grid = ref(false);
@@ -442,3 +443,22 @@ const setFs = (props) => {
   props.toggleFullscreen();
 };
 </script>
+
+<style lang="sass">
+.statement-table
+  thead tr:last-child th:last-child
+    color: #fff
+    background-color: #00000092
+    backdrop-filter: blur(4px)
+
+  td:last-child
+    color: #fff
+    background-color: #00000092
+    backdrop-filter: blur(4px)
+
+  th:last-child,
+  td:last-child
+    position: sticky
+    right: 0
+    z-index: 1
+</style>

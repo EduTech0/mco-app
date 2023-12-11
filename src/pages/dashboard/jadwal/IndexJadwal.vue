@@ -60,10 +60,11 @@
       <template v-slot:top-left>
         <div class="text-h5 q-pr-lg">Jadwals</div>
         <q-btn
+          dense
           @click="addJadwalDialog = true"
           color="black"
           icon="add"
-          class="q-my-sm q-px-sm"
+          class="q-my-sm"
           ><q-tooltip>Add Jadwal</q-tooltip></q-btn
         >
         <q-dialog v-model="addJadwalDialog">
@@ -90,7 +91,7 @@
             color="blue"
             field="edit"
             icon="edit"
-            @click="editItem(props.row)"
+            @click="editJadwal(props.row)"
           ></q-btn>
           <q-btn
             dense
@@ -131,7 +132,7 @@
                       color="primary"
                       field="edit"
                       icon="edit"
-                      @click="editItem(props.row)"
+                      @click="editJadwal(props.row)"
                     ></q-btn>
                     <q-btn
                       dense
@@ -192,6 +193,7 @@ const jadwalAdded = () => {
 
 // Edit Jadwal
 const editJadwal = (row) => {
+  console.log("coming soon!", row.id);
   // Navigasi ke halaman edit dengan menggunakan router Quasar
   // $router.push(`/edit/${row.id}`);
 };
@@ -284,3 +286,22 @@ const setFs = (props) => {
   props.toggleFullscreen();
 };
 </script>
+
+<style lang="sass">
+.statement-table
+  thead tr:last-child th:last-child
+    color: #fff
+    background-color: #00000092
+    backdrop-filter: blur(4px)
+
+  td:last-child
+    color: #fff
+    background-color: #00000092
+    backdrop-filter: blur(4px)
+
+  th:last-child,
+  td:last-child
+    position: sticky
+    right: 0
+    z-index: 1
+</style>
