@@ -192,11 +192,19 @@
                     <q-btn
                       dense
                       flat
-                      color="primary"
+                      round
+                      color="blue"
                       field="edit"
                       icon="edit"
-                      @click="editCedera(props.row)"
-                    ></q-btn>
+                      @click="editCederaId(props.row)"
+                    >
+                      <q-dialog v-model="editCederaDialog">
+                        <EditCedera
+                          @edited="cederaEdited(props.row)"
+                          :cedera="cederaData"
+                        />
+                      </q-dialog>
+                    </q-btn>
                     <q-btn
                       dense
                       flat

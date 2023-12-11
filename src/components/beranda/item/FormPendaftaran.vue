@@ -26,7 +26,10 @@
         <div>
           <label class="text-grey-7">Jenis Kelamin*</label>
           <q-option-group
-            :options="genders"
+            :options="[
+              { label: 'Laki-Laki', value: 'Laki-Laki' },
+              { label: 'Perempuan', value: 'Perempuan' },
+            ]"
             type="radio"
             v-model="data.jenis_kelamin"
             :rules="[(v) => !!v || 'Pilih jenis kelamin']"
@@ -113,7 +116,11 @@
         <div>
           <label class="text-grey-7">Status Olahraga*</label>
           <q-option-group
-            :options="sports"
+            :options="[
+              { label: 'Hobi Olahraga', value: 'Hobi' },
+              { label: 'Atlet', value: 'Atlet' },
+              { label: 'Lainnya', value: 'Lainnya' },
+            ]"
             type="radio"
             v-model="data.olahraga"
             :rules="[(v) => !!v || 'Pilih status olahraga']"
@@ -161,7 +168,12 @@
         <div>
           <label class="text-grey-7">Lama Cedera*</label>
           <q-option-group
-            :options="lamaOptions"
+            :options="[
+              { label: '< 1 minggu', value: '<1 Minggu' },
+              { label: '< 1 bulan>', value: '<1 Bulan' },
+              { label: '< 1 tahun>', value: '<1 Tahun' },
+              { label: '> 1 tahun', value: '>1 Tahun' },
+            ]"
             type="radio"
             v-model="data.lama_cedera"
             :rules="[(v) => !!v || 'Pilih lama cedera']"
@@ -175,7 +187,11 @@
         <div>
           <label class="text-grey-7">Sudah Berapakali diterapi*</label>
           <q-option-group
-            :options="terapi"
+            :options="[
+              { label: 'Belum Pernah', value: 'Belum' },
+              { label: '1 kali', value: '1 Kali' },
+              { label: '> 1 kali', value: '>1 Kali' },
+            ]"
             type="radio"
             v-model="data.jumlah_terapi"
             :rules="[(v) => !!v || 'Pilih jumlah terapi']"
@@ -363,28 +379,6 @@ const getCedera = async () => {
 onMounted(() => {
   getCedera();
 });
-
-// Options
-const genders = [
-  { label: "Laki-Laki", value: "Laki-laki" },
-  { label: "Perempuan", value: "Perempuan" },
-];
-const sports = [
-  { label: "Hobi Olahraga", value: "Hobi" },
-  { label: "Atlet", value: "Atlet" },
-  { label: "Lainnya", value: "Lainnya" },
-];
-const lamaOptions = [
-  { label: "< 1 minggu", value: "<1 Minggu" },
-  { label: "< 1 bulan>", value: "<1 Bulan" },
-  { label: "< 1 tahun>", value: "<1 Tahun" },
-  { label: "> 1 tahun", value: ">1 Tahun" },
-];
-const terapi = [
-  { label: "Belum Pernah", value: "Belum" },
-  { label: "1 kali", value: "1 Kali" },
-  { label: "> 1 kali", value: ">1 Kali" },
-];
 
 // Disable Submit
 const loading = ref(false);

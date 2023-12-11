@@ -41,10 +41,7 @@
                         transition-show="scale"
                         transition-hide="scale"
                       >
-                        <q-date
-                          v-model="data.tanggal_lahir"
-                          :format="dateFormatter"
-                        >
+                        <q-date v-model="data.tanggal_lahir">
                           <div class="row items-center justify-end">
                             <q-btn
                               v-close-popup
@@ -149,17 +146,6 @@ const disabledButton = computed(() => {
     loading.value || !data.value.name || !data.value.email || !data.value.role
   );
 });
-
-// Date Formattter
-const dateFormatter = (date) => {
-  const day = date.getDate();
-  const month = date.getMonth() + 1;
-  const year = date.getFullYear();
-
-  return `${day < 10 ? "0" : ""}${day}-${
-    month < 10 ? "0" : ""
-  }${month}-${year}`;
-};
 
 // Edit Customer
 const editCustomer = async () => {

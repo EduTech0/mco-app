@@ -57,7 +57,7 @@
       </template>
 
       <!-- Add Pendaftaran -->
-      <!-- <template v-slot:top-left>
+      <template v-slot:top-left>
         <div class="text-h5 q-pr-lg">Pendaftarans</div>
         <q-btn
           dense
@@ -70,7 +70,7 @@
         <q-dialog v-model="addPendaftaranDialog">
           <AddPendaftaran @added="pendaftaranAdded" />
         </q-dialog>
-      </template> -->
+      </template>
 
       <!-- Table -->
       <!-- ID -->
@@ -230,6 +230,7 @@
 import { ref, onMounted } from "vue";
 import { useQuasar } from "quasar";
 import { usePendaftaranStore } from "src/stores/pendaftaran-store";
+import AddPendaftaran from "./../CreatePendaftaran.vue";
 
 const $q = useQuasar();
 const pendaftaranStore = usePendaftaranStore();
@@ -253,6 +254,13 @@ const getPendaftaran = async () => {
 onMounted(() => {
   getPendaftaran();
 });
+
+// Create Pendaftaran
+const addPendaftaranDialog = ref(false);
+const pendaftaranAdded = () => {
+  addPendaftaranDialog.value = false;
+  getPendaftaran();
+};
 
 // Edit Pendaftaran
 const editPendaftaran = (row) => {
