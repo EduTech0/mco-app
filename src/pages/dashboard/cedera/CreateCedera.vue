@@ -67,7 +67,7 @@
             type="submit"
             label="Tambah Cedera"
             color="dark"
-            :disable="loading"
+            :disable="disabledButton"
           ></q-btn>
         </q-card-actions>
       </q-card>
@@ -76,14 +76,13 @@
 </template>
 
 <script setup>
+import { ref, computed } from "vue";
 import { useQuasar } from "quasar";
 import { useCederaStore } from "src/stores/cedera-store";
-import { ref } from "vue";
 
 const $q = useQuasar();
 const cederaStore = useCederaStore();
 const emits = defineEmits(["added"]);
-const loading = ref(false);
 const data = ref({
   name: "",
   harga: null,
@@ -104,17 +103,40 @@ const imageRules = [
   (v) => (v && v.size <= 2048 * 1024) || "Image size harus dibawah 2048 KB",
 ];
 
+// Disabled Button
+const loading = ref(false);
+const disabledButton = computed(() => {
+  return (
+    loading.value || !data.value.name || !data.value.harga || !data.value.image
+  );
+});
+
 // Create Cedera
 const addCedera = async () => {
   loading.value = true;
   try {
     const res = await cederaStore.createCedera(data.value);
-    $q.notify({
-      color: "positive",
-      message: res.data.message,
-    });
+
+    if (res.data && res.data.status === "Success") {
+      $q.notify({
+        message: res.data.message,
+        icon: "check",
+        color: "positive",
+      });
+    } else {
+      $q.notify({
+        message: "Data Gagal Ditambah",
+        icon: "warning",
+        color: "negative",
+      });
+    }
   } catch (error) {
-    console.error("Error fetching data:", error);
+    console.error("Error submitting form:", error);
+    $q.notify({
+      color: "negative",
+      icon: "warning",
+      message: "Terjadi kesalahan. Mohon coba lagi.",
+    });
   }
   loading.value = false;
   emits("added");

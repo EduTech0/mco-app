@@ -22,7 +22,8 @@
                   filled
                   v-model="data.waktu_1"
                   mask="time"
-                  :rules="['time']"
+                  required
+                  :rules="['time', 'required']"
                   ><template v-slot:append>
                     <q-icon name="access_time" class="cursor-pointer">
                       <q-popup-proxy
@@ -57,7 +58,8 @@
                   filled
                   v-model="data.waktu_2"
                   mask="time"
-                  :rules="['time']"
+                  required
+                  :rules="['time', 'required']"
                   ><template v-slot:append>
                     <q-icon name="access_time" class="cursor-pointer">
                       <q-popup-proxy
@@ -85,7 +87,13 @@
           <!-- Kuota -->
           <div class="q-my-md">
             <div class="text-subtitle2">Kuota :</div>
-            <q-input filled v-model="data.kuota" type="number" label="Kuota" />
+            <q-input
+              filled
+              v-model="data.kuota"
+              type="number"
+              label="Kuota"
+              :rules="['required', 'numeric']"
+            />
           </div>
         </q-card-section>
 
@@ -95,7 +103,7 @@
             type="submit"
             label="Tambah jadwal"
             color="dark"
-            :disable="loading"
+            :disable="disabledButton"
           ></q-btn>
         </q-card-actions>
       </q-card>
@@ -104,14 +112,13 @@
 </template>
 
 <script setup>
+import { ref, computed } from "vue";
 import { useQuasar } from "quasar";
 import { useJadwalStore } from "src/stores/jadwal-store";
-import { ref } from "vue";
 
 const $q = useQuasar();
 const jadwalStore = useJadwalStore();
 const emits = defineEmits(["added"]);
-const loading = ref(false);
 const data = ref({
   tanggal: ref("2023/09/01"),
   waktu_1: ref("00:00"),
@@ -119,17 +126,44 @@ const data = ref({
   kuota: ref(null),
 });
 
+// Disabled Button
+const loading = ref(false);
+const disabledButton = computed(() => {
+  return (
+    loading.value ||
+    !data.value.tanggal ||
+    !data.value.waktu_1 ||
+    !data.value.waktu_2 ||
+    !data.value.kuota
+  );
+});
+
 // Create Jadwal
 const addJadwal = async () => {
   loading.value = true;
   try {
     const res = await jadwalStore.createJadwal(data.value);
-    $q.notify({
-      color: "positive",
-      message: res.data.message,
-    });
+
+    if (res.data && res.data.status === "Success") {
+      $q.notify({
+        message: res.data.message,
+        icon: "check",
+        color: "positive",
+      });
+    } else {
+      $q.notify({
+        message: "Data Gagal Ditambah",
+        icon: "warning",
+        color: "negative",
+      });
+    }
   } catch (error) {
-    console.error("Error fetching data:", error);
+    console.error("Error submitting form:", error);
+    $q.notify({
+      color: "negative",
+      icon: "warning",
+      message: "Terjadi kesalahan. Mohon coba lagi.",
+    });
   }
   loading.value = false;
   emits("added");

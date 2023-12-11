@@ -92,8 +92,15 @@
             color="blue"
             field="edit"
             icon="edit"
-            @click="editCustomer(props.row)"
-          ></q-btn>
+            @click="editCustomerId(props.row)"
+          >
+            <q-dialog v-model="editCustomerDialog">
+              <EditCustomer
+                @edited="customerEdited(props.row)"
+                :customer="customerData"
+              />
+            </q-dialog>
+          </q-btn>
           <q-btn
             dense
             flat
@@ -130,11 +137,19 @@
                     <q-btn
                       dense
                       flat
-                      color="primary"
+                      round
+                      color="blue"
                       field="edit"
                       icon="edit"
-                      @click="editCustomer(props.row)"
-                    ></q-btn>
+                      @click="editCustomerId(props.row)"
+                    >
+                      <q-dialog v-model="editCustomerDialog">
+                        <EditCustomer
+                          @edited="customerEdited(props.row)"
+                          :customer="customerData"
+                        />
+                      </q-dialog>
+                    </q-btn>
                     <q-btn
                       dense
                       flat
@@ -167,6 +182,7 @@ import { ref, onMounted } from "vue";
 import { useQuasar } from "quasar";
 import { useCustomerStore } from "src/stores/customer-store";
 import AddCustomer from "./CreateCustomer.vue";
+import EditCustomer from "./EditCustomer.vue";
 
 const $q = useQuasar();
 const customerStore = useCustomerStore();
@@ -193,10 +209,15 @@ const customerAdded = () => {
 };
 
 // Edit Customer
-const editCustomer = (row) => {
-  console.log("coming soon!", row.id);
-  // Navigasi ke halaman edit dengan menggunakan router Quasar
-  // $router.push(`/edit/${row.id}`);
+const editCustomerDialog = ref(false);
+const customerData = ref("");
+const editCustomerId = (row) => {
+  editCustomerDialog.value = true;
+  customerData.value = row;
+};
+const customerEdited = (row) => {
+  editCustomerDialog.value = false;
+  getCustomer();
 };
 
 // Delete Customer

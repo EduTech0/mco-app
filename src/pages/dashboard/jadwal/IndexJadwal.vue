@@ -91,8 +91,15 @@
             color="blue"
             field="edit"
             icon="edit"
-            @click="editJadwal(props.row)"
-          ></q-btn>
+            @click="editJadwalId(props.row)"
+          >
+            <q-dialog v-model="editJadwalDialog">
+              <EditJadwal
+                @edited="jadwalEdited(props.row)"
+                :jadwal="jadwalData"
+              />
+            </q-dialog>
+          </q-btn>
           <q-btn
             dense
             flat
@@ -129,11 +136,19 @@
                     <q-btn
                       dense
                       flat
-                      color="primary"
+                      round
+                      color="blue"
                       field="edit"
                       icon="edit"
-                      @click="editJadwal(props.row)"
-                    ></q-btn>
+                      @click="editJadwalId(props.row)"
+                    >
+                      <q-dialog v-model="editJadwalDialog">
+                        <EditJadwal
+                          @edited="jadwalEdited(props.row)"
+                          :jadwal="jadwalData"
+                        />
+                      </q-dialog>
+                    </q-btn>
                     <q-btn
                       dense
                       flat
@@ -166,6 +181,7 @@ import { ref, onMounted } from "vue";
 import { useQuasar } from "quasar";
 import { useJadwalStore } from "src/stores/jadwal-store";
 import AddJadwal from "./CreateJadwal.vue";
+import EditJadwal from "./EditJadwal.vue";
 
 const $q = useQuasar();
 const jadwalStore = useJadwalStore();
@@ -192,10 +208,15 @@ const jadwalAdded = () => {
 };
 
 // Edit Jadwal
-const editJadwal = (row) => {
-  console.log("coming soon!", row.id);
-  // Navigasi ke halaman edit dengan menggunakan router Quasar
-  // $router.push(`/edit/${row.id}`);
+const editJadwalDialog = ref(false);
+const jadwalData = ref("");
+const editJadwalId = (row) => {
+  editJadwalDialog.value = true;
+  jadwalData.value = row;
+};
+const jadwalEdited = (row) => {
+  editJadwalDialog.value = false;
+  getJadwal();
 };
 
 // Delete Jadwal

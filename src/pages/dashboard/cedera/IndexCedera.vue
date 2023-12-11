@@ -119,8 +119,15 @@
             color="blue"
             field="edit"
             icon="edit"
-            @click="editCedera(props.row)"
-          ></q-btn>
+            @click="editCederaId(props.row)"
+          >
+            <q-dialog v-model="editCederaDialog">
+              <EditCedera
+                @edited="cederaEdited(props.row)"
+                :cedera="cederaData"
+              />
+            </q-dialog>
+          </q-btn>
           <q-btn
             dense
             flat
@@ -222,6 +229,7 @@ import { ref, onMounted } from "vue";
 import { useQuasar } from "quasar";
 import { useCederaStore } from "src/stores/cedera-store";
 import AddCedera from "./CreateCedera.vue";
+import EditCedera from "./EditCedera.vue";
 
 const $q = useQuasar();
 const cederaStore = useCederaStore();
@@ -248,10 +256,15 @@ const cederaAdded = () => {
 };
 
 // Edit Cedera
-const editCedera = (row) => {
-  console.log("coming soon!", row.id);
-  // Navigasi ke halaman edit dengan menggunakan router Quasar
-  // $router.push(`/edit/${row.id}`);
+const editCederaDialog = ref(false);
+const cederaData = ref("");
+const editCederaId = (row) => {
+  editCederaDialog.value = true;
+  cederaData.value = row;
+};
+const cederaEdited = (row) => {
+  editCederaDialog.value = false;
+  getCedera();
 };
 
 // Delete Cedera

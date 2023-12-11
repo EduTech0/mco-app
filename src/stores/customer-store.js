@@ -4,7 +4,6 @@ import { server } from "../boot/axios";
 const token = localStorage.getItem("token");
 const headers = {
   Authorization: `Bearer ${token}`,
-  "Content-Type": "multipart/form-data",
 };
 
 export const useCustomerStore = defineStore("customer", {
