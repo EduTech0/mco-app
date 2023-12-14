@@ -67,7 +67,7 @@
           class="shadow-3"
           ><q-tooltip>Add Cedera</q-tooltip></q-btn
         >
-        <q-dialog v-model="addCederaDialog">
+        <q-dialog v-model="addCederaDialog" persistent>
           <AddCedera @added="cederaAdded" />
         </q-dialog>
       </template>
@@ -121,7 +121,7 @@
             icon="edit"
             @click="editCederaId(props.row)"
           >
-            <q-dialog v-model="editCederaDialog">
+            <q-dialog v-model="editCederaDialog" persistent>
               <EditCedera
                 @edited="cederaEdited(props.row)"
                 :cedera="cederaData"
@@ -198,7 +198,7 @@
                       icon="edit"
                       @click="editCederaId(props.row)"
                     >
-                      <q-dialog v-model="editCederaDialog">
+                      <q-dialog v-model="editCederaDialog" persistent>
                         <EditCedera
                           @edited="cederaEdited(props.row)"
                           :cedera="cederaData"
@@ -270,7 +270,7 @@ const editCederaId = (row) => {
   editCederaDialog.value = true;
   cederaData.value = row;
 };
-const cederaEdited = (row) => {
+const cederaEdited = () => {
   editCederaDialog.value = false;
   getCedera();
 };

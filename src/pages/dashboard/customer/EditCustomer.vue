@@ -1,17 +1,28 @@
 <template>
   <div>
     <q-form @submit="editCustomer">
-      <q-card class="q-px-lg q-py-md" style="min-width: 400px">
-        <q-card-section>
+      <q-card style="min-width: 400px">
+        <q-card-section class="row items-center q-py-sm">
           <div class="text-h6">Edit Customer</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
 
-        <q-card-section class="q-pt-none">
+        <q-separator />
+
+        <q-card-section style="max-height: 60vh" class="scroll">
           <div class="q-my-md">
             <div class="row justify-center">
               <!-- Name -->
               <div class="col-5">
-                <q-input v-model="data.name" label="Nama" dense autofocus />
+                <q-input
+                  v-model="data.name"
+                  label="Nama"
+                  dense
+                  required
+                  autofocus
+                  :rules="nameRules"
+                />
               </div>
 
               <div class="col-1 items-center" />
@@ -21,8 +32,10 @@
                 <q-input
                   v-model="data.email"
                   label="email"
-                  dense
                   type="email"
+                  dense
+                  required
+                  :rules="emailRules"
                 />
               </div>
             </div>
@@ -106,6 +119,8 @@
           </div>
         </q-card-section>
 
+        <q-separator />
+
         <q-card-actions align="right" class="text-primary">
           <q-btn flat label="Cancel" color="dark" v-close-popup />
           <q-btn
@@ -147,9 +162,18 @@ const disabledButton = computed(() => {
   );
 });
 
+// Validate
+const nameRules = [
+  (v) => !!v || "Nama harus diisi",
+  (v) => (v && v.length <= 255) || "Nama tidak boleh lebih dari 255 karakter",
+];
+const emailRules = [
+  (v) => !!v || "Email harus diisi",
+  (v) => /.+@.+/.test(v) || "Email tidak valid",
+];
+
 // Edit Customer
 const editCustomer = async () => {
-  console.log(data.value);
   loading.value = true;
   try {
     const res = await customerStore.editCustomer(data.value);

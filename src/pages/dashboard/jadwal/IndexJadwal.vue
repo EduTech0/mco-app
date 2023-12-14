@@ -67,7 +67,7 @@
           class="shadow-3"
           ><q-tooltip>Add Jadwal</q-tooltip></q-btn
         >
-        <q-dialog v-model="addJadwalDialog">
+        <q-dialog v-model="addJadwalDialog" persistent>
           <AddJadwal @added="jadwalAdded" />
         </q-dialog>
       </template>
@@ -81,6 +81,7 @@
           </div>
         </q-td>
       </template>
+
       <!-- Action -->
       <template #body-cell-action="props">
         <q-td :props="props">
@@ -93,7 +94,7 @@
             icon="edit"
             @click="editJadwalId(props.row)"
           >
-            <q-dialog v-model="editJadwalDialog">
+            <q-dialog v-model="editJadwalDialog" persistent>
               <EditJadwal
                 @edited="jadwalEdited(props.row)"
                 :jadwal="jadwalData"
@@ -142,7 +143,7 @@
                       icon="edit"
                       @click="editJadwalId(props.row)"
                     >
-                      <q-dialog v-model="editJadwalDialog">
+                      <q-dialog v-model="editJadwalDialog" persistent>
                         <EditJadwal
                           @edited="jadwalEdited(props.row)"
                           :jadwal="jadwalData"
@@ -214,7 +215,7 @@ const editJadwalId = (row) => {
   editJadwalDialog.value = true;
   jadwalData.value = row;
 };
-const jadwalEdited = (row) => {
+const jadwalEdited = () => {
   editJadwalDialog.value = false;
   getJadwal();
 };

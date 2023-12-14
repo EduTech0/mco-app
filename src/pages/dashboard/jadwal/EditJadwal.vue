@@ -1,12 +1,16 @@
 <template>
   <div>
     <q-form @submit="editJadwal">
-      <q-card class="q-px-lg q-py-md" style="min-width: 400px">
-        <q-card-section>
+      <q-card style="min-width: 400px">
+        <q-card-section class="row items-center q-py-sm">
           <div class="text-h6">Edit Jadwal</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
 
-        <q-card-section class="q-pt-none">
+        <q-separator />
+
+        <q-card-section style="max-height: 60vh" class="scroll">
           <!-- Tanggal -->
           <div class="q-my-md">
             <div class="text-subtitle2">Tanggal :</div>
@@ -23,6 +27,7 @@
                   filled
                   v-model="data.waktu_1"
                   mask="time"
+                  required
                   :rules="['time', 'required']"
                 >
                   <template v-slot:append>
@@ -47,7 +52,7 @@
                   </template>
                 </q-input>
               </div>
-              <!-- - -->
+
               <div class="col2 items-center">
                 <p
                   class="text-subtitle2 q-px-sm q-py-md"
@@ -56,12 +61,14 @@
                   -
                 </p>
               </div>
+
               <!-- Waktu 2 -->
               <div class="col-5">
                 <q-input
                   filled
                   v-model="data.waktu_2"
                   mask="time"
+                  required
                   :rules="['time', 'required']"
                 >
                   <template v-slot:append>
@@ -92,7 +99,13 @@
           <!-- Kuota -->
           <div class="q-my-md">
             <div class="text-subtitle2">Kuota :</div>
-            <q-input filled v-model="data.kuota" type="number" label="Kuota" />
+            <q-input
+              filled
+              v-model="data.kuota"
+              type="number"
+              label="Kuota"
+              :rules="['required', 'numeric']"
+            />
           </div>
 
           <!-- Tersisa -->
@@ -103,9 +116,13 @@
               v-model="data.tersisa"
               type="number"
               label="Tersisa"
+              required
+              :rules="['required', 'numeric']"
             />
           </div>
         </q-card-section>
+
+        <q-separator />
 
         <q-card-actions align="right" class="text-primary">
           <q-btn flat label="Cancel" color="dark" v-close-popup />
@@ -114,7 +131,7 @@
             label="Edit jadwal"
             color="dark"
             :disable="disabledButton"
-          ></q-btn>
+          />
         </q-card-actions>
       </q-card>
     </q-form>

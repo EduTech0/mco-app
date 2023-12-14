@@ -1,14 +1,18 @@
 <template>
   <div>
     <q-form @submit="editCedera">
-      <q-card class="q-px-lg q-py-md" style="min-width: 400px">
-        <q-card-section>
+      <q-card style="min-width: 400px">
+        <q-card-section class="row items-center q-py-sm">
           <div class="text-h6">Edit Cedera</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
 
-        <q-card-section class="q-pt-none">
+        <q-separator />
+
+        <q-card-section style="max-height: 60vh" class="scroll">
           <div class="row justify-center">
-            <!-- Nama -->
+            <!-- Name -->
             <div class="col-5 q-mr-sm">
               <q-input
                 v-model="data.name"
@@ -18,8 +22,9 @@
                 autofocus
                 required
                 :rules="nameRules"
-              ></q-input>
+              />
             </div>
+
             <!-- Harga -->
             <div class="col-5 q-ml-sm">
               <q-input
@@ -31,7 +36,7 @@
                 type="number"
                 required
                 :rules="hargaRules"
-              ></q-input>
+              />
             </div>
           </div>
 
@@ -61,6 +66,8 @@
           </q-file>
         </q-card-section>
 
+        <q-separator />
+
         <q-card-actions align="right" class="text-primary">
           <q-btn flat label="Cancel" color="dark" v-close-popup />
           <q-btn
@@ -85,10 +92,10 @@ const cederaStore = useCederaStore();
 const emits = defineEmits(["edited"]);
 const { cedera } = defineProps(["cedera"]);
 const data = ref({
-  id: ref(cedera.id),
-  name: ref(cedera.name),
-  harga: ref(cedera.harga),
-  image: ref(null),
+  id: cedera.id,
+  name: cedera.name,
+  harga: cedera.harga,
+  image: null,
 });
 
 // Disabled Button

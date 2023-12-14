@@ -52,7 +52,7 @@ export default defineComponent({
         {
           title: "Monthly Income",
           icon: "attach_money",
-          value: "$ 20k",
+          value: "$ 1780k",
           color1: "#546bfa",
           color2: "#3e51b5",
         },

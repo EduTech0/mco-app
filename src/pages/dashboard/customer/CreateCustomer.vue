@@ -1,31 +1,35 @@
 <template>
   <div>
     <q-form @submit="addCustomer">
-      <q-card class="q-px-lg q-py-md" style="min-width: 400px">
-        <q-card-section>
-          <div class="text-h6">Add Customer</div>
+      <q-card style="min-width: 400px">
+        <q-card-section class="row items-center q-py-sm">
+          <div class="text-h6">Create Customer</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
 
-        <q-card-section class="q-pt-none">
+        <q-separator />
+
+        <q-card-section style="max-height: 60vh" class="scroll">
           <!-- Name -->
           <q-input
             v-model="data.name"
             label="Nama"
             dense
-            autofocus
             required
+            autofocus
             :rules="nameRules"
-          ></q-input>
+          />
 
           <!-- Email -->
           <q-input
             v-model="data.email"
             label="email"
-            dense
             type="email"
+            dense
             required
             :rules="emailRules"
-          ></q-input>
+          />
 
           <!-- Password -->
           <q-input
@@ -72,6 +76,8 @@
           </q-input>
         </q-card-section>
 
+        <q-separator />
+
         <q-card-actions align="right" class="text-primary">
           <q-btn flat label="Cancel" color="dark" v-close-popup />
           <q-btn
@@ -101,15 +107,17 @@ const data = ref({
   passwordConfirmation: null,
 });
 
-// Visibility Password
-const passwordFieldType = ref("password");
-const visibility = ref(false);
-const visibilityIcon = ref("visibility");
-const switchVisibility = () => {
-  visibility.value = !visibility.value;
-  passwordFieldType.value = visibility.value ? "text" : "password";
-  visibilityIcon.value = visibility.value ? "visibility_off" : "visibility";
-};
+// Disabled Button
+const loading = ref(false);
+const disabledButton = computed(() => {
+  return (
+    loading.value ||
+    !data.value.name ||
+    !data.value.email ||
+    !data.value.password ||
+    !data.value.passwordConfirmation
+  );
+});
 
 // Validate
 const nameRules = [
@@ -130,17 +138,15 @@ const passwordConfirmationRules = ref([
   (v) => v === data.value.password || "Password tidak cocok",
 ]);
 
-// Disabled Button
-const loading = ref(false);
-const disabledButton = computed(() => {
-  return (
-    loading.value ||
-    !data.value.name ||
-    !data.value.email ||
-    !data.value.password ||
-    !data.value.passwordConfirmation
-  );
-});
+// Visibility Password
+const passwordFieldType = ref("password");
+const visibility = ref(false);
+const visibilityIcon = ref("visibility");
+const switchVisibility = () => {
+  visibility.value = !visibility.value;
+  passwordFieldType.value = visibility.value ? "text" : "password";
+  visibilityIcon.value = visibility.value ? "visibility_off" : "visibility";
+};
 
 // Create Customer
 const addCustomer = async () => {

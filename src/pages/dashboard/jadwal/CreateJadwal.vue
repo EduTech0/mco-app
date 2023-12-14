@@ -1,12 +1,16 @@
 <template>
   <div>
     <q-form @submit="addJadwal">
-      <q-card class="q-px-lg q-py-md" style="min-width: 400px">
-        <q-card-section>
-          <div class="text-h6">Add Jadwal</div>
+      <q-card style="min-width: 400px">
+        <q-card-section class="row items-center q-py-sm">
+          <div class="text-h6">Create Jadwal</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
 
-        <q-card-section class="q-pt-none">
+        <q-separator />
+
+        <q-card-section style="max-height: 60vh" class="scroll">
           <!-- Tanggal -->
           <div class="q-my-md">
             <div class="text-subtitle2">Tanggal :</div>
@@ -17,6 +21,7 @@
           <div class="q-my-md">
             <div class="text-subtitle2">Waktu :</div>
             <div class="row justify-center">
+              <!-- Waktu 1 -->
               <div class="col-5">
                 <q-input
                   filled
@@ -24,7 +29,8 @@
                   mask="time"
                   required
                   :rules="['time', 'required']"
-                  ><template v-slot:append>
+                >
+                  <template v-slot:append>
                     <q-icon name="access_time" class="cursor-pointer">
                       <q-popup-proxy
                         cover
@@ -42,9 +48,11 @@
                           </div>
                         </q-time>
                       </q-popup-proxy>
-                    </q-icon> </template
-                ></q-input>
+                    </q-icon>
+                  </template>
+                </q-input>
               </div>
+
               <div class="col2 items-center">
                 <p
                   class="text-subtitle2 q-px-sm q-py-md"
@@ -53,6 +61,8 @@
                   -
                 </p>
               </div>
+
+              <!-- Waktu 2 -->
               <div class="col-5">
                 <q-input
                   filled
@@ -60,7 +70,8 @@
                   mask="time"
                   required
                   :rules="['time', 'required']"
-                  ><template v-slot:append>
+                >
+                  <template v-slot:append>
                     <q-icon name="access_time" class="cursor-pointer">
                       <q-popup-proxy
                         cover
@@ -78,8 +89,9 @@
                           </div>
                         </q-time>
                       </q-popup-proxy>
-                    </q-icon> </template
-                ></q-input>
+                    </q-icon>
+                  </template>
+                </q-input>
               </div>
             </div>
           </div>
@@ -97,14 +109,16 @@
           </div>
         </q-card-section>
 
+        <q-separator />
+
         <q-card-actions align="right" class="text-primary">
           <q-btn flat label="Cancel" color="dark" v-close-popup />
           <q-btn
             type="submit"
-            label="Tambah jadwal"
+            label="Tambah Jadwal"
             color="dark"
             :disable="disabledButton"
-          ></q-btn>
+          />
         </q-card-actions>
       </q-card>
     </q-form>
@@ -120,10 +134,10 @@ const $q = useQuasar();
 const jadwalStore = useJadwalStore();
 const emits = defineEmits(["added"]);
 const data = ref({
-  tanggal: ref("2023/09/01"),
-  waktu_1: ref("00:00"),
-  waktu_2: ref("00:00"),
-  kuota: ref(null),
+  tanggal: "2023/09/01",
+  waktu_1: "00:00",
+  waktu_2: "00:00",
+  kuota: null,
 });
 
 // Disabled Button

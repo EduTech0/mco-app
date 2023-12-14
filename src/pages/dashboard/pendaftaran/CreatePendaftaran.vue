@@ -1,12 +1,16 @@
 <template>
   <div>
     <q-form @submit="addPendaftaran">
-      <q-card class="q-px-lg q-py-md" style="min-width: 400px">
-        <q-card-section>
-          <div class="text-h6">Add Pendaftaran</div>
+      <q-card style="min-width: 400px">
+        <q-card-section class="row items-center q-py-sm">
+          <div class="text-h6">Create Pendaftaran</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
 
-        <q-card-section class="q-pt-none">
+        <q-separator />
+
+        <q-card-section style="max-height: 60vh" class="scroll">
           <!-- Nama Lengkap -->
           <q-input
             v-model="data.nama_lengkap"
@@ -51,6 +55,7 @@
                 ]"
               />
             </div>
+
             <!-- Tinggi -->
             <div class="col-6 q-pl-sm">
               <q-input
@@ -74,7 +79,7 @@
             :rules="[
               (val) => (val !== null && val !== '') || 'Masukkan usia',
               (val) =>
-                (val > 0 && val < 100) || 'Masukkan usia anda yang sekarang',
+                (val > 0 && val < 200) || 'Masukkan usia anda yang sekarang',
             ]"
           />
 
@@ -143,8 +148,8 @@
             icon="keyboard_arrow_down"
             color="primary"
             @click="cederasList = true"
-            filled
             v-model="data.cederas"
+            filled
             multiple
             use-chips
             stack-label
@@ -222,17 +227,19 @@
 
             <template v-slot:hint></template>
           </q-file>
-
-          <!-- Submit -->
-          <div class="column items-center">
-            <q-btn
-              label="Submit"
-              type="submit"
-              class="button bg-orange-10 text-white"
-              :disable="loading || disabledButton"
-            />
-          </div>
         </q-card-section>
+
+        <q-separator />
+
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Cancel" color="dark" v-close-popup />
+          <q-btn
+            type="submit"
+            label="Tambah Pendaftaran"
+            color="dark"
+            :disable="disabledButton"
+          ></q-btn>
+        </q-card-actions>
       </q-card>
     </q-form>
   </div>
@@ -261,7 +268,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useQuasar } from "quasar";
 import { usePendaftaranStore } from "src/stores/pendaftaran-store";
 import { useCederaStore } from "src/stores/cedera-store";
@@ -270,11 +277,6 @@ const $q = useQuasar();
 const pendaftaranStore = usePendaftaranStore();
 const cederaStore = useCederaStore();
 const emits = defineEmits(["added"]);
-
-const dialogPosition = ref("bottom");
-const cederasList = ref(false);
-
-// Data
 const data = ref({
   nama_lengkap: "",
   jenis_kelamin: "",
@@ -294,6 +296,8 @@ const data = ref({
 });
 
 // Keluhan
+const dialogPosition = ref("bottom");
+const cederasList = ref(false);
 const cederas = ref([]);
 const getCedera = async () => {
   try {
@@ -314,7 +318,7 @@ const disabledButton = computed(() => {
   delete dataWithoutImage.image;
 
   return Object.values(dataWithoutImage).some((value) => {
-    return value === null || value === "";
+    return value === null || value === "" || loading.value;
   });
 });
 
@@ -349,27 +353,3 @@ const addPendaftaran = async () => {
   emits("added");
 };
 </script>
-
-<style scoped>
-.shadow {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 1000;
-  box-shadow: -2px 2px 15px black;
-}
-.button {
-  width: 300px;
-  border-radius: 50px;
-}
-.iconInfo {
-  margin-top: 3px;
-  cursor: pointer;
-}
-.iconInfo:hover {
-  color: azure;
-  scale: 1.1;
-  transition: background-color 0.3s ease;
-  transition: scale 0.5s ease;
-}
-</style>

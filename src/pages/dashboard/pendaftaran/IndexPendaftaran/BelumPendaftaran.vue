@@ -65,9 +65,10 @@
           color="black"
           icon="add"
           class="shadow-3"
-          ><q-tooltip>Add Pendaftaran</q-tooltip></q-btn
         >
-        <q-dialog v-model="addPendaftaranDialog">
+          <q-tooltip>Add Pendaftaran</q-tooltip>
+        </q-btn>
+        <q-dialog v-model="addPendaftaranDialog" persistent>
           <AddPendaftaran @added="pendaftaranAdded" />
         </q-dialog>
       </template>
@@ -91,7 +92,7 @@
                 ? 'red'
                 : props.row.status === 'Terverifikasi'
                 ? 'green'
-                : 'primary'
+                : 'secondary'
             "
             text-color="white"
             dense
@@ -132,8 +133,9 @@
             color="green"
             icon="task_alt"
             @click="verificationPendaftaran(props.row)"
-            ><q-tooltip>Verifikasi Pendaftaran</q-tooltip></q-btn
           >
+            <q-tooltip>Verifikasi Pendaftaran</q-tooltip>
+          </q-btn>
         </q-td>
       </template>
 
@@ -164,7 +166,7 @@
                         ? 'red'
                         : props.row.status === 'Terverifikasi'
                         ? 'green'
-                        : 'primary'
+                        : 'secondary'
                     "
                     text-color="white"
                     class="text-caption"
@@ -197,8 +199,9 @@
                       icon="task_alt"
                       v-if="props.row.status === 'Dalam Antrian'"
                       @click="verificationPendaftaran(props.row)"
-                      ><q-tooltip>Verifikasi Pendaftaran</q-tooltip></q-btn
                     >
+                      <q-tooltip>Verifikasi Pendaftaran</q-tooltip>
+                    </q-btn>
                     <q-btn
                       dense
                       flat
@@ -230,7 +233,7 @@
 import { ref, onMounted } from "vue";
 import { useQuasar } from "quasar";
 import { usePendaftaranStore } from "src/stores/pendaftaran-store";
-import AddPendaftaran from "./../CreatePendaftaran.vue"
+import AddPendaftaran from "./../CreatePendaftaran.vue";
 
 const $q = useQuasar();
 const pendaftaranStore = usePendaftaranStore();

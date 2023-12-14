@@ -67,7 +67,7 @@
           class="shadow-3"
           ><q-tooltip>Add Customer</q-tooltip></q-btn
         >
-        <q-dialog v-model="addCustomerDialog">
+        <q-dialog v-model="addCustomerDialog" persistent>
           <AddCustomer @added="customerAdded" />
         </q-dialog>
       </template>
@@ -94,7 +94,7 @@
             icon="edit"
             @click="editCustomerId(props.row)"
           >
-            <q-dialog v-model="editCustomerDialog">
+            <q-dialog v-model="editCustomerDialog" persistent>
               <EditCustomer
                 @edited="customerEdited(props.row)"
                 :customer="customerData"
@@ -143,7 +143,7 @@
                       icon="edit"
                       @click="editCustomerId(props.row)"
                     >
-                      <q-dialog v-model="editCustomerDialog">
+                      <q-dialog v-model="editCustomerDialog" persistent>
                         <EditCustomer
                           @edited="customerEdited(props.row)"
                           :customer="customerData"
@@ -215,7 +215,7 @@ const editCustomerId = (row) => {
   editCustomerDialog.value = true;
   customerData.value = row;
 };
-const customerEdited = (row) => {
+const customerEdited = () => {
   editCustomerDialog.value = false;
   getCustomer();
 };
