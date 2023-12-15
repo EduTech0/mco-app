@@ -2,7 +2,7 @@
   <q-card class="high">
     <q-card-section class="high bg-primary q-py-sm text-white shadow">
       <q-btn dense flat icon="arrow_back" v-close-popup class="absolute-left" />
-      <q-tabs class="float-right" @click="danger = true"
+      <q-tabs class="float-right" @click="warning = true"
         ><q-icon name="info" size="20px" class="iconInfo"
       /></q-tabs>
       <div class="text-subtitle1 text-center">Pendaftaran</div>
@@ -252,7 +252,7 @@
           color="primary"
           size="12px"
           label="Ok, Mengerti"
-          @click="danger = false"
+          @click="warning = false"
         />
       </div>
     </q-card>
