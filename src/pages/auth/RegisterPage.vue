@@ -15,12 +15,11 @@
       <q-form>
         <!-- Name -->
         <q-input
-          rounded="20"
           outlined
           dense
           lazy-rules
           label="name"
-          type="name"
+          type="text"
           v-model="name"
           :rules="nameRules"
           style="border-radius: 20px; margin-bottom: 5px"

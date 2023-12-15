@@ -11,12 +11,12 @@ const routes = [
         name: "getstarted",
       },
       {
-        path: "/login",
+        path: "login",
         component: () => import("pages/auth/LoginPage.vue"),
         name: "login",
       },
       {
-        path: "/register",
+        path: "register",
         component: () => import("pages/auth/RegisterPage.vue"),
         name: "register",
       },
