@@ -108,7 +108,7 @@
         already have an account?
         <router-link
           to="/login"
-          class="text-warning"
+          class="text-primary"
           style="text-decoration: none"
           >sign in</router-link
         >

@@ -72,7 +72,7 @@
         don't have an account?
         <router-link
           to="/register"
-          class="text-warning"
+          class="text-primary"
           style="text-decoration: none"
           >sign up</router-link
         >
