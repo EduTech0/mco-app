@@ -25,7 +25,7 @@
       </q-dialog>
       <!-- Warning -->
       <q-dialog v-model="danger" :position="bot">
-        <div class="q-pa-lg" style="border-radius: 20px 20px 0 0">
+        <q-card class="q-pa-lg" style="border-radius: 20px 20px 0 0">
           <div class="column items-center">
             <q-icon name="warning" size="50px" />
           </div>
@@ -42,7 +42,7 @@
               @click="danger = false"
             />
           </div>
-        </div>
+        </q-card>
       </q-dialog>
     </div>
 

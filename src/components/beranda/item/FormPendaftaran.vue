@@ -226,8 +226,9 @@
         <div class="column items-center">
           <q-btn
             label="Submit"
+            style="background-color: #045951;"
             type="submit"
-            class="button bg-orange-10 text-white"
+            class="button text-white"
             :disable="loading || isFormIncomplete"
           />
         </div>
