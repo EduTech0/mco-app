@@ -263,7 +263,7 @@
       <div v-for="cedera in cederas" :key="cedera.id">
         <q-item tag="label" v-ripple>
           <img
-            :src="'http://localhost:8000/storage/cederas/' + cedera.image"
+            :src="'http:///storage/cederas/' + cedera.image"
             alt="Cedera Image"
             width="80"
           />

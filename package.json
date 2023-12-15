@@ -2,7 +2,7 @@
   "name": "mco-app",
   "version": "0.0.1",
   "description": "Medical Application",
-  "productName": "MCO App",
+  "productName": "EasyCareHub",
   "author": "Octavyan Putra Ramadhan <octavyan4@gmail.com>",
   "private": true,
   "scripts": {
