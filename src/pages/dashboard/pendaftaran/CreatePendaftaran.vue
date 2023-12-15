@@ -250,7 +250,7 @@
       <div v-for="cedera in cederas" :key="cedera.id">
         <q-item tag="label" v-ripple>
           <img
-            :src="'http://localhost:8000/storage/cederas/' + cedera.image"
+            :src="urlServer + 'storage/cederas/' + cedera.image"
             alt="Cedera Image"
             width="80"
           />
@@ -270,6 +270,7 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import { useQuasar } from "quasar";
+import { urlServer } from "src/boot/axios";
 import { usePendaftaranStore } from "src/stores/pendaftaran-store";
 import { useCederaStore } from "src/stores/cedera-store";
 

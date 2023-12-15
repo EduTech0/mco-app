@@ -18,11 +18,11 @@
           rounded="20"
           outlined
           dense
-          v-model="name"
           lazy-rules
-          :rules="nameRules"
-          type="name"
           label="name"
+          type="name"
+          v-model="name"
+          :rules="nameRules"
           style="border-radius: 20px; margin-bottom: 5px"
         >
           <template v-slot:prepend>
@@ -34,11 +34,11 @@
         <q-input
           outlined
           dense
-          v-model="email"
-          type="email"
           lazy-rules
-          :rules="emailRules"
           label="Email"
+          type="email"
+          v-model="email"
+          :rules="emailRules"
           style="border-radius: 20px; margin-bottom: 5px"
         >
           <template v-slot:prepend>
@@ -50,11 +50,11 @@
         <q-input
           outlined
           dense
-          v-model="password"
-          :type="passwordFieldType"
           lazy-rules
-          :rules="passwordRules"
           label="Password"
+          :type="passwordFieldType"
+          v-model="password"
+          :rules="passwordRules"
           style="border-radius: 20px; margin-bottom: 5px"
         >
           <template v-slot:prepend>
@@ -73,11 +73,11 @@
         <q-input
           outlined
           dense
-          v-model="repassword"
-          :type="passwordFieldType"
-          lazy-rules
-          :rules="repasswordRules"
           label="Password Confirmation"
+          lazy-rules
+          :type="passwordFieldType"
+          v-model="repassword"
+          :rules="repasswordRules"
           style="border-radius: 20px; margin-bottom: 5px"
         >
           <template v-slot:prepend>
@@ -98,10 +98,10 @@
         rounded
         size="lg"
         color="primary"
-        :disable="loading"
-        @click="submit"
-        class="full-width text-white"
         label="Register"
+        @click="submit"
+        :disable="loading"
+        class="full-width text-white"
         style="margin-top: 50px"
       />
 

@@ -101,7 +101,7 @@
         <q-td :props="props">
           <div text-color="white" dense square>
             <img
-              :src="'http://localhost:8000/storage/cederas/' + props.row.image"
+              :src="urlServer + 'storage/cederas/' + props.row.image"
               alt="Cedera Image"
               width="80"
             />
@@ -178,10 +178,7 @@
                     square
                   >
                     <img
-                      :src="
-                        'http://localhost:8000/storage/cederas/' +
-                        props.row.image
-                      "
+                      :src="urlServer + 'storage/cederas/' + props.row.image"
                       alt="Cedera Image"
                       width="80"
                     />
@@ -235,6 +232,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useQuasar } from "quasar";
+import { urlServer } from "src/boot/axios";
 import { useCederaStore } from "src/stores/cedera-store";
 import AddCedera from "./CreateCedera.vue";
 import EditCedera from "./EditCedera.vue";

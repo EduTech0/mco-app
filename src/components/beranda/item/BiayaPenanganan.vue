@@ -12,7 +12,7 @@
         <q-card class="my-card q-my-md">
           <q-card-section horizontal>
             <img
-              :src="'http://localhost:8000/storage/cederas/' + cedera.image"
+              :src="urlServer + 'storage/cederas/' + cedera.image"
               alt="Cedera Image"
               width="80"
             />
@@ -31,6 +31,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import { urlServer } from "src/boot/axios";
 import { useCederaStore } from "src/stores/cedera-store";
 
 const cederaStore = useCederaStore();

@@ -17,11 +17,11 @@
         <q-input
           outlined
           dense
-          v-model="email"
-          type="email"
           lazy-rules
-          :rules="emailRules"
           label="Email"
+          type="email"
+          v-model="email"
+          :rules="emailRules"
           style="border-radius: 20px; margin-bottom: 10px"
         >
           <template v-slot:prepend>
@@ -33,11 +33,12 @@
         <q-input
           outlined
           dense
-          v-model="password"
-          :type="passwordFieldType"
           lazy-rules
-          :rules="passwordRules"
           label="Password"
+          :type="passwordFieldType"
+          v-model="password"
+          :rules="passwordRules"
+          style="border-radius: 20px; margin-bottom: 10px"
         >
           <template v-slot:prepend>
             <q-icon name="lock" color="dark" />
@@ -61,10 +62,10 @@
         rounded
         size="lg"
         color="primary"
-        :disable="loading"
-        @click="submit"
-        class="full-width text-white"
         label="Login"
+        @click="submit"
+        :disable="loading"
+        class="full-width text-white"
       />
 
       <div class="text-center q-mt-md">
