@@ -2,8 +2,13 @@
   <q-page class="row justify-center items-center">
     <div class="col-10">
       <div
-        class="text-h5 text-primary text-bold q-mb-lg"
-        style="font-size: 30px; font-family: Poppins"
+        class="text-primary q-mb-lg"
+        style="
+          font-size: 40px;
+          font-weight: 800;
+          line-height: 48px;
+          letter-spacing: -0.3px;
+        "
       >
         Log In
       </div>
@@ -76,9 +81,9 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
 import { useQuasar } from "quasar";
 import { useRouter } from "vue-router";
-import { ref } from "vue";
 import { useAuthStore } from "src/stores/auth-store";
 
 const $q = useQuasar();
@@ -119,13 +124,13 @@ const submit = async () => {
     if (res.data.status === "Success") {
       localStorage.setItem("token", res.data.data.token);
       router.push({ name: "beranda" });
-      window.location.reload();
 
       $q.notify({
         message: res.data.message,
         icon: "check",
         color: "positive",
       });
+      window.location.reload();
     } else {
       $q.notify({
         icon: "warning",
@@ -144,23 +149,3 @@ const submit = async () => {
   loading.value = false;
 };
 </script>
-
-<style scoped>
-.q-card-login {
-  max-width: 400px;
-  margin: 0 auto;
-}
-
-.q-card-section {
-  text-align: center;
-}
-
-.q-form {
-  max-width: 300px;
-  margin: 0 auto;
-}
-
-.q-btn {
-  width: 100%;
-}
-</style>

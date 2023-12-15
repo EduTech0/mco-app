@@ -1,5 +1,5 @@
 <template>
-  <div id="q-app">
+  <div id="q-app" class="high">
     <q-layout view="lHh Lpr fff">
       <q-page-container>
         <router-view v-slot="{ Component }">
@@ -13,3 +13,14 @@
 </template>
 
 <script setup></script>
+
+<style>
+::-webkit-scrollbar {
+  display: none;
+}
+.high {
+  max-width: 500px;
+  margin: auto;
+  border: 1px solid #b2b2b2;
+}
+</style>

@@ -1,123 +1,127 @@
 <template>
-  <q-page
-    class="window-height window-width row justify-center items-center"
-    style="background: linear-gradient(#0079ca, #ffffff)"
-  >
-    <div class="column q-pa-lg">
-      <div class="row">
-        <q-card square class="shadow-24" style="width: 400px; height: 580px">
-          <q-card-section class="bg-deep-purple-7 q-pa-sm text-center">
-            <h4 class="text-h5 text-white q-my-md">Register dulu cuy</h4>
-          </q-card-section>
+  <q-page class="row justify-center items-center">
+    <div class="col-10">
+      <div
+        class="text-primary q-mb-lg"
+        style="
+          font-size: 40px;
+          font-weight: 800;
+          line-height: 48px;
+          letter-spacing: -0.3px;
+        "
+      >
+        Register
+      </div>
+      <q-form>
+        <!-- Name -->
+        <q-input
+          rounded="20"
+          outlined
+          dense
+          v-model="name"
+          lazy-rules
+          :rules="nameRules"
+          type="name"
+          label="name"
+          style="border-radius: 20px; margin-bottom: 5px"
+        >
+          <template v-slot:prepend>
+            <q-icon name="person" color="dark" />
+          </template>
+        </q-input>
 
-          <q-card-section>
-            <q-form class="q-px-sm q-pt-xl">
-              <!-- name -->
-              <q-input
-                square
-                clearable
-                v-model="name"
-                lazy-rules
-                :rules="nameRules"
-                type="name"
-                label="name"
-              >
-                <template v-slot:prepend>
-                  <q-icon name="person" />
-                </template>
-              </q-input>
+        <!-- Email -->
+        <q-input
+          outlined
+          dense
+          v-model="email"
+          type="email"
+          lazy-rules
+          :rules="emailRules"
+          label="Email"
+          style="border-radius: 20px; margin-bottom: 5px"
+        >
+          <template v-slot:prepend>
+            <q-icon name="email" color="dark" />
+          </template>
+        </q-input>
 
-              <!-- Email -->
-              <q-input
-                square
-                clearable
-                v-model="email"
-                type="email"
-                lazy-rules
-                :rules="emailRules"
-                label="Email"
-              >
-                <template v-slot:prepend>
-                  <q-icon name="email" />
-                </template>
-              </q-input>
-
-              <!-- Password -->
-              <q-input
-                square
-                clearable
-                v-model="password"
-                :type="passwordFieldType"
-                lazy-rules
-                :rules="passwordRules"
-                label="Password"
-              >
-                <template v-slot:prepend>
-                  <q-icon name="lock" />
-                </template>
-                <template v-slot:append>
-                  <q-icon
-                    :name="visibilityIcon"
-                    @click="switchVisibility"
-                    class="cursor-pointer"
-                  />
-                </template>
-              </q-input>
-
-              <!-- Password Confirmation -->
-              <q-input
-                square
-                clearable
-                v-model="repassword"
-                :type="passwordFieldType"
-                lazy-rules
-                :rules="repasswordRules"
-                label="Password Confirmation"
-              >
-                <template v-slot:prepend>
-                  <q-icon name="lock" />
-                </template>
-                <template v-slot:append>
-                  <q-icon
-                    :name="visibilityIcon"
-                    @click="switchVisibility"
-                    class="cursor-pointer"
-                  />
-                </template>
-              </q-input>
-            </q-form>
-          </q-card-section>
-
-          <q-card-actions class="q-px-lg">
-            <q-btn
-              unelevated
-              size="lg"
-              color="secondary"
-              :disable="loading"
-              @click="submit"
-              class="full-width text-white"
-              label="Register"
+        <!-- Password -->
+        <q-input
+          outlined
+          dense
+          v-model="password"
+          :type="passwordFieldType"
+          lazy-rules
+          :rules="passwordRules"
+          label="Password"
+          style="border-radius: 20px; margin-bottom: 5px"
+        >
+          <template v-slot:prepend>
+            <q-icon name="lock" color="dark" />
+          </template>
+          <template v-slot:append>
+            <q-icon
+              :name="visibilityIcon"
+              @click="switchVisibility"
+              class="cursor-pointer"
             />
-          </q-card-actions>
+          </template>
+        </q-input>
 
-          <q-btn
-            to="/login"
-            flat
-            style="color: #003f88"
-            label="Sudah mempunyai akun?"
-          >
-            <q-tooltip>Login</q-tooltip>
-          </q-btn>
-        </q-card>
+        <!-- Password Confirmation -->
+        <q-input
+          outlined
+          dense
+          v-model="repassword"
+          :type="passwordFieldType"
+          lazy-rules
+          :rules="repasswordRules"
+          label="Password Confirmation"
+          style="border-radius: 20px; margin-bottom: 5px"
+        >
+          <template v-slot:prepend>
+            <q-icon name="lock" color="dark" />
+          </template>
+          <template v-slot:append>
+            <q-icon
+              :name="visibilityIcon"
+              @click="switchVisibility"
+              class="cursor-pointer"
+            />
+          </template>
+        </q-input>
+      </q-form>
+
+      <q-btn
+        unelevated
+        rounded
+        size="lg"
+        color="primary"
+        :disable="loading"
+        @click="submit"
+        class="full-width text-white"
+        label="Register"
+        style="margin-top: 50px"
+      />
+
+      <div class="text-center q-mt-md">
+        already have an account?
+        <router-link
+          to="/login"
+          class="text-warning"
+          style="text-decoration: none"
+          >sign in</router-link
+        >
       </div>
     </div>
   </q-page>
 </template>
 
 <script setup>
+import { ref } from "vue";
 import { useQuasar } from "quasar";
 import { useRouter } from "vue-router";
-import { ref } from "vue";
 import { useAuthStore } from "src/stores/auth-store";
 
 const $q = useQuasar();
@@ -174,13 +178,13 @@ const submit = async () => {
     if (res.data.status === "Success") {
       localStorage.setItem("token", res.data.data.token);
       router.push({ name: "beranda" });
-      window.location.reload();
 
       $q.notify({
         message: res.data.message,
         icon: "check",
         color: "positive",
       });
+      window.location.reload();
     } else {
       $q.notify({
         icon: "warning",
@@ -199,23 +203,3 @@ const submit = async () => {
   loading.value = false;
 };
 </script>
-
-<style scoped>
-.q-card-login {
-  max-width: 400px;
-  margin: 0 auto;
-}
-
-.q-card-section {
-  text-align: center;
-}
-
-.q-form {
-  max-width: 300px;
-  margin: 0 auto;
-}
-
-.q-btn {
-  width: 100%;
-}
-</style>
