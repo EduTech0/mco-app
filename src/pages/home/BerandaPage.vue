@@ -5,43 +5,42 @@
   </div>
 
   <!-- Page -->
-  <div v-else>
-    <q-header bordered class="bg-grey-3 text-primary">
-      <div class="row">
-        <div class="col-10">
-          <q-toolbar>
-            <q-toolbar-title>
-              <div class="text-subtitle1 text-dark">Selamat datang,</div>
-              <div class="text-dark text-subtitle2" style="opacity: 0.7">
-                {{ profile.name }}
-              </div>
-            </q-toolbar-title>
-          </q-toolbar>
-        </div>
-        <div class="col-2 self-center q-pl-md" v-if="profile.role === 'Admin'">
-          <q-btn flat to="/dashboard/home" class="bg-grey-3">
-            <q-icon name="manage_accounts" color="primary" size="32px" />
-          </q-btn>
-        </div>
-      </div>
-    </q-header>
-
+  <div v-else style="
+    background: linear-gradient(to right top, #045951, white);
+  ">
     <q-page class="q-pa-sm">
-      <!-- Banner -->
       <div class="row q-pa-sm">
-        <q-img src="../../assets/banner.jpg" style="border-radius: 20px">
-          <!-- <div class="text-h5 absolute-bottom text-right">Title</div> -->
-        </q-img>
+        <div
+          class="banner-container"
+          style="
+            border-radius: 30px;
+            width: 100%;
+            height: 120px;
+            background: linear-gradient(to left, #045951, white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+          "
+        >
+          <div style="order: 2;">
+            <img :src="mainIcon"/>
+          </div>
+
+          <div style="order: 1; color: black;">
+            <span style="font-size: 30px; line-height: 1.5; font-weight: 900;">MCO</span> <br/>
+            <div style="line-height: 1; font-weight: 600; ">
+            <span style="font-size: 10px;">Kemudahan Kesehatan dalam Satu Aplikasi,</span><br/>
+            <span style="font-size: 10px;">Kesehatan di Ujung Jari Anda</span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- List Antrian -->
-      <ListAntrian />
-
-      <!-- Action -->
+      <div style="margin-top: 10px;">
+        <ListAntrian />
+      </div>
       <ItemList />
-
-      <!-- Pendaftaran -->
-      <PendaftaranSaya />
     </q-page>
   </div>
 </template>
@@ -52,7 +51,7 @@ import { useCustomerStore } from "src/stores/customer-store";
 import LoadingPage from "components/beranda/LoadingPage.vue";
 import ListAntrian from "components/beranda/ListAntrian.vue";
 import ItemList from "components/beranda/ItemList.vue";
-import PendaftaranSaya from "components/beranda/PendaftaranSaya.vue";
+import mainIcon from "../../svg/mainIcon.svg"
 
 const customerStore = useCustomerStore();
 const loading = ref(true);

@@ -1,12 +1,4 @@
 <template>
-  <div
-    class="text-subtitle2 text-bold"
-    style="font-size: 17px; margin-bottom: -20px; margin-top: 30px"
-    v-if="tickets.length > 0"
-  >
-    Pendaftaran Saya :
-  </div>
-
   <!-- Loading -->
   <div v-if="loading">
     <div

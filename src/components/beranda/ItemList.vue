@@ -1,18 +1,18 @@
 <template>
   <div class="row q-mt-md">
     <!-- Form Pendaftaran -->
-    <q-card
+    <div
       class="col-4 text-center hover card"
       @click="(formPendaftaran = true), (danger = true)"
     >
       <q-card-section>
         <q-icon
           class="q-mb-sm"
-          color="indigo-10"
+          color="white"
           name="description"
-          size="32px"
+          size="40px"
         />
-        <div class="text-subtitle2">Form Pendaftaran</div>
+        <div class="text-subtitle2" style="color:white;">Form Pendaftaran</div>
       </q-card-section>
       <q-dialog
         v-model="formPendaftaran"
@@ -25,7 +25,7 @@
       </q-dialog>
       <!-- Warning -->
       <q-dialog v-model="danger" :position="bot">
-        <q-card class="q-pa-lg" style="border-radius: 20px 20px 0 0">
+        <div class="q-pa-lg" style="border-radius: 20px 20px 0 0">
           <div class="column items-center">
             <q-icon name="warning" size="50px" />
           </div>
@@ -42,23 +42,23 @@
               @click="danger = false"
             />
           </div>
-        </q-card>
+        </div>
       </q-dialog>
-    </q-card>
+    </div>
 
     <!-- Status Registrasi -->
-    <q-card
+    <div
       class="col-4 text-center hover card"
       @click="statusRegistrasi = true"
     >
       <q-card-section>
         <q-icon
           class="q-mb-sm"
-          color="indigo-10"
+          color="white"
           name="event_available"
-          size="32px"
+          size="40px"
         />
-        <div class="text-subtitle2">Status Registrasi</div>
+        <div class="text-subtitle2" style="color:white;">Status Registrasi</div>
       </q-card-section>
       <q-dialog
         v-model="statusRegistrasi"
@@ -69,21 +69,21 @@
       >
         <StatusRegistrasi />
       </q-dialog>
-    </q-card>
+    </div>
 
     <!-- Biaya Penanganan -->
-    <q-card
+    <div
       class="col-4 text-center hover card"
       @click="biayaPenanganan = true"
     >
       <q-card-section>
         <q-icon
           class="q-mb-sm"
-          color="indigo-10"
+          color="white"
           name="price_change"
-          size="32px"
+          size="40px"
         />
-        <div class="text-subtitle2">Biaya Penanganan</div>
+        <div class="text-subtitle2" style="color:white;">Biaya Penanganan</div>
       </q-card-section>
       <q-dialog
         v-model="biayaPenanganan"
@@ -94,16 +94,16 @@
       >
         <BiayaPenanganan />
       </q-dialog>
-    </q-card>
+    </div>
 
     <!-- Informasi Jadwal -->
-    <q-card
+    <div
       class="col-4 text-center hover card"
       @click="informasiJadwal = true"
     >
       <q-card-section>
-        <q-icon class="q-mb-sm" color="indigo-10" name="info" size="32px" />
-        <div class="text-subtitle2">Informasi Jadwal</div>
+        <q-icon class="q-mb-sm" color="white" name="info" size="40px" />
+        <div class="text-subtitle2" style="color:white;">Informasi Jadwal</div>
       </q-card-section>
       <q-dialog
         v-model="informasiJadwal"
@@ -114,18 +114,18 @@
       >
         <InformasiJadwal />
       </q-dialog>
-    </q-card>
+    </div>
 
     <!-- FAQ -->
-    <q-card class="col-4 text-center hover card" @click="faq = true">
+    <div class="col-4 text-center hover card" @click="faq = true">
       <q-card-section>
         <q-icon
           class="q-mb-sm"
-          color="indigo-10"
+          color="white"
           name="live_help"
-          size="32px"
+          size="40px"
         />
-        <div class="text-subtitle2">FAQ</div>
+        <div class="text-subtitle2" style="color:white;">FAQ</div>
       </q-card-section>
       <q-dialog
         v-model="faq"
@@ -136,7 +136,7 @@
       >
         <FAQ />
       </q-dialog>
-    </q-card>
+    </div>
   </div>
 </template>
 
@@ -168,5 +168,6 @@ const faq = ref(false);
 
 .card {
   box-shadow: none;
+  border: none;
 }
 </style>
