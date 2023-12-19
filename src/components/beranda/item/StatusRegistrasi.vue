@@ -7,12 +7,6 @@
 
     <!-- Loading -->
     <q-card-section v-if="loading">
-      <div
-        class="text-subtitle2 text-bold"
-        style="font-size: 17px; margin-bottom: -20px; margin-top: 30px"
-      >
-        <q-skeleton type="text" width="150px" height="50px" />
-      </div>
       <div class="q-pa-lg">
         <q-skeleton
           height="150px"
@@ -100,24 +94,29 @@
           </q-card>
 
           <q-card class="card-right">
-            <div style="cursor: pointer" @click="choose(ticket)">
-              <h5 class="text-center text-bold">KLIK DISINI</h5>
+            <div
+              class="absolute-center"
+              style="cursor: pointer"
+              v-close-popup
+              @click="choose(ticket)"
+            >
+              <div class="text-h5 text-center text-bold">KLIK DISINI</div>
             </div>
           </q-card>
         </div>
       </div>
     </q-card-section>
   </q-card>
-
-  <!-- Data -->
 </template>
 
 <script setup>
 import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import { useQuasar } from "quasar";
 import { usePendaftaranStore } from "src/stores/pendaftaran-store";
 
 const $q = useQuasar();
+const router = useRouter();
 const pendaftaranStore = usePendaftaranStore();
 
 const tickets = ref([]);
@@ -140,15 +139,8 @@ onMounted(() => {
 // Choose Ticket
 const choose = (ticket) => {
   if (ticket.status === "Terverifikasi") {
-    $q.dialog({
-      title: "Coming Soon!",
-      message: "",
-      persistent: true,
-      ok: {
-        label: "ok",
-        color: "primary",
-      },
-    });
+    const id = ticket.id;
+    router.push({ name: "pembayaran", params: { id } });
   } else {
     $q.dialog({
       title: "Gagal",

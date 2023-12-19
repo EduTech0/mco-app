@@ -1,13 +1,28 @@
 <template>
   <!-- Loading -->
   <div v-if="loading">
-    <div
-      class="text-subtitle2 text-bold"
-      style="font-size: 17px; margin-bottom: -20px; margin-top: 30px"
-    >
-      <q-skeleton type="text" width="150px" height="50px" />
-    </div>
     <div class="q-pa-lg">
+      <q-skeleton
+        height="150px"
+        width="100%"
+        class="q-my-sm"
+        square
+        style="border-radius: 10px"
+      />
+      <q-skeleton
+        height="150px"
+        width="100%"
+        class="q-my-sm"
+        square
+        style="border-radius: 10px"
+      />
+      <q-skeleton
+        height="150px"
+        width="100%"
+        class="q-my-sm"
+        square
+        style="border-radius: 10px"
+      />
       <q-skeleton
         height="150px"
         width="100%"
@@ -19,7 +34,7 @@
   </div>
 
   <!-- Ticket -->
-  <div v-for="ticket in tickets" :key="ticket.id">
+  <div v-else v-for="ticket in tickets" :key="ticket.id">
     <div
       class="ticket"
       :style="
@@ -79,10 +94,12 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import { useQuasar } from "quasar";
 import { usePendaftaranStore } from "src/stores/pendaftaran-store";
 
 const $q = useQuasar();
+const router = useRouter();
 const pendaftaranStore = usePendaftaranStore();
 
 const tickets = ref([]);
@@ -105,15 +122,8 @@ onMounted(() => {
 // Choose Ticket
 const choose = (ticket) => {
   if (ticket.status === "Terverifikasi") {
-    $q.dialog({
-      title: "Coming Soon!",
-      message: "",
-      persistent: true,
-      ok: {
-        label: "ok",
-        color: "primary",
-      },
-    });
+    const id = ticket.id;
+    router.push({ name: "pembayaran", params: { id } });
   } else {
     $q.dialog({
       title: "Gagal",

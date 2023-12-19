@@ -47,7 +47,7 @@ export const usePendaftaranStore = defineStore("pendaftaran", {
       }
     },
 
-    async showPendaftaran() {
+    async showPendaftaran(id) {
       try {
         return await server.get(`api/pendaftaran/${id}`);
       } catch (error) {
