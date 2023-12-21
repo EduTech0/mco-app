@@ -21,7 +21,7 @@
           <!-- Kartu Jadwal untuk Tanggal Ini -->
           <div v-for="jadwal in dateGroup" :key="jadwal.id">
             <q-card
-              class="q-my-md"
+              class="q-my-md cursor-pointer"
               :style="
                 jadwal.tersisa === 0
                   ? 'border-right: 4px solid #ff0000a8;'
@@ -85,7 +85,8 @@
             color="primary"
             label="Ya"
             class="q-mx-lg"
-            @click="bayar(jadwal)"
+            :disable="loading"
+            @click="bayar(jadwalChoosed.id)"
           />
         </div>
       </q-card-section>
@@ -184,6 +185,8 @@ const $q = useQuasar();
 const route = useRoute();
 const pendaftaranStore = usePendaftaranStore();
 const jadwalStore = useJadwalStore();
+const loading = ref(false);
+
 const jadwals = ref([]);
 const pendaftaran = ref("");
 const jadwalSelected = ref(false);
@@ -240,7 +243,7 @@ const sortedGroupedJadwals = computed(() => {
 
 // Pilih Jadwal
 const jadwalChoosed = ref("");
-const choose = (jadwal) => {
+const choose = async (jadwal) => {
   jadwalChoosed.value = jadwal;
   if (jadwal.tersisa === 0) {
     $q.dialog({
@@ -258,9 +261,45 @@ const choose = (jadwal) => {
   }
 };
 
+// Add Jadwal
+const addJadwal = async (jadwalId) => {
+  loading.value = true;
+  const data = ref({
+    id: route.params.id,
+    jadwal: jadwalId,
+  });
+  console.log(data.value);
+  try {
+    const res = await pendaftaranStore.addJadwal(data.value);
+
+    if (res.data && res.data.status === "Success") {
+      $q.notify({
+        message: res.data.message,
+        icon: "check",
+        color: "positive",
+      });
+    } else {
+      $q.notify({
+        message: "Data Gagal Ditambah",
+        icon: "warning",
+        color: "negative",
+      });
+    }
+    dialogPembayaran.value = true;
+  } catch (error) {
+    console.error("Error submitting form:", error);
+    $q.notify({
+      color: "negative",
+      icon: "warning",
+      message: "Terjadi kesalahan. Mohon coba lagi.",
+    });
+  }
+  loading.value = false;
+};
+
 // Pembayaran
-const bayar = (jadwal) => {
-  dialogPembayaran.value = true;
+const bayar = (jadwalId) => {
+  addJadwal(jadwalId);
 };
 </script>
 

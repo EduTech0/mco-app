@@ -95,15 +95,13 @@ const data = ref({
   id: cedera.id,
   name: cedera.name,
   harga: cedera.harga,
-  image: null,
+  image: cedera.image,
 });
 
 // Disabled Button
 const loading = ref(false);
 const disabledButton = computed(() => {
-  return (
-    loading.value || !data.value.name || !data.value.harga || !data.value.image
-  );
+  return loading.value || !data.value.name || !data.value.harga;
 });
 
 // Validate

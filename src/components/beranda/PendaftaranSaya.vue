@@ -85,7 +85,7 @@
           style="cursor: pointer"
           @click="choose(ticket)"
         >
-          <div class="text-h5 text-center text-bold">KLIK DISINI</div>
+          <div class="text-h6 text-center text-bold">PILIH JADWAL</div>
         </div>
       </q-card>
     </div>
