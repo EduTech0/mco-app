@@ -264,11 +264,13 @@ const choose = async (jadwal) => {
 // Add Jadwal
 const addJadwal = async (jadwalId) => {
   loading.value = true;
+
   const data = ref({
-    id: route.params.id,
+    id: pendaftaran.value.id,
     jadwal: jadwalId,
   });
   console.log(data.value);
+
   try {
     const res = await pendaftaranStore.addJadwal(data.value);
 
@@ -285,6 +287,7 @@ const addJadwal = async (jadwalId) => {
         color: "negative",
       });
     }
+
     dialogPembayaran.value = true;
   } catch (error) {
     console.error("Error submitting form:", error);
@@ -294,6 +297,7 @@ const addJadwal = async (jadwalId) => {
       message: "Terjadi kesalahan. Mohon coba lagi.",
     });
   }
+
   loading.value = false;
 };
 
