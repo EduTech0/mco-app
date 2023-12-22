@@ -59,14 +59,14 @@
 
   <!-- Dialog Jadwal Selected -->
   <q-dialog v-model="jadwalSelected" position="bottom">
-    <q-card>
-      <q-card-section class="text-center" style="font-size: 15px">
-        <div class="text-bold q-mb-md">Reservasi Jadwal</div>
-        <div class="q-mb-md">
-          <div>{{ jadwalChoosed.tanggal }}</div>
-          <div>{{ jadwalChoosed.waktu }}</div>
-        </div>
-      </q-card-section>
+  <q-card>
+    <q-card-section class="text-center" style="font-size: 15px">
+      <div class="text-bold q-mb-md">Reservasi Jadwal</div>
+      <div class="q-mb-md">
+        <div>Tanggal: {{ jadwalChoosed.tanggal }}</div>
+        <div>Waktu: {{ jadwalChoosed.waktu }}</div>
+      </div>
+    </q-card-section>
       <q-card-section class="row justify-center">
         <div class="text-center col-12">
           Apakah anda yakin memilih jadwal ini ?
@@ -287,7 +287,7 @@ const addJadwal = async (jadwalId) => {
     }
     dialogPembayaran.value = true;
   } catch (error) {
-    console.error("Error submitting form:", error);
+    console.log(error);
     $q.notify({
       color: "negative",
       icon: "warning",
