@@ -128,20 +128,18 @@ const dialogPembayaran = ref(false);
 const getJadwal = async () => {
   try {
     const res = await jadwalStore.allJadwal();
-    console.log('Jadwal API Response:', res.data);
     jadwals.value = res.data.data;
   } catch (error) {
-    console.error("Error fetching Jadwal data:", error);
+    console.error("Error fetching data:", error);
   }
 };
 
 const getPendaftaran = async (id) => {
   try {
     const res = await pendaftaranStore.showPendaftaran(id);
-    console.log('Pendaftaran API Response:', res.data);
     pendaftaran.value = res.data.data;
   } catch (error) {
-    console.error("Error fetching Pendaftaran data:", error);
+    console.error("Error fetching data:", error);
   }
 };
 
