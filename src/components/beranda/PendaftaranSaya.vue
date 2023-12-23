@@ -45,7 +45,7 @@
           : 'background-color: #0025f594'
       "
     >
-      <q-card class="card-left">
+    <q-card class="card-left">
         <!-- Nama -->
         <div>
           <span class="text-grey" style="font-size: 12px">Nama</span>
@@ -77,7 +77,7 @@
             }}
           </div>
         </div>
-      </q-card>
+     </q-card>
 
       <q-card class="card-right">
         <div
@@ -85,7 +85,9 @@
           style="cursor: pointer"
           @click="choose(ticket)"
         >
-          <div class="text-h6 text-center text-bold">PILIH JADWAL</div>
+          <div class="text-h6 text-center text-bold text-container">
+            {{ ticket.status === 'Dalam Antrian' ? 'TUNGGU VERIFIKASI' : 'PILIH JADWAL' }}
+          </div>
         </div>
       </q-card>
     </div>
@@ -127,7 +129,7 @@ const choose = (ticket) => {
   } else {
     $q.dialog({
       title: "Gagal",
-      message: "Silakan menunggu pendaftaran ini disetujui.",
+      message: "Silakan menunggu pendaftaran ini verifikasi.",
       persistent: true,
       ok: {
         label: "ok",
@@ -163,5 +165,10 @@ const choose = (ticket) => {
 .card-right {
   width: 30%;
   border-left: 0.18em dashed #7e7e7e;
+}
+
+.text-container {
+  font-size: small;
+  line-height: 1;
 }
 </style>
