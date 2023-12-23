@@ -145,16 +145,16 @@
 
         <!-- Keluhan -->
         <q-select
-          icon="keyboard_arrow_down"
-          color="primary"
-          @click="cederasList = true"
-          filled
-          v-model="data.cederas"
-          multiple
-          use-chips
-          stack-label
-          label="Keluhan*"
-          :rules="[(val) => (val && val.length > 0) || 'Pilih titik cedera']"
+        icon="keyboard_arrow_down"
+        color="primary"
+        @click="cederasList = true"
+        filled
+        v-model="selectedCederas"
+        multiple
+        use-chips
+        stack-label
+        label="Keluhan*"
+        :rules="[(val) => (val && val.length > 0) || 'Pilih titik cedera']"
         />
 
         <!-- Penyebab -->
@@ -266,11 +266,6 @@
     <q-card>
       <div v-for="cedera in cederas" :key="cedera.id">
         <q-item tag="label" v-ripple>
-          <img
-            :src="'http:///storage/cederas/' + cedera.image"
-            alt="Cedera Image"
-            width="80"
-          />
           <q-item-section>
             <q-item-label>{{ cedera.name }}</q-item-label>
             <q-item-label caption>Rp.{{ cedera.harga }}</q-item-label>
@@ -368,6 +363,13 @@ const data = ref({
   lama_cedera: "",
   jumlah_terapi: "",
   image: null,
+});
+
+const selectedCederas = computed(() => {
+  return data.value.cederas.map((id) => {
+    const selectedCedera = cederas.value.find((cedera) => cedera.id === id);
+    return selectedCedera ? selectedCedera.name : '';
+  });
 });
 
 // Keluhan

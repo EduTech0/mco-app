@@ -248,7 +248,7 @@ const choose = (ticket) => {
   } else {
     $q.dialog({
       title: "Gagal",
-      message: "Silakan menunggu pendaftaran ini disetujui.",
+      message: "Silakan menunggu pendaftaran ini verifikasi.",
       persistent: true,
       ok: {
         label: "ok",
