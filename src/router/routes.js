@@ -34,14 +34,14 @@ const routes = [
         name: "beranda",
       },
       {
-        path: "notifikasi",
-        component: () => import("pages/home/NotifikasiPage.vue"),
-        name: "notifikasi",
+        path: "riwayat",
+        component: () => import("pages/home/RiwayatPage.vue"),
+        name: "riwayat",
       },
       {
-        path: "saya",
-        component: () => import("pages/home/SayaPage.vue"),
-        name: "saya",
+        path: "profile",
+        component: () => import("pages/home/ProfilePage.vue"),
+        name: "profile",
       },
       {
         path: "pembayaran/:id",
@@ -57,7 +57,7 @@ const routes = [
     meta: { requiresAuth: true },
     children: [
       {
-        path: "home",
+        path: "",
         component: () => import("pages/dashboard/HomeDashboardPage.vue"),
         name: "home",
       },

@@ -140,9 +140,9 @@ import { useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
 import { useAuthStore } from "src/stores/auth-store";
 import { useCustomerStore } from "src/stores/customer-store";
-import SnK from "components/saya/SnKDialog.vue";
-import Location from "components/saya/LocationDialog.vue";
-import Tutorial from "components/saya/TutorialDialog.vue";
+import SnK from "components/profile/SnKDialog.vue";
+import Location from "components/profile/LocationDialog.vue";
+import Tutorial from "components/profile/TutorialDialog.vue";
 
 const $q = useQuasar();
 const router = useRouter();

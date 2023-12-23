@@ -62,7 +62,10 @@
     >
       <q-list>
         <!-- Home -->
-        <q-item to="/dashboard/home" active-class="q-item-no-link-highlighting">
+        <q-item
+          :to="{ name: 'home' }"
+          active-class="q-item-no-link-highlighting"
+        >
           <q-item-section avatar>
             <q-icon name="dashboard" />
           </q-item-section>
@@ -73,7 +76,7 @@
 
         <!-- Customer -->
         <q-item
-          to="/dashboard/customer"
+          :to="{ name: 'customer' }"
           active-class="q-item-no-link-highlighting"
         >
           <q-item-section avatar>
@@ -86,7 +89,7 @@
 
         <!-- Cedera -->
         <q-item
-          to="/dashboard/cedera"
+          :to="{ name: 'cedera' }"
           active-class="q-item-no-link-highlighting"
         >
           <q-item-section avatar>
@@ -99,7 +102,7 @@
 
         <!-- Jadwal -->
         <q-item
-          to="/dashboard/jadwal"
+          :to="{ name: 'jadwal' }"
           active-class="q-item-no-link-highlighting"
         >
           <q-item-section avatar>
@@ -115,7 +118,7 @@
           <q-list class="q-pl-lg">
             <!-- Semua -->
             <q-item
-              to="/dashboard/pendaftaran"
+              :to="{ name: 'semuapendaftaran' }"
               active-class="q-item-no-link-highlighting"
             >
               <q-item-section avatar>
@@ -127,7 +130,7 @@
             </q-item>
             <!-- Belum Terverifikasi -->
             <q-item
-              to="/dashboard/pendaftaran/belumSetuju"
+              :to="{ name: 'belumpendaftaran' }"
               active-class="q-item-no-link-highlighting"
             >
               <q-item-section avatar>
@@ -139,7 +142,7 @@
             </q-item>
             <!-- Sudah Terverifikasi -->
             <q-item
-              to="/dashboard/pendaftaran/sudahSetuju"
+              :to="{ name: 'sudahpendaftaran' }"
               active-class="q-item-no-link-highlighting"
             >
               <q-item-section avatar>
@@ -151,7 +154,7 @@
             </q-item>
             <!-- Selesai -->
             <q-item
-              to="/dashboard/pendaftaran/selesai"
+              :to="{ name: 'selesaipendaftaran' }"
               active-class="q-item-no-link-highlighting"
             >
               <q-item-section avatar>

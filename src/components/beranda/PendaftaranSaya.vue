@@ -135,9 +135,12 @@
             <!-- Edit Keluhan -->
             <q-btn
               push
+              flat
+              no-caps
               color="primary"
               label="Edit Keluhan"
-              size="xs"
+              :size="$q.screen.width <= 370 ? 'xs' : 'sm'"
+              padding="none"
               v-if="
                 ticket.status === 'Terverifikasi' &&
                 ticket.jadwal &&
@@ -147,9 +150,12 @@
             <!-- Ganti Jadwal -->
             <q-btn
               push
+              flat
+              no-caps
               color="primary"
               label="Ganti Jadwal"
-              size="xs"
+              :size="$q.screen.width <= 370 ? 'xs' : 'sm'"
+              padding="none"
               class="float-right"
               v-if="ticket.status === 'Terverifikasi'"
             />
@@ -304,7 +310,7 @@ const bayar = (ticket) => {
   font-size: 11px;
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 450px) {
   .text_header {
     font-size: 10px;
   }
@@ -313,6 +319,17 @@ const bayar = (ticket) => {
   }
   .text_title {
     font-size: 15px;
+  }
+}
+@media only screen and (max-width: 370px) {
+  .text_header {
+    font-size: 8px;
+  }
+  .text_data {
+    font-size: 6px;
+  }
+  .text_title {
+    font-size: 10px;
   }
 }
 </style>

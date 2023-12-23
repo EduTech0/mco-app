@@ -13,13 +13,13 @@
           indicator-color="transparent"
           class="text-grey-8"
         >
-          <q-route-tab to="/beranda" exact clickable v-ripple
+          <q-route-tab :to="{ name: 'beranda' }" exact clickable v-ripple
             ><q-icon name="home" size="20px" />Beranda</q-route-tab
           >
-          <q-route-tab to="/beranda/notifikasi" exact clickable v-ripple
-            ><q-icon name="notifications" size="20px" />Notifikasi</q-route-tab
+          <q-route-tab :to="{ name: 'riwayat' }" exact clickable v-ripple
+            ><q-icon name="history" size="20px" />Riwayat</q-route-tab
           >
-          <q-route-tab to="/beranda/saya" exact clickable v-ripple
+          <q-route-tab :to="{ name: 'profile' }" exact clickable v-ripple
             ><q-icon name="person" size="20px" />Saya</q-route-tab
           >
         </q-tabs>

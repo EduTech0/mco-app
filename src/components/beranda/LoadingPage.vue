@@ -1,21 +1,4 @@
 <template>
-  <q-header bordered class="bg-grey-3 text-primary">
-    <q-item>
-      <q-item-section>
-        <q-item-label>
-          <q-skeleton type="text" width="150px" />
-        </q-item-label>
-        <q-item-label caption>
-          <q-skeleton type="text" width="150px" />
-        </q-item-label>
-      </q-item-section>
-
-      <q-item-section avatar>
-        <q-skeleton type="QAvatar" />
-      </q-item-section>
-    </q-item>
-  </q-header>
-
   <q-page class="q-pa-sm">
     <!-- Banner -->
     <div class="row q-pa-sm">
@@ -23,7 +6,15 @@
         height="100px"
         width="100%"
         square
-        style="border-radius: 20px"
+        style="
+          border-radius: 30px;
+          width: 100%;
+          height: 120px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0 20px;
+        "
       />
     </div>
 
