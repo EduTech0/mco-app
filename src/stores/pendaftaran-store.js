@@ -64,13 +64,13 @@ export const usePendaftaranStore = defineStore("pendaftaran", {
 
     async addJadwal(data) {
       try {
-        return await server.put(`http://localhost:8000/api/pendaftaran/addjadwal/${data.id}`, { jadwal: data.jadwal }, {
+        return await server.put(`api/pendaftaran/addjadwal/${data.id}`, data, {
           headers,
         });
       } catch (error) {
         if (error) throw error;
       }
-    },    
+    },
 
     async editPendaftaran(data) {
       try {
