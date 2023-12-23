@@ -19,7 +19,10 @@
           v-model="data.nama_lengkap"
           label="Nama Lengkap*"
           lazy-rules
-          :rules="[(val) => (val && val.length > 0) || 'Masukkan nama lengkap']"
+          :rules="[
+            (val) => (val && val.length > 0) || 'Masukkan nama lengkap',
+            (val) => (val && val.length <= 20) || 'Maksimal 20 kata',
+          ]"
         />
 
         <!-- Jenis Kelamin -->
@@ -226,7 +229,7 @@
         <div class="column items-center">
           <q-btn
             label="Submit"
-            style="background-color: #045951;"
+            style="background-color: #045951"
             type="submit"
             class="button text-white"
             :disable="loading || isFormIncomplete"

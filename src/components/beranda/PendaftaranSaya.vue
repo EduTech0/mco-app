@@ -46,50 +46,159 @@
       "
     >
       <q-card class="card-left">
-        <!-- Nama -->
-        <div>
-          <span class="text-grey" style="font-size: 12px">Nama</span>
-          <div style="font-size: 11px; font-family: sans-serif">
-            {{ ticket.nama_lengkap }}
-          </div>
-        </div>
+        <div class="row items-center">
+          <!-- Pendaftaran -->
+          <div class="col-6">
+            <!-- Nama -->
+            <div>
+              <span class="text-grey text_header">Nama</span>
+              <div
+                class="text_data"
+                style="font-family: sans-serif; margin-top: -4px"
+              >
+                {{ ticket.nama_lengkap }}
+              </div>
+            </div>
 
-        <!-- Cedera -->
-        <div class="q-my-sm">
-          <span class="text-grey" style="font-size: 12px">Keluhan</span>
-          <div v-for="cedera in ticket.cederas.slice(0, 3)" :key="cedera.id">
-            <div style="font-size: 11px; font-family: sans-serif">
-              - {{ cedera.name }}
+            <!-- Cedera -->
+            <div class="q-my-sm">
+              <span class="text-grey text_header">Keluhan</span>
+              <div v-if="ticket.cederas.length > 0">
+                <div
+                  class="text_data"
+                  style="font-family: sans-serif; margin-top: -4px"
+                >
+                  <span v-if="ticket.cederas.length > 1"
+                    >{{ ticket.cederas[0].name }}, dll</span
+                  >
+                  <span v-else>{{ ticket.cederas[0].name }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Status Pendaftaran -->
+            <div class="q-my-sm">
+              <span class="text-grey text_header">Status Pendaftaran</span>
+              <div
+                class="text_data"
+                style="font-family: sans-serif; margin-top: -4px"
+              >
+                {{
+                  ticket.status === "Dalam Antrian"
+                    ? "Menunggu Verifikasi"
+                    : ticket.status === "Terverifikasi"
+                    ? "Sudah Disetujui"
+                    : "Selesai"
+                }}
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- Status -->
-        <div class="q-my-sm">
-          <span class="text-grey" style="font-size: 12px">Status</span>
-          <div style="font-size: 11px; font-family: sans-serif">
-            {{
-              ticket.status === "Dalam Antrian"
-                ? "Menunggu Verifikasi"
-                : ticket.status === "Terverifikasi"
-                ? "Sudah Disetujui"
-                : "Selesai"
-            }}
+          <!-- Jadwal -->
+          <div class="col-6 text-right">
+            <div v-if="ticket.jadwal && ticket.jadwal.length > 0">
+              <!-- Tanggal -->
+              <div>
+                <span class="text-grey text_header">Tanggal</span>
+                <div
+                  class="text_data"
+                  style="font-family: sans-serif; margin-top: -4px"
+                >
+                  {{ ticket.jadwal[0].tanggal }}
+                </div>
+              </div>
+
+              <!-- Waktu -->
+              <div class="q-my-sm">
+                <span class="text-grey text_header">Waktu</span>
+                <div
+                  class="text_data"
+                  style="font-family: sans-serif; margin-top: -4px"
+                >
+                  {{ ticket.jadwal[0].waktu }}
+                </div>
+              </div>
+
+              <!-- Status Pembayaran -->
+              <div class="q-my-sm">
+                <span class="text-grey text_header">Status Pembayaran</span>
+                <div
+                  class="text_data"
+                  style="font-family: sans-serif; margin-top: -4px"
+                >
+                  Belum Dibayar
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12">
+            <!-- Edit Keluhan -->
+            <q-btn
+              push
+              color="primary"
+              label="Edit Keluhan"
+              size="xs"
+              v-if="
+                ticket.status === 'Terverifikasi' &&
+                ticket.jadwal &&
+                ticket.jadwal.length > 0
+              "
+            />
+            <!-- Ganti Jadwal -->
+            <q-btn
+              push
+              color="primary"
+              label="Ganti Jadwal"
+              size="xs"
+              class="float-right"
+              v-if="ticket.status === 'Terverifikasi'"
+            />
           </div>
         </div>
       </q-card>
 
       <q-card class="card-right">
-        <div
-          class="absolute-center"
-          style="cursor: pointer"
-          @click="choose(ticket)"
-        >
-          <div class="text-h6 text-center text-bold">PILIH JADWAL</div>
+        <div class="absolute-center" style="cursor: pointer">
+          <div
+            v-if="
+              ticket.status === 'Terverifikasi' &&
+              ticket.jadwal &&
+              ticket.jadwal.length > 0
+            "
+            class="text-h6 text-center text-bold text_title"
+            @click="bayar(ticket)"
+          >
+            BAYAR SEKARANG
+          </div>
+          <div
+            v-else-if="ticket.status === 'Selesai'"
+            class="text-h6 text-center text-bold text_title"
+            @click="choose(ticket)"
+          >
+            SELESAI
+          </div>
+          <div
+            v-else
+            class="text-h6 text-center text-bold text_title"
+            @click="choose(ticket)"
+          >
+            PILIH JADWAL
+          </div>
         </div>
       </q-card>
     </div>
   </div>
+
+  <!-- Pembayaran -->
+  <q-dialog
+    v-model="dialogPembayaran"
+    persistent
+    maximized
+    transition-show="slide-up"
+    transition-hide="slide-down"
+  >
+    <PembayaranDialog :pendaftaran="pendaftaran" />
+  </q-dialog>
 </template>
 
 <script setup>
@@ -97,6 +206,7 @@ import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useQuasar } from "quasar";
 import { usePendaftaranStore } from "src/stores/pendaftaran-store";
+import PembayaranDialog from "./PembayaranDialog.vue";
 
 const $q = useQuasar();
 const router = useRouter();
@@ -104,6 +214,7 @@ const pendaftaranStore = usePendaftaranStore();
 
 const tickets = ref([]);
 const loading = ref(true);
+const dialogPembayaran = ref(false);
 
 // Get Ticket
 const getTicket = async () => {
@@ -124,6 +235,16 @@ const choose = (ticket) => {
   if (ticket.status === "Terverifikasi") {
     const id = ticket.id;
     router.push({ name: "pembayaran", params: { id } });
+  } else if (ticket.status === "Selesai") {
+    $q.dialog({
+      title: "Info",
+      message: "Pendaftaran sudah selesai.",
+      persistent: true,
+      ok: {
+        label: "ok",
+        color: "primary",
+      },
+    });
   } else {
     $q.dialog({
       title: "Gagal",
@@ -135,6 +256,13 @@ const choose = (ticket) => {
       },
     });
   }
+};
+
+// Bayar
+const pendaftaran = ref("");
+const bayar = (ticket) => {
+  pendaftaran.value = ticket;
+  dialogPembayaran.value = true;
 };
 </script>
 
@@ -163,5 +291,28 @@ const choose = (ticket) => {
 .card-right {
   width: 30%;
   border-left: 0.18em dashed #7e7e7e;
+}
+
+.text_title {
+  font-size: 20px;
+}
+
+.text_header {
+  font-size: 12px;
+}
+.text_data {
+  font-size: 11px;
+}
+
+@media only screen and (max-width: 600px) {
+  .text_header {
+    font-size: 10px;
+  }
+  .text_data {
+    font-size: 9px;
+  }
+  .text_title {
+    font-size: 15px;
+  }
 }
 </style>

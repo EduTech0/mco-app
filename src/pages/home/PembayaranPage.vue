@@ -101,76 +101,7 @@
     transition-show="slide-up"
     transition-hide="slide-down"
   >
-    <q-card class="high">
-      <q-card-section class="bg-primary q-py-sm text-white shadow">
-        <q-btn
-          dense
-          flat
-          icon="arrow_back"
-          v-close-popup
-          class="absolute-left"
-        />
-        <div class="text-subtitle1 text-center q-py-sm" style="font-size: 20px">
-          Konfirmasi Pembayaran
-        </div>
-      </q-card-section>
-
-      <q-card-section>
-        <div
-          style="
-            border: 3px #3b3b3b6c solid;
-            border-radius: 20px;
-            font-size: 15px;
-            font-family: sans-serif;
-            padding: 0 20px;
-          "
-        >
-          <div class="q-my-md">
-            <span class="text-grey">Nama</span>
-            <div>{{ pendaftaran.nama_lengkap }}</div>
-          </div>
-          <div class="q-my-md">
-            <span class="text-grey">Keluhan</span>
-            <div v-for="cedera in pendaftaran.cederas" :key="cedera.id">
-              <div>- {{ cedera.name }}</div>
-            </div>
-          </div>
-          <div class="q-my-md">
-            <span class="text-grey">Penyebab</span>
-            <div>{{ pendaftaran.penyebab }}</div>
-          </div>
-          <div class="q-my-md">
-            <div class="text-center text-grey-7" style="font-size: 40px">
-              - - - - - - - - - - - -
-            </div>
-          </div>
-          <div class="row q-my-md">
-            <div class="col-8">
-              <span class="text-grey">Tanggal</span>
-              <div>{{ jadwalChoosed.tanggal }}</div>
-            </div>
-
-            <div class="col-4 text-right">
-              <span class="text-grey">Waktu</span>
-              <div>{{ jadwalChoosed.waktu }}</div>
-            </div>
-          </div>
-          <div class="q-my-md">
-            <div style="font-size: 20px">
-              Tarif :
-              <span class="text-red text-bold">{{ pendaftaran.tarif }}</span>
-            </div>
-          </div>
-        </div>
-      </q-card-section>
-
-      <q-card-section
-        class="q-pa-md q-mt-xl"
-        style="display: flex; flex-direction: column; align-items: flex-end"
-      >
-        <q-btn size="lg" color="primary" label="Bayar Sekarang" />
-      </q-card-section>
-    </q-card>
+    <PembayaranDialog :pendaftaran="pendaftaran" />
   </q-dialog>
 </template>
 
@@ -180,6 +111,7 @@ import { useRoute } from "vue-router";
 import { useQuasar } from "quasar";
 import { useJadwalStore } from "src/stores/jadwal-store";
 import { usePendaftaranStore } from "src/stores/pendaftaran-store";
+import PembayaranDialog from "src/components/beranda/PembayaranDialog.vue";
 
 const $q = useQuasar();
 const route = useRoute();
@@ -269,7 +201,6 @@ const addJadwal = async (jadwalId) => {
     id: pendaftaran.value.id,
     jadwal_id: jadwalId,
   });
-  console.log(data.value);
 
   try {
     const res = await pendaftaranStore.addJadwal(data.value);
@@ -306,10 +237,3 @@ const bayar = (jadwalId) => {
   addJadwal(jadwalId);
 };
 </script>
-
-<style scoped>
-.high {
-  max-width: 500px;
-  margin: auto;
-}
-</style>
