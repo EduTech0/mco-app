@@ -43,11 +43,6 @@ const routes = [
         component: () => import("pages/home/ProfilePage.vue"),
         name: "profile",
       },
-      {
-        path: "pembayaran/:id",
-        component: () => import("pages/home/PembayaranPage.vue"),
-        name: "pembayaran",
-      },
     ],
   },
   // Dashboard

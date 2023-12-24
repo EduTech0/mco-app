@@ -145,16 +145,16 @@
 
         <!-- Keluhan -->
         <q-select
-        icon="keyboard_arrow_down"
-        color="primary"
-        @click="cederasList = true"
-        filled
-        v-model="selectedCederas"
-        multiple
-        use-chips
-        stack-label
-        label="Keluhan*"
-        :rules="[(val) => (val && val.length > 0) || 'Pilih titik cedera']"
+          icon="keyboard_arrow_down"
+          color="primary"
+          @click="cederasList = true"
+          filled
+          v-model="selectedCederas"
+          multiple
+          use-chips
+          stack-label
+          label="Keluhan*"
+          :rules="[(val) => (val && val.length > 0) || 'Pilih titik cedera']"
         />
 
         <!-- Penyebab -->
@@ -365,15 +365,14 @@ const data = ref({
   image: null,
 });
 
+// Keluhan
+const cederas = ref([]);
 const selectedCederas = computed(() => {
   return data.value.cederas.map((id) => {
     const selectedCedera = cederas.value.find((cedera) => cedera.id === id);
-    return selectedCedera ? selectedCedera.name : '';
+    return selectedCedera ? selectedCedera.name : "";
   });
 });
-
-// Keluhan
-const cederas = ref([]);
 const getCedera = async () => {
   try {
     const res = await cederaStore.allCedera();

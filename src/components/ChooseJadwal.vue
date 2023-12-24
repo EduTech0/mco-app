@@ -1,6 +1,7 @@
 <template>
-  <q-card>
+  <q-card class="high">
     <q-card-section class="bg-primary q-py-sm text-white shadow">
+      <q-btn dense flat icon="arrow_back" v-close-popup class="absolute-left" />
       <div class="text-subtitle1 text-center" style="font-size: 20px">
         Silahkan pilih jadwal
       </div>
@@ -101,30 +102,29 @@
     transition-show="slide-up"
     transition-hide="slide-down"
   >
-    <PembayaranDialog :pendaftaran="pendaftaran" />
+    <PembayaranDialog :pendaftaran="ticket" />
   </q-dialog>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
-import { useRoute } from "vue-router";
+import { ref, defineProps, computed, onMounted } from "vue";
 import { useQuasar } from "quasar";
 import { useJadwalStore } from "src/stores/jadwal-store";
 import { usePendaftaranStore } from "src/stores/pendaftaran-store";
-import PembayaranDialog from "src/components/beranda/PembayaranDialog.vue";
+import PembayaranDialog from "src/components/PembayaranDialog.vue";
 
 const $q = useQuasar();
-const route = useRoute();
+const { pendaftaran, method } = defineProps(["pendaftaran", "method"]);
 const pendaftaranStore = usePendaftaranStore();
 const jadwalStore = useJadwalStore();
-const loading = ref(false);
+const ticket = ref({});
 
-const jadwals = ref([]);
-const pendaftaran = ref("");
+const loading = ref(false);
 const jadwalSelected = ref(false);
 const dialogPembayaran = ref(false);
 
 // Get Jadwal
+const jadwals = ref([]);
 const getJadwal = async () => {
   try {
     const res = await jadwalStore.allJadwal();
@@ -133,19 +133,8 @@ const getJadwal = async () => {
     console.error("Error fetching data:", error);
   }
 };
-
-const getPendaftaran = async (id) => {
-  try {
-    const res = await pendaftaranStore.showPendaftaran(id);
-    pendaftaran.value = res.data.data;
-  } catch (error) {
-    console.error("Error fetching data:", error);
-  }
-};
-
 onMounted(() => {
   getJadwal();
-  getPendaftaran(route.params.id);
 });
 
 // Computed property untuk mengelompokkan Jadwal berdasarkan tanggal
@@ -160,7 +149,6 @@ const groupedJadwals = computed(() => {
   }
   return grouped;
 });
-
 // Fungsi untuk mengurutkan tanggal tercepat (terlama) dulu
 const sortedGroupedJadwals = computed(() => {
   const dates = Object.keys(groupedJadwals.value);
@@ -192,30 +180,56 @@ const choose = async (jadwal) => {
   }
 };
 
-// Add Jadwal
-const addJadwal = async (jadwalId) => {
+// Pembayaran
+const bayar = (jadwalId) => {
+  thisJadwal(jadwalId);
+};
+
+const thisJadwal = async (jadwalId) => {
   loading.value = true;
 
   const data = ref({
-    id: pendaftaran.value.id,
+    id: pendaftaran.id,
     jadwal_id: jadwalId,
   });
 
   try {
-    const res = await pendaftaranStore.addJadwal(data.value);
+    if (method === "Add Jadwal") {
+      // Add Jadwal
+      const res = await pendaftaranStore.addJadwal(data.value);
+      ticket.value = res.data.data;
 
-    if (res.data && res.data.status === "Success") {
-      $q.notify({
-        message: res.data.message,
-        icon: "check",
-        color: "positive",
-      });
+      if (res.data && res.data.status === "Success") {
+        $q.notify({
+          message: res.data.message,
+          icon: "check",
+          color: "positive",
+        });
+      } else {
+        $q.notify({
+          message: "Data Gagal Ditambah",
+          icon: "warning",
+          color: "negative",
+        });
+      }
     } else {
-      $q.notify({
-        message: "Data Gagal Ditambah",
-        icon: "warning",
-        color: "negative",
-      });
+      // Edit Jadwal
+      const res = await pendaftaranStore.editJadwal(data.value);
+      ticket.value = res.data.data;
+
+      if (res.data && res.data.status === "Success") {
+        $q.notify({
+          message: res.data.message,
+          icon: "check",
+          color: "positive",
+        });
+      } else {
+        $q.notify({
+          message: "Data Gagal Diubah",
+          icon: "warning",
+          color: "negative",
+        });
+      }
     }
 
     dialogPembayaran.value = true;
@@ -230,9 +244,11 @@ const addJadwal = async (jadwalId) => {
 
   loading.value = false;
 };
-
-// Pembayaran
-const bayar = (jadwalId) => {
-  addJadwal(jadwalId);
-};
 </script>
+
+<style scoped>
+.high {
+  max-width: 500px;
+  margin: auto;
+}
+</style>

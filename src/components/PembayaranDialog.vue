@@ -84,7 +84,6 @@
     <q-card-section style="display: flex; float: right">
       <q-btn
         @click="bayarNanti()"
-        v-close-popup
         flat
         size="md"
         color="primary"
@@ -113,7 +112,8 @@ const { pendaftaran } = defineProps(["pendaftaran"]);
 
 // Bayar Nanti
 const bayarNanti = () => {
-  router.push({ name: "notifikasi" });
+  router.push({ name: "riwayat" });
+  window.location.reload();
 };
 
 // Bayar Sekarang

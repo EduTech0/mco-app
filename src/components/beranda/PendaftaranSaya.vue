@@ -141,11 +141,8 @@
               label="Edit Keluhan"
               :size="$q.screen.width <= 370 ? 'xs' : 'sm'"
               padding="none"
-              v-if="
-                ticket.status === 'Terverifikasi' &&
-                ticket.jadwal &&
-                ticket.jadwal.length > 0
-              "
+              v-if="ticket.status === 'Terverifikasi'"
+              @click="editKeluhan(ticket)"
             />
             <!-- Ganti Jadwal -->
             <q-btn
@@ -157,7 +154,12 @@
               :size="$q.screen.width <= 370 ? 'xs' : 'sm'"
               padding="none"
               class="float-right"
-              v-if="ticket.status === 'Terverifikasi'"
+              v-if="
+                ticket.status === 'Terverifikasi' &&
+                ticket.jadwal &&
+                ticket.jadwal.length > 0
+              "
+              @click="editJadwal(ticket)"
             />
           </div>
         </div>
@@ -195,6 +197,61 @@
     </div>
   </div>
 
+  <!-- Jadwal -->
+  <q-dialog
+    v-model="chooseJadwal"
+    persistent
+    maximized
+    transition-show="slide-up"
+    transition-hide="slide-down"
+  >
+    <ChooseJadwal :pendaftaran="pendaftaran" :method="method" />
+  </q-dialog>
+
+  <!-- Keluhan -->
+  <q-dialog v-model="editCederas" persistent>
+    <q-card style="min-width: 350px">
+      <q-card-section>
+        <div class="text-h6">Pilih Cedera</div>
+      </q-card-section>
+
+      <q-card-section class="q-pt-none">
+        <q-select
+          icon="keyboard_arrow_down"
+          color="primary"
+          @click="cederasList = true"
+          filled
+          v-model="selectedCederas"
+          multiple
+          use-chips
+          stack-label
+          label="Keluhan*"
+          :rules="[(val) => (val && val.length > 0) || 'Pilih titik cedera']"
+        />
+      </q-card-section>
+
+      <q-card-actions align="right" class="text-primary">
+        <q-btn flat color="primary" label="Cancel" v-close-popup />
+        <q-btn color="primary" label="Save" v-close-popup />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
+  <q-dialog v-model="cederasList" position="bottom">
+    <q-card>
+      <div v-for="cedera in cederas" :key="cedera.id">
+        <q-item tag="label" v-ripple>
+          <q-item-section>
+            <q-item-label>{{ cedera.name }}</q-item-label>
+            <q-item-label caption>Rp.{{ cedera.harga }}</q-item-label>
+          </q-item-section>
+          <q-item-section avatar>
+            <q-checkbox v-model="data.cederas" :val="cedera.id" />
+          </q-item-section>
+        </q-item>
+      </div>
+    </q-card>
+  </q-dialog>
+
   <!-- Pembayaran -->
   <q-dialog
     v-model="dialogPembayaran"
@@ -208,21 +265,24 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { ref, onMounted, computed } from "vue";
 import { useQuasar } from "quasar";
 import { usePendaftaranStore } from "src/stores/pendaftaran-store";
-import PembayaranDialog from "./PembayaranDialog.vue";
+import { useCederaStore } from "src/stores/cedera-store";
+import PembayaranDialog from "src/components/PembayaranDialog.vue";
+import ChooseJadwal from "src/components/ChooseJadwal.vue";
 
 const $q = useQuasar();
-const router = useRouter();
+const cederaStore = useCederaStore();
 const pendaftaranStore = usePendaftaranStore();
 
-const tickets = ref([]);
+const data = ref({});
+const pendaftaran = ref("");
+const method = ref("");
 const loading = ref(true);
-const dialogPembayaran = ref(false);
 
 // Get Ticket
+const tickets = ref([]);
 const getTicket = async () => {
   try {
     const res = await pendaftaranStore.ticketPendaftaran();
@@ -232,15 +292,29 @@ const getTicket = async () => {
   }
   loading.value = false;
 };
+
+// Get Cedera
+const cederas = ref([]);
+const getCedera = async () => {
+  try {
+    const res = await cederaStore.allCedera();
+    cederas.value = res.data.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+};
+
 onMounted(() => {
   getTicket();
+  getCedera();
 });
 
 // Choose Ticket
 const choose = (ticket) => {
   if (ticket.status === "Terverifikasi") {
-    const id = ticket.id;
-    router.push({ name: "pembayaran", params: { id } });
+    pendaftaran.value = ticket;
+    method.value = "Add Jadwal";
+    chooseJadwal.value = true;
   } else if (ticket.status === "Selesai") {
     $q.dialog({
       title: "Info",
@@ -264,8 +338,39 @@ const choose = (ticket) => {
   }
 };
 
+// Edit Keluhan
+const editCederas = ref(false);
+const cederasList = ref(false);
+const selectedCederas = computed(() => {
+  return data.value.cederas.map((id) => {
+    const selectedCedera = cederas.value.find((cedera) => cedera.id === id);
+    return selectedCedera ? selectedCedera.name : "";
+  });
+});
+const editKeluhan = (ticket) => {
+  data.value = ticket;
+  pendaftaran.value = ticket;
+  chooseJadwal.value = true;
+};
+const updateKeluhan = async (ticket) => {
+  // data.value.cederas = selectedCederas
+  try {
+    const res = await pendaftaranStore.editPendaftaran(data.value);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+};
+
+// Ganti Jadwal
+const chooseJadwal = ref(false);
+const editJadwal = (ticket) => {
+  pendaftaran.value = ticket;
+  method.value = "Edit Jadwal";
+  chooseJadwal.value = true;
+};
+
 // Bayar
-const pendaftaran = ref("");
+const dialogPembayaran = ref(false);
 const bayar = (ticket) => {
   pendaftaran.value = ticket;
   dialogPembayaran.value = true;
