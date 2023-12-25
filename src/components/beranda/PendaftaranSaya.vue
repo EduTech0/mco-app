@@ -63,7 +63,7 @@
             <!-- Cedera -->
             <div class="q-my-sm">
               <span class="text-grey text_header">Keluhan</span>
-              <div v-if="ticket.cederas.length > 0">
+              <div>
                 <div
                   class="text_data"
                   style="font-family: sans-serif; margin-top: -4px"
@@ -131,7 +131,7 @@
               </div>
             </div>
           </div>
-          <div class="col-12">
+          <div class="col-12" v-if="ticket.status === 'Terverifikasi'">
             <!-- Edit Keluhan -->
             <q-btn
               push
@@ -141,7 +141,6 @@
               label="Edit Keluhan"
               :size="$q.screen.width <= 370 ? 'xs' : 'sm'"
               padding="none"
-              v-if="ticket.status === 'Terverifikasi'"
               @click="editKeluhan(ticket)"
             />
             <!-- Ganti Jadwal -->
@@ -154,11 +153,7 @@
               :size="$q.screen.width <= 370 ? 'xs' : 'sm'"
               padding="none"
               class="float-right"
-              v-if="
-                ticket.status === 'Terverifikasi' &&
-                ticket.jadwal &&
-                ticket.jadwal.length > 0
-              "
+              v-if="ticket.jadwal && ticket.jadwal.length > 0"
               @click="editJadwal(ticket)"
             />
           </div>
@@ -166,22 +161,41 @@
       </q-card>
 
       <q-card class="card-right">
-  <div class="absolute-center" style="cursor: pointer">
-    <div v-if="ticket.status === 'Terverifikasi' && ticket.jadwal && ticket.jadwal.length > 0" class="text-h6 text-center text-bold text_title" @click="bayar(ticket)">
-      BAYAR SEKARANG
-    </div>
-    <div v-else-if="ticket.status === 'Selesai'" class="text-h6 text-center text-bold text_title" @click="choose(ticket)">
-      SELESAI
-    </div>
-    <div v-else-if="ticket.status === 'Dalam Antrian'" class="text-h6 text-center text-bold text_title" @click="choose(ticket)">
-      TUNGGU VERIFIKASI
-    </div>
-    <div v-else class="text-h6 text-center text-bold text_title" @click="choose(ticket)">
-      PILIH JADWAL
-    </div>
-  </div>
-</q-card>
-
+        <div class="absolute-center" style="cursor: pointer">
+          <div
+            v-if="
+              ticket.status === 'Terverifikasi' &&
+              ticket.jadwal &&
+              ticket.jadwal.length > 0
+            "
+            class="text-h6 text-center text-bold text_title"
+            @click="bayar(ticket)"
+          >
+            BAYAR SEKARANG
+          </div>
+          <div
+            v-else-if="ticket.status === 'Selesai'"
+            class="text-h6 text-center text-bold text_title"
+            @click="choose(ticket)"
+          >
+            SELESAI
+          </div>
+          <div
+            v-else-if="ticket.status === 'Dalam Antrian'"
+            class="text-h6 text-center text-bold text_title"
+            @click="choose(ticket)"
+          >
+            TUNGGU VERIFIKASI
+          </div>
+          <div
+            v-else
+            class="text-h6 text-center text-bold text_title"
+            @click="choose(ticket)"
+          >
+            PILIH JADWAL
+          </div>
+        </div>
+      </q-card>
     </div>
   </div>
 
@@ -205,22 +219,27 @@
 
       <q-card-section class="q-pt-none">
         <q-select
-          icon="keyboard_arrow_down"
-          color="primary"
-          @click="cederasList = true"
           filled
-          v-model="selectedCederas"
           multiple
           use-chips
           stack-label
+          icon="keyboard_arrow_down"
+          color="primary"
           label="Keluhan*"
+          v-model="selectedCederas"
+          @click="cederasList = true"
           :rules="[(val) => (val && val.length > 0) || 'Pilih titik cedera']"
         />
       </q-card-section>
 
       <q-card-actions align="right" class="text-primary">
         <q-btn flat color="primary" label="Cancel" v-close-popup />
-        <q-btn color="primary" label="Save" @click="updateKeluhan(data.value)" />
+        <q-btn
+          color="primary"
+          label="Save"
+          :disable="isSubmitting"
+          @click="updateKeluhan(pendaftaran)"
+        />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -233,7 +252,7 @@
             <q-item-label caption>Rp.{{ cedera.harga }}</q-item-label>
           </q-item-section>
           <q-item-section avatar>
-            <q-checkbox v-model="data.cederas" :val="cedera.id" />
+            <q-checkbox v-model="pendaftaran.cederas" :val="cedera.id" />
           </q-item-section>
         </q-item>
       </div>
@@ -264,10 +283,10 @@ const $q = useQuasar();
 const cederaStore = useCederaStore();
 const pendaftaranStore = usePendaftaranStore();
 
-const data = ref({});
 const pendaftaran = ref("");
 const method = ref("");
 const loading = ref(true);
+const isSubmitting = ref(false);
 
 // Get Ticket
 const tickets = ref([]);
@@ -330,36 +349,52 @@ const choose = (ticket) => {
 const editCederas = ref(false);
 const cederasList = ref(false);
 const selectedCederas = computed(() => {
-  return data.value.cederas.map((id) => {
+  return pendaftaran.value.cederas.map((id) => {
     const selectedCedera = cederas.value.find((cedera) => cedera.id === id);
     return selectedCedera ? selectedCedera.name : "";
   });
 });
 const editKeluhan = (ticket) => {
-  data.value = {...ticket}; // Copy data tiket ke `data`
-  editCederas.value = true; // Buka dialog `editCederas`
-  
-  // Setel `selectedCederas` dengan keluhan yang ada
-  data.value.cederas = ticket.cederas.map(cedera => cedera.id);
+  pendaftaran.value = ticket;
+  editCederas.value = true;
+
+  pendaftaran.value.cederas = ticket.cederas.map((cedera) => cedera.id);
 };
 
-const updateKeluhan = async (updatedTicket) => {
+const updateKeluhan = async (ticket) => {
+  isSubmitting.value = true;
   try {
-    // Ubah data `cederas` menjadi format yang dibutuhkan server
-    const updatedData = {
-      ...updatedTicket,
-      cederas: selectedCederas.value.map(name => {
-        const cedera = cederas.value.find(c => c.name === name);
-        return cedera ? cedera.id : null;
-      }).filter(id => id !== null)
-    };
+    delete ticket.status;
+    ticket.cederas = selectedCederas.value
+      .map((name) => cederas.value.find((c) => c.name === name)?.id)
+      .filter((id) => id !== null);
 
-    // Kirim perubahan ke server
-    const res = await pendaftaranStore.editPendaftaran(updatedData);
-    // Lakukan sesuatu setelah berhasil, misalnya tutup dialog atau refresh data
+    const res = await pendaftaranStore.editPendaftaran(ticket);
+    console.log(res);
+    if (res.data && res.data.status === "Success") {
+      $q.notify({
+        message: res.data.message,
+        icon: "check",
+        color: "positive",
+      });
+    } else {
+      $q.notify({
+        message: "Data Gagal Ditambah",
+        icon: "warning",
+        color: "negative",
+      });
+    }
+    editCederas.value = true;
+    getTicket();
   } catch (error) {
-    console.error("Error updating keluhan:", error);
+    console.error("Error submitting form:", error);
+    $q.notify({
+      color: "negative",
+      icon: "warning",
+      message: "Terjadi kesalahan. Mohon coba lagi.",
+    });
   }
+  isSubmitting.value = false;
 };
 
 // Ganti Jadwal
