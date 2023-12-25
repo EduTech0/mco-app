@@ -166,34 +166,22 @@
       </q-card>
 
       <q-card class="card-right">
-        <div class="absolute-center" style="cursor: pointer">
-          <div
-            v-if="
-              ticket.status === 'Terverifikasi' &&
-              ticket.jadwal &&
-              ticket.jadwal.length > 0
-            "
-            class="text-h6 text-center text-bold text_title"
-            @click="bayar(ticket)"
-          >
-            BAYAR SEKARANG
-          </div>
-          <div
-            v-else-if="ticket.status === 'Selesai'"
-            class="text-h6 text-center text-bold text_title"
-            @click="choose(ticket)"
-          >
-            SELESAI
-          </div>
-          <div
-            v-else
-            class="text-h6 text-center text-bold text_title"
-            @click="choose(ticket)"
-          >
-            PILIH JADWAL
-          </div>
-        </div>
-      </q-card>
+  <div class="absolute-center" style="cursor: pointer">
+    <div v-if="ticket.status === 'Terverifikasi' && ticket.jadwal && ticket.jadwal.length > 0" class="text-h6 text-center text-bold text_title" @click="bayar(ticket)">
+      BAYAR SEKARANG
+    </div>
+    <div v-else-if="ticket.status === 'Selesai'" class="text-h6 text-center text-bold text_title" @click="choose(ticket)">
+      SELESAI
+    </div>
+    <div v-else-if="ticket.status === 'Dalam Antrian'" class="text-h6 text-center text-bold text_title" @click="choose(ticket)">
+      TUNGGU VERIFIKASI
+    </div>
+    <div v-else class="text-h6 text-center text-bold text_title" @click="choose(ticket)">
+      PILIH JADWAL
+    </div>
+  </div>
+</q-card>
+
     </div>
   </div>
 
@@ -232,7 +220,7 @@
 
       <q-card-actions align="right" class="text-primary">
         <q-btn flat color="primary" label="Cancel" v-close-popup />
-        <q-btn color="primary" label="Save" v-close-popup />
+        <q-btn color="primary" label="Save" @click="updateKeluhan(data.value)" />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -348,16 +336,29 @@ const selectedCederas = computed(() => {
   });
 });
 const editKeluhan = (ticket) => {
-  data.value = ticket;
-  pendaftaran.value = ticket;
-  chooseJadwal.value = true;
+  data.value = {...ticket}; // Copy data tiket ke `data`
+  editCederas.value = true; // Buka dialog `editCederas`
+  
+  // Setel `selectedCederas` dengan keluhan yang ada
+  data.value.cederas = ticket.cederas.map(cedera => cedera.id);
 };
-const updateKeluhan = async (ticket) => {
-  // data.value.cederas = selectedCederas
+
+const updateKeluhan = async (updatedTicket) => {
   try {
-    const res = await pendaftaranStore.editPendaftaran(data.value);
+    // Ubah data `cederas` menjadi format yang dibutuhkan server
+    const updatedData = {
+      ...updatedTicket,
+      cederas: selectedCederas.value.map(name => {
+        const cedera = cederas.value.find(c => c.name === name);
+        return cedera ? cedera.id : null;
+      }).filter(id => id !== null)
+    };
+
+    // Kirim perubahan ke server
+    const res = await pendaftaranStore.editPendaftaran(updatedData);
+    // Lakukan sesuatu setelah berhasil, misalnya tutup dialog atau refresh data
   } catch (error) {
-    console.error("Error fetching data:", error);
+    console.error("Error updating keluhan:", error);
   }
 };
 
