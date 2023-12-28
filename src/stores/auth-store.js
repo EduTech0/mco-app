@@ -12,10 +12,7 @@ export const useAuthStore = defineStore("auth", {
     name: null,
     email: null,
     password: null,
-    tanggal_lahir: null,
-    jenis_kelamin: null,
     role: null,
-    address: null,
   }),
 
   getters: {},

@@ -102,6 +102,16 @@ export const usePendaftaranStore = defineStore("pendaftaran", {
       }
     },
 
+    async createPembayaran(data) {
+      try {
+        return await server.post(`api/pendaftaran/midtrans/${data.id}`, data, {
+          headers,
+        });
+      } catch (error) {
+        if (error) throw error;
+      }
+    },
+
     async deletePendaftaran(id) {
       try {
         return await server.delete(`api/pendaftaran/delete/${id}`, { headers });

@@ -183,11 +183,11 @@ const choose = async (jadwal) => {
 // Pembayaran
 const bayar = (jadwalId) => {
   thisJadwal(jadwalId);
+  midtrans();
 };
 
 const thisJadwal = async (jadwalId) => {
   loading.value = true;
-
   const data = ref({
     id: pendaftaran.id,
     jadwal_id: jadwalId,
@@ -197,8 +197,8 @@ const thisJadwal = async (jadwalId) => {
     if (method === "Add Jadwal") {
       // Add Jadwal
       const res = await pendaftaranStore.addJadwal(data.value);
-      ticket.value = res.data.data;
 
+      ticket.value = res.data.data;
       if (res.data && res.data.status === "Success") {
         $q.notify({
           message: res.data.message,
@@ -243,6 +243,39 @@ const thisJadwal = async (jadwalId) => {
   }
 
   loading.value = false;
+};
+
+const midtrans = async () => {
+  const data = ref({
+    id: pendaftaran.id,
+    total: pendaftaran.total,
+  });
+  console.log(data.value);
+
+  try {
+    const res = await pendaftaranStore.createPembayaran(data.value);
+
+    if (res.data && res.data.status === "Success") {
+      $q.notify({
+        message: res.data.message,
+        icon: "check",
+        color: "positive",
+      });
+    } else {
+      $q.notify({
+        message: "Data Gagal Diubah",
+        icon: "warning",
+        color: "negative",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    $q.notify({
+      color: "negative",
+      icon: "warning",
+      message: "Terjadi kesalahan. Mohon coba lagi.",
+    });
+  }
 };
 </script>
 

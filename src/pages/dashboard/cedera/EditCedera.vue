@@ -132,7 +132,7 @@ const editCedera = async () => {
       });
     } else {
       $q.notify({
-        message: "Data Gagal Ditambah",
+        message: "Data Gagal Diubah",
         icon: "warning",
         color: "negative",
       });

@@ -380,6 +380,13 @@ const currencyColumns = [
     sortable: true,
   },
   {
+    name: "nomor",
+    field: "nomor",
+    label: "Nomor",
+    align: "left",
+    sortable: true,
+  },
+  {
     name: "pekerjaan",
     field: "pekerjaan",
     label: "Pekerjaan",
@@ -390,13 +397,6 @@ const currencyColumns = [
     name: "alamat",
     field: "alamat",
     label: "Alamat",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "nomor",
-    field: "nomor",
-    label: "Nomor",
     align: "left",
     sortable: true,
   },

@@ -9,9 +9,13 @@ const headers = {
 export const useCustomerStore = defineStore("customer", {
   state: () => ({
     id: null,
-    image: null,
     name: null,
-    harga: null,
+    email: null,
+    password: null,
+    tanggal_lahir: null,
+    jenis_kelamin: null,
+    role: null,
+    address: null,
   }),
 
   getters: {},

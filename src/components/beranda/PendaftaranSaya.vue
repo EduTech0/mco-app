@@ -283,7 +283,7 @@ const $q = useQuasar();
 const cederaStore = useCederaStore();
 const pendaftaranStore = usePendaftaranStore();
 
-const pendaftaran = ref("");
+const pendaftaran = ref({});
 const method = ref("");
 const loading = ref(true);
 const isSubmitting = ref(false);
@@ -360,7 +360,6 @@ const editKeluhan = (ticket) => {
 
   pendaftaran.value.cederas = ticket.cederas.map((cedera) => cedera.id);
 };
-
 const updateKeluhan = async (ticket) => {
   isSubmitting.value = true;
   try {
@@ -370,7 +369,7 @@ const updateKeluhan = async (ticket) => {
       .filter((id) => id !== null);
 
     const res = await pendaftaranStore.editPendaftaran(ticket);
-    console.log(res);
+
     if (res.data && res.data.status === "Success") {
       $q.notify({
         message: res.data.message,
@@ -379,7 +378,7 @@ const updateKeluhan = async (ticket) => {
       });
     } else {
       $q.notify({
-        message: "Data Gagal Ditambah",
+        message: "Data Gagal Diubah",
         icon: "warning",
         color: "negative",
       });
