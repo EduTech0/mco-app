@@ -32,14 +32,12 @@
             >
               <q-card-section
                 horizontal
-                class="q-px-md q-py-sm"
+                class="q-px-md q-py-sm items-center"
                 style="font-size: 10px"
               >
                 <div class="col-8">
                   <div class="text-grey-7">Tanggal</div>
                   <div class="q-mb-sm">{{ jadwal.tanggal }}</div>
-                  <div class="text-grey-7">Kuota</div>
-                  <div>{{ jadwal.kuota }}</div>
                 </div>
 
                 <div class="col-4 text-right">
