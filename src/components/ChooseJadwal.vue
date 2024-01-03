@@ -109,11 +109,13 @@ import { ref, defineProps, computed, onMounted } from "vue";
 import { useQuasar } from "quasar";
 import { useJadwalStore } from "src/stores/jadwal-store";
 import { usePendaftaranStore } from "src/stores/pendaftaran-store";
+import { usePembayaranStore } from "src/stores/pembayaran-store";
 import PembayaranDialog from "src/components/PembayaranDialog.vue";
 
 const $q = useQuasar();
 const { pendaftaran, method } = defineProps(["pendaftaran", "method"]);
 const pendaftaranStore = usePendaftaranStore();
+const pembayaranStore = usePembayaranStore();
 const jadwalStore = useJadwalStore();
 const ticket = ref({});
 
@@ -178,12 +180,12 @@ const choose = async (jadwal) => {
   }
 };
 
-// Pembayaran
 const bayar = (jadwalId) => {
   thisJadwal(jadwalId);
   midtrans();
 };
 
+// Create or Edit Jadwal
 const thisJadwal = async (jadwalId) => {
   loading.value = true;
   const data = ref({
@@ -243,15 +245,18 @@ const thisJadwal = async (jadwalId) => {
   loading.value = false;
 };
 
+// Create Pembayaran
 const midtrans = async () => {
   const data = ref({
     id: pendaftaran.id,
+    first_name: pendaftaran.nama_lengkap,
+    address: pendaftaran.alamat,
+    phone: pendaftaran.nomor,
     total: pendaftaran.total,
   });
-  console.log(data.value);
 
   try {
-    const res = await pendaftaranStore.createPembayaran(data.value);
+    const res = await pembayaranStore.createPembayaran(data.value);
 
     if (res.data && res.data.status === "Success") {
       $q.notify({

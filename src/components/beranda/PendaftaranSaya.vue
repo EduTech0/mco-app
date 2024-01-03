@@ -2,21 +2,49 @@
   <!-- Loading -->
   <div v-if="loading">
     <div class="q-pa-lg">
-      <q-skeleton height="150px" width="100%" class="q-my-sm" square style="border-radius: 10px" />
-      <q-skeleton height="150px" width="100%" class="q-my-sm" square style="border-radius: 10px" />
-      <q-skeleton height="150px" width="100%" class="q-my-sm" square style="border-radius: 10px" />
-      <q-skeleton height="150px" width="100%" class="q-my-sm" square style="border-radius: 10px" />
+      <q-skeleton
+        height="150px"
+        width="100%"
+        class="q-my-sm"
+        square
+        style="border-radius: 10px"
+      />
+      <q-skeleton
+        height="150px"
+        width="100%"
+        class="q-my-sm"
+        square
+        style="border-radius: 10px"
+      />
+      <q-skeleton
+        height="150px"
+        width="100%"
+        class="q-my-sm"
+        square
+        style="border-radius: 10px"
+      />
+      <q-skeleton
+        height="150px"
+        width="100%"
+        class="q-my-sm"
+        square
+        style="border-radius: 10px"
+      />
     </div>
   </div>
 
   <!-- Ticket -->
   <div v-else v-for="ticket in tickets" :key="ticket.id">
-    <div class="ticket" :style="ticket.status === 'Dalam Antrian'
-        ? 'background-color: #ffa600ea'
-        : ticket.status === 'Terverifikasi'
+    <div
+      class="ticket"
+      :style="
+        ticket.status === 'Dalam Antrian'
+          ? 'background-color: #ffa600ea'
+          : ticket.status === 'Terverifikasi'
           ? 'background-color: #00ca11e8'
           : 'background-color: #0025f594'
-      ">
+      "
+    >
       <q-card class="card-left">
         <div class="row items-center">
           <!-- Pendaftaran -->
@@ -24,7 +52,10 @@
             <!-- Nama -->
             <div>
               <span class="text-grey text_header">Nama</span>
-              <div class="text_data" style="font-family: sans-serif; margin-top: -4px">
+              <div
+                class="text_data"
+                style="font-family: sans-serif; margin-top: -4px"
+              >
                 {{ ticket.nama_lengkap }}
               </div>
             </div>
@@ -33,12 +64,14 @@
             <div class="q-my-sm">
               <span class="text-grey text_header">Keluhan</span>
               <div>
-                <div class="text_data" style="font-family: sans-serif; margin-top: -4px">
+                <div
+                  class="text_data"
+                  style="font-family: sans-serif; margin-top: -4px"
+                >
                   <span v-if="ticket.cederas.length > 0">
                     {{ ticket.cederas[0].name }}
                     <span v-if="ticket.cederas.length > 1">, dll</span>
                   </span>
-
                 </div>
               </div>
             </div>
@@ -46,11 +79,14 @@
             <!-- Status Pendaftaran -->
             <div class="q-my-sm">
               <span class="text-grey text_header">Status Pendaftaran</span>
-              <div class="text_data" style="font-family: sans-serif; margin-top: -4px">
+              <div
+                class="text_data"
+                style="font-family: sans-serif; margin-top: -4px"
+              >
                 {{
                   ticket.status === "Dalam Antrian"
-                  ? "Menunggu Verifikasi"
-                  : ticket.status === "Terverifikasi"
+                    ? "Menunggu Verifikasi"
+                    : ticket.status === "Terverifikasi"
                     ? "Sudah Disetujui"
                     : "Selesai"
                 }}
@@ -64,7 +100,10 @@
               <!-- Tanggal -->
               <div>
                 <span class="text-grey text_header">Tanggal</span>
-                <div class="text_data" style="font-family: sans-serif; margin-top: -4px">
+                <div
+                  class="text_data"
+                  style="font-family: sans-serif; margin-top: -4px"
+                >
                   {{ ticket.jadwal[0].tanggal }}
                 </div>
               </div>
@@ -72,7 +111,10 @@
               <!-- Waktu -->
               <div class="q-my-sm">
                 <span class="text-grey text_header">Waktu</span>
-                <div class="text_data" style="font-family: sans-serif; margin-top: -4px">
+                <div
+                  class="text_data"
+                  style="font-family: sans-serif; margin-top: -4px"
+                >
                   {{ ticket.jadwal[0].waktu }}
                 </div>
               </div>
@@ -80,7 +122,10 @@
               <!-- Status Pembayaran -->
               <div class="q-my-sm">
                 <span class="text-grey text_header">Status Pembayaran</span>
-                <div class="text_data" style="font-family: sans-serif; margin-top: -4px">
+                <div
+                  class="text_data"
+                  style="font-family: sans-serif; margin-top: -4px"
+                >
                   Belum Dibayar
                 </div>
               </div>
@@ -88,33 +133,66 @@
           </div>
           <div class="col-12" v-if="ticket.status === 'Terverifikasi'">
             <!-- Edit Keluhan -->
-            <q-btn push flat no-caps color="primary" label="Edit Keluhan" :size="$q.screen.width <= 370 ? 'xs' : 'sm'"
-              padding="none" @click="editKeluhan(ticket)" />
+            <q-btn
+              push
+              flat
+              no-caps
+              color="primary"
+              label="Edit Keluhan"
+              padding="none"
+              :size="$q.screen.width <= 370 ? 'xs' : 'sm'"
+              v-if="ticket.jadwal && ticket.jadwal.length > 0"
+              @click="editKeluhan(ticket)"
+            />
             <!-- Ganti Jadwal -->
-            <q-btn push flat no-caps color="primary" label="Ganti Jadwal" :size="$q.screen.width <= 370 ? 'xs' : 'sm'"
-              padding="none" class="float-right" v-if="ticket.jadwal && ticket.jadwal.length > 0"
-              @click="editJadwal(ticket)" />
+            <q-btn
+              push
+              flat
+              no-caps
+              color="primary"
+              label="Ganti Jadwal"
+              padding="none"
+              class="float-right"
+              :size="$q.screen.width <= 370 ? 'xs' : 'sm'"
+              v-if="ticket.jadwal && ticket.jadwal.length > 0"
+              @click="editJadwal(ticket)"
+            />
           </div>
         </div>
       </q-card>
 
       <q-card class="card-right">
         <div class="absolute-center" style="cursor: pointer">
-          <div v-if="ticket.status === 'Terverifikasi' &&
-            ticket.jadwal &&
-            ticket.jadwal.length > 0
-            " class="text-h6 text-center text-bold text_title" @click="bayar(ticket)">
+          <div
+            v-if="
+              ticket.status === 'Terverifikasi' &&
+              ticket.jadwal &&
+              ticket.jadwal.length > 0
+            "
+            class="text-h6 text-center text-bold text_title"
+            @click="bayar(ticket)"
+          >
             BAYAR SEKARANG
           </div>
-          <div v-else-if="ticket.status === 'Selesai'" class="text-h6 text-center text-bold text_title"
-            @click="choose(ticket)">
+          <div
+            v-else-if="ticket.status === 'Selesai'"
+            class="text-h6 text-center text-bold text_title"
+            @click="choose(ticket)"
+          >
             SELESAI
           </div>
-          <div v-else-if="ticket.status === 'Dalam Antrian'" class="text-h6 text-center text-bold text_title"
-            @click="choose(ticket)">
+          <div
+            v-else-if="ticket.status === 'Dalam Antrian'"
+            class="text-h6 text-center text-bold text_title"
+            @click="choose(ticket)"
+          >
             TUNGGU VERIFIKASI
           </div>
-          <div v-else class="text-h6 text-center text-bold text_title" @click="choose(ticket)">
+          <div
+            v-else
+            class="text-h6 text-center text-bold text_title"
+            @click="choose(ticket)"
+          >
             PILIH JADWAL
           </div>
         </div>
@@ -123,7 +201,13 @@
   </div>
 
   <!-- Jadwal -->
-  <q-dialog v-model="chooseJadwal" persistent maximized transition-show="slide-up" transition-hide="slide-down">
+  <q-dialog
+    v-model="chooseJadwal"
+    persistent
+    maximized
+    transition-show="slide-up"
+    transition-hide="slide-down"
+  >
     <ChooseJadwal :pendaftaran="pendaftaran" :method="method" />
   </q-dialog>
 
@@ -135,14 +219,28 @@
       </q-card-section>
 
       <q-card-section class="q-pt-none">
-        <q-select filled multiple use-chips stack-label icon="keyboard_arrow_down" color="primary" label="Keluhan*"
-          v-model="selectedCederas" @click="cederasList = true"
-          :rules="[(val) => (val && val.length > 0) || 'Pilih titik cedera']" />
+        <q-select
+          filled
+          multiple
+          use-chips
+          stack-label
+          icon="keyboard_arrow_down"
+          color="primary"
+          label="Keluhan*"
+          v-model="selectedCederas"
+          @click="cederasList = true"
+          :rules="[(val) => (val && val.length > 0) || 'Pilih titik cedera']"
+        />
       </q-card-section>
 
       <q-card-actions align="right" class="text-primary">
         <q-btn flat color="primary" label="Cancel" v-close-popup />
-        <q-btn color="primary" label="Save" :disable="isSubmitting" @click="updateKeluhan(pendaftaran)" />
+        <q-btn
+          color="primary"
+          label="Save"
+          :disable="isSubmitting"
+          @click="updateKeluhan(pendaftaran)"
+        />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -163,7 +261,13 @@
   </q-dialog>
 
   <!-- Pembayaran -->
-  <q-dialog v-model="dialogPembayaran" persistent maximized transition-show="slide-up" transition-hide="slide-down">
+  <q-dialog
+    v-model="dialogPembayaran"
+    persistent
+    maximized
+    transition-show="slide-up"
+    transition-hide="slide-down"
+  >
     <PembayaranDialog :pendaftaran="pendaftaran" />
   </q-dialog>
 </template>
@@ -251,16 +355,14 @@ const selectedCederas = computed(() => {
     return selectedCedera ? selectedCedera.name : "";
   });
 });
-// const editKeluhan = (ticket) => {
-//   pendaftaran.value = ticket;
-//   editCederas.value = true;
-
-//   pendaftaran.value.cederas = ticket.cederas.map((cedera) => cedera.id);
-// };
 const editKeluhan = (ticket) => {
   const initialCederaIds = ticket.cederas.map((cedera) => cedera.id);
 
-  pendaftaran.value = { ...ticket, initialCederaIds, cederas: initialCederaIds };
+  pendaftaran.value = {
+    ...ticket,
+    initialCederaIds,
+    cederas: initialCederaIds,
+  };
   editCederas.value = true;
 };
 const updateKeluhan = async (ticket) => {

@@ -102,13 +102,31 @@
 </template>
 
 <script setup>
-import { defineProps } from "vue";
+import { ref, onMounted, defineProps } from "vue";
 import { useRouter } from "vue-router";
 import { useQuasar } from "quasar";
+import { usePembayaranStore } from "src/stores/pembayaran-store";
 
 const $q = useQuasar();
 const router = useRouter();
 const { pendaftaran } = defineProps(["pendaftaran"]);
+const pembayaranStore = usePembayaranStore();
+
+// Get Pembayaran
+const pembayarans = ref([]);
+const id = pendaftaran.id;
+const getPembayaran = async (id) => {
+  try {
+    const res = await pembayaranStore.showPembayaran(id);
+    console.log(res.data.data);
+    pembayarans.value = res.data.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+};
+onMounted(() => {
+  getPembayaran(id);
+});
 
 // Bayar Nanti
 const bayarNanti = () => {
@@ -117,15 +135,18 @@ const bayarNanti = () => {
 };
 
 // Bayar Sekarang
-const bayarSekarang = () => {
-  $q.dialog({
-    title: "Coming Soon!",
-    message: "Sistem pembayaran belum dibuat😁.",
-    persistent: true,
-    ok: {
-      label: "ok",
-      color: "primary",
-    },
+const bayarSekarang = (pendaftaran, id) => {
+  window.snap.pay(pembayarans.value.snapToken, {
+    onSuccess: onSuccess(pendaftaran, id),
+  });
+};
+const onSuccess = async (pendaftaran, id) => {
+  await pembayaranStore.callback(pendaftaran, id);
+
+  $q.notify({
+    message: "Pembayaran Berhasil",
+    icon: "check",
+    color: "positive",
   });
 };
 </script>
