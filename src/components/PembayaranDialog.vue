@@ -137,7 +137,10 @@ const bayarNanti = () => {
 // Bayar Sekarang
 const bayarSekarang = (pendaftaran, id) => {
   window.snap.pay(pembayarans.value.snapToken, {
-    onSuccess: onSuccess(pendaftaran, id),
+    onSuccess: function (result) {
+      onSuccess(pendaftaran, id);
+      console.log(result);
+    },
   });
 };
 const onSuccess = async (pendaftaran, id) => {
