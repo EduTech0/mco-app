@@ -57,7 +57,7 @@
   </q-card>
 
   <!-- Dialog Jadwal Selected -->
-  <q-dialog v-model="jadwalSelected" position="bottom">
+  <q-dialog v-model="jadwalSelected" persistent position="bottom">
     <q-card>
       <q-card-section class="text-center" style="font-size: 15px">
         <div class="text-bold q-mb-md">Reservasi Jadwal</div>
@@ -91,17 +91,6 @@
       </q-card-section>
     </q-card>
   </q-dialog>
-
-  <!-- Pembayaran -->
-  <q-dialog
-    v-model="dialogPembayaran"
-    persistent
-    maximized
-    transition-show="slide-up"
-    transition-hide="slide-down"
-  >
-    <PembayaranDialog :pendaftaran="ticket" />
-  </q-dialog>
 </template>
 
 <script setup>
@@ -110,7 +99,6 @@ import { useQuasar } from "quasar";
 import { useJadwalStore } from "src/stores/jadwal-store";
 import { usePendaftaranStore } from "src/stores/pendaftaran-store";
 import { usePembayaranStore } from "src/stores/pembayaran-store";
-import PembayaranDialog from "src/components/PembayaranDialog.vue";
 
 const $q = useQuasar();
 const { pendaftaran, method } = defineProps(["pendaftaran", "method"]);
@@ -121,7 +109,6 @@ const ticket = ref({});
 
 const loading = ref(false);
 const jadwalSelected = ref(false);
-const dialogPembayaran = ref(false);
 
 // Get Jadwal
 const jadwals = ref([]);
@@ -190,6 +177,7 @@ const thisJadwal = async (jadwalId) => {
   loading.value = true;
   const data = ref({
     id: pendaftaran.id,
+    slug: pendaftaran.slug,
     jadwal_id: jadwalId,
   });
 
@@ -232,7 +220,7 @@ const thisJadwal = async (jadwalId) => {
       }
     }
 
-    dialogPembayaran.value = true;
+    router.push(`/beranda/pembayaran/${pendaftaran.id}`);
   } catch (error) {
     console.log(error);
     $q.notify({

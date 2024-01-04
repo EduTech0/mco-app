@@ -274,7 +274,7 @@ const editPendaftaran = (row) => {
 // Verification Pendaftaran
 const verificationPendaftaran = async (row) => {
   try {
-    const res = await pendaftaranStore.verificationPendaftaran(row.id);
+    const res = await pendaftaranStore.verificationPendaftaran(row.slug);
     if (res.data.status === "Success") {
       $q.notify({
         color: "positive",
@@ -312,7 +312,7 @@ const deletePendaftaranDialog = (row) => {
 };
 const deletePendaftaran = async (row) => {
   try {
-    const res = await pendaftaranStore.deletePendaftaran(row.id);
+    const res = await pendaftaranStore.deletePendaftaran(row.slug);
     if (res.data.status === "Success") {
       $q.notify({
         color: "positive",
@@ -439,6 +439,13 @@ const currencyColumns = [
     name: "jumlah_terapi",
     field: "jumlah_terapi",
     label: "Jumlah Terapi",
+    align: "left",
+    sortable: true,
+  },
+  {
+    name: "slug",
+    field: "slug",
+    label: "Slug",
     align: "left",
     sortable: true,
   },

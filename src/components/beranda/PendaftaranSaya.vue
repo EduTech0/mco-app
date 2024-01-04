@@ -126,7 +126,7 @@
                   class="text_data"
                   style="font-family: sans-serif; margin-top: -4px"
                 >
-                  Belum Dibayar
+                  {{ ticket.pembayaran.status && ticket.status_pembayaran }}
                 </div>
               </div>
             </div>
@@ -141,7 +141,7 @@
               label="Edit Keluhan"
               padding="none"
               :size="$q.screen.width <= 370 ? 'xs' : 'sm'"
-              v-if="ticket.jadwal && ticket.jadwal.length > 0"
+              v-if="!ticket.jadwal"
               @click="editKeluhan(ticket)"
             />
             <!-- Ganti Jadwal -->
@@ -259,28 +259,18 @@
       </div>
     </q-card>
   </q-dialog>
-
-  <!-- Pembayaran -->
-  <q-dialog
-    v-model="dialogPembayaran"
-    persistent
-    maximized
-    transition-show="slide-up"
-    transition-hide="slide-down"
-  >
-    <PembayaranDialog :pendaftaran="pendaftaran" />
-  </q-dialog>
 </template>
 
 <script setup>
 import { ref, onMounted, computed } from "vue";
+import { useRouter } from "vue-router";
 import { useQuasar } from "quasar";
 import { usePendaftaranStore } from "src/stores/pendaftaran-store";
 import { useCederaStore } from "src/stores/cedera-store";
-import PembayaranDialog from "src/components/PembayaranDialog.vue";
 import ChooseJadwal from "src/components/ChooseJadwal.vue";
 
 const $q = useQuasar();
+const router = useRouter();
 const cederaStore = useCederaStore();
 const pendaftaranStore = usePendaftaranStore();
 
@@ -410,10 +400,8 @@ const editJadwal = (ticket) => {
 };
 
 // Bayar
-const dialogPembayaran = ref(false);
 const bayar = (ticket) => {
-  pendaftaran.value = ticket;
-  dialogPembayaran.value = true;
+  router.push(`/beranda/pembayaran/${ticket.slug}`);
 };
 </script>
 

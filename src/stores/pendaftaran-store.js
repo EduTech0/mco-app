@@ -46,9 +46,9 @@ export const usePendaftaranStore = defineStore("pendaftaran", {
       }
     },
 
-    async showPendaftaran(id) {
+    async showPendaftaran(slug) {
       try {
-        return await server.get(`api/pendaftaran/${id}`);
+        return await server.get(`api/pendaftaran/${slug}`);
       } catch (error) {
         if (error) throw error;
       }
@@ -64,7 +64,7 @@ export const usePendaftaranStore = defineStore("pendaftaran", {
 
     async editPendaftaran(data) {
       try {
-        return await server.put(`api/pendaftaran/edit/${data.id}`, data, {
+        return await server.put(`api/pendaftaran/edit/${data.slug}`, data, {
           headers,
         });
       } catch (error) {
@@ -74,7 +74,7 @@ export const usePendaftaranStore = defineStore("pendaftaran", {
 
     async addJadwal(data) {
       try {
-        return await server.put(`api/pendaftaran/addjadwal/${data.id}`, data, {
+        return await server.put(`api/pendaftaran/addjadwal/${data.slug}`, data, {
           headers,
         });
       } catch (error) {
@@ -84,7 +84,7 @@ export const usePendaftaranStore = defineStore("pendaftaran", {
 
     async editJadwal(data) {
       try {
-        return await server.put(`api/pendaftaran/editjadwal/${data.id}`, data, {
+        return await server.put(`api/pendaftaran/editjadwal/${data.slug}`, data, {
           headers,
         });
       } catch (error) {

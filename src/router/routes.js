@@ -39,6 +39,11 @@ const routes = [
         name: "riwayat",
       },
       {
+        path: "pembayaran/:slug",
+        component: () => import("pages/home/PembayaranPage.vue"),
+        name: "pembayaran",
+      },
+      {
         path: "profile",
         component: () => import("pages/home/ProfilePage.vue"),
         name: "profile",
@@ -76,22 +81,34 @@ const routes = [
         children: [
           {
             path: "",
-            component: () => import("pages/dashboard/pendaftaran/IndexPendaftaran/SemuaPendaftaran.vue"),
+            component: () =>
+              import(
+                "pages/dashboard/pendaftaran/IndexPendaftaran/SemuaPendaftaran.vue"
+              ),
             name: "semuapendaftaran",
           },
           {
             path: "belumSetuju",
-            component: () => import("pages/dashboard/pendaftaran/IndexPendaftaran/BelumPendaftaran.vue"),
+            component: () =>
+              import(
+                "pages/dashboard/pendaftaran/IndexPendaftaran/BelumPendaftaran.vue"
+              ),
             name: "belumpendaftaran",
           },
           {
             path: "sudahSetuju",
-            component: () => import("pages/dashboard/pendaftaran/IndexPendaftaran/SudahPendaftaran.vue"),
+            component: () =>
+              import(
+                "pages/dashboard/pendaftaran/IndexPendaftaran/SudahPendaftaran.vue"
+              ),
             name: "sudahpendaftaran",
           },
           {
             path: "selesai",
-            component: () => import("pages/dashboard/pendaftaran/IndexPendaftaran/SelesaiPendaftaran.vue"),
+            component: () =>
+              import(
+                "pages/dashboard/pendaftaran/IndexPendaftaran/SelesaiPendaftaran.vue"
+              ),
             name: "selesaipendaftaran",
           },
         ],

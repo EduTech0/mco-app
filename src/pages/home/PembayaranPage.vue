@@ -1,7 +1,13 @@
 <template>
   <q-card class="high">
     <q-card-section class="bg-primary q-py-sm text-white shadow">
-      <q-btn dense flat icon="arrow_back" v-close-popup class="absolute-left" />
+      <q-btn
+        dense
+        flat
+        icon="arrow_back"
+        :to="{ name: 'riwayat' }"
+        class="absolute-left"
+      />
       <div class="text-subtitle1 text-center q-py-sm" style="font-size: 20px">
         Konfirmasi Pembayaran
       </div>
@@ -41,10 +47,7 @@
               <div>{{ pendaftaran.jenis_kelamin }}</div>
             </div>
 
-            <div
-              v-for="jadwal in pendaftaran.jadwal.slice(0, 1)"
-              :key="jadwal.id"
-            >
+            <div v-for="jadwal in pendaftaran.jadwal" :key="jadwal.id">
               <div class="q-my-md">
                 <span class="text-grey">Tanggal</span>
                 <div>{{ jadwal.tanggal }}</div>
@@ -102,49 +105,48 @@
 </template>
 
 <script setup>
-import { ref, onMounted, defineProps } from "vue";
-import { useRouter } from "vue-router";
+import { ref, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import { useQuasar } from "quasar";
+import { usePendaftaranStore } from "src/stores/pendaftaran-store";
 import { usePembayaranStore } from "src/stores/pembayaran-store";
 
 const $q = useQuasar();
 const router = useRouter();
-const { pendaftaran } = defineProps(["pendaftaran"]);
+const route = useRoute();
+const pendaftaranStore = usePendaftaranStore();
 const pembayaranStore = usePembayaranStore();
 
-// Get Pembayaran
-const pembayarans = ref([]);
-const id = pendaftaran.id;
-const getPembayaran = async (id) => {
+// Get Pendaftaran
+const pendaftaran = ref([]);
+const getPendaftaran = async (slug) => {
   try {
-    const res = await pembayaranStore.showPembayaran(id);
-    console.log(res.data.data);
-    pembayarans.value = res.data.data;
+    const res = await pendaftaranStore.showPendaftaran(slug);
+    pendaftaran.value = res.data.data;
   } catch (error) {
     console.error("Error fetching data:", error);
   }
 };
 onMounted(() => {
-  getPembayaran(id);
+  getPendaftaran(route.params.slug);
 });
 
 // Bayar Nanti
 const bayarNanti = () => {
   router.push({ name: "riwayat" });
-  window.location.reload();
 };
 
 // Bayar Sekarang
-const bayarSekarang = (pendaftaran, id) => {
-  window.snap.pay(pendaftaran.snapToken && pembayarans.value.snapToken, {
+const bayarSekarang = () => {
+  window.snap.pay(pendaftaran.value.pembayaran.snapToken, {
     onSuccess: function (result) {
-      onSuccess(pendaftaran, id);
+      onSuccess(pendaftaran.value.pembayaran.id);
       console.log(result);
     },
   });
 };
-const onSuccess = async (pendaftaran, id) => {
-  await pembayaranStore.callback(pendaftaran, id);
+const onSuccess = async (id) => {
+  await pembayaranStore.callback(id);
 
   $q.notify({
     message: "Pembayaran Berhasil",

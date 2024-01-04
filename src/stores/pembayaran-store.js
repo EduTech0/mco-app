@@ -23,7 +23,7 @@ export const usePembayaranStore = defineStore("pembayaran", {
   actions: {
     async createPembayaran(data) {
       try {
-        return await server.post(`api/pembayaran/midtrans/${data.id}`, data, {
+        return await server.post(`api/pembayaran/checkout/${data.id}`, data, {
           headers,
         });
       } catch (error) {
@@ -39,14 +39,11 @@ export const usePembayaranStore = defineStore("pembayaran", {
       }
     },
 
-    async callback(pendaftaran, id) {
+    async callback(id) {
       try {
-        return await server.put(
-          `api/pembayaran/callback/${pendaftaran}/${id}`,
-          {
-            headers,
-          }
-        );
+        return await server.put(`api/pembayaran/callback/${id}`, {
+          headers,
+        });
       } catch (error) {
         if (error) throw error;
       }
