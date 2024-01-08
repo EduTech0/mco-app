@@ -154,7 +154,11 @@
               padding="none"
               class="float-right"
               :size="$q.screen.width <= 370 ? 'xs' : 'sm'"
-              v-if="ticket.jadwal && ticket.jadwal.length > 0"
+              v-if="
+                ticket.jadwal &&
+                ticket.jadwal.length > 0 &&
+                ticket.status_pembayran === 'Belum Dibayar'
+              "
               @click="editJadwal(ticket)"
             />
           </div>
