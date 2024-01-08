@@ -168,15 +168,18 @@
       <q-card class="card-right">
         <div class="absolute-center" style="cursor: pointer">
           <div
-            v-if="
-              ticket.status === 'Terverifikasi' &&
-              ticket.jadwal &&
-              ticket.jadwal.length > 0
-            "
+            v-if="ticket.status === 'Dalam Antrian'"
+            class="text-h6 text-center text-bold text_title"
+            @click="choose(ticket)"
+          >
+            TUNGGU VERIFIKASI
+          </div>
+          <div
+            v-else-if="ticket.status_pembayaran === 'Sudah Dibayar'"
             class="text-h6 text-center text-bold text_title"
             @click="bayar(ticket)"
           >
-            BAYAR SEKARANG
+            CEK DETAIL
           </div>
           <div
             v-else-if="ticket.status === 'Selesai'"
@@ -186,11 +189,15 @@
             SELESAI
           </div>
           <div
-            v-else-if="ticket.status === 'Dalam Antrian'"
+            v-else-if="
+              ticket.status === 'Terverifikasi' &&
+              ticket.jadwal &&
+              ticket.jadwal.length > 0
+            "
             class="text-h6 text-center text-bold text_title"
-            @click="choose(ticket)"
+            @click="bayar(ticket)"
           >
-            TUNGGU VERIFIKASI
+            BAYAR SEKARANG
           </div>
           <div
             v-else

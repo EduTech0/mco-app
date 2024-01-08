@@ -13,7 +13,24 @@
       </div>
     </q-card-section>
 
-    <q-card-section>
+    <q-card-section v-if="isLoading">
+      <q-skeleton
+        height="100px"
+        width="100%"
+        square
+        style="
+          border-radius: 30px;
+          width: 100%;
+          height: 450px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0 20px;
+        "
+      />
+    </q-card-section>
+
+    <q-card-section v-else>
       <div
         style="
           border: 3px #3b3b3b6c solid;
@@ -76,15 +93,24 @@
               </div>
             </div>
           </div>
-          <div style="font-size: 20px">
-            Total :
-            <span class="text-red text-bold">{{ pendaftaran.tarif }}</span>
+          <div class="row items-center">
+            <div class="col-8" style="font-size: 20px">
+              Total :
+              <span class="text-red text-bold">{{ pendaftaran.tarif }}</span>
+            </div>
+            <div class="col-4 text-right" style="font-size: 12px">
+              <span class="text-grey">Status Pembayaran</span>
+              <div>{{ pendaftaran.status_pembayaran }}</div>
+            </div>
           </div>
         </div>
       </div>
     </q-card-section>
 
-    <q-card-section style="display: flex; float: right">
+    <q-card-section
+      style="display: flex; float: right"
+      v-if="pendaftaran.status_pembayaran === 'Belum Dibayar'"
+    >
       <q-btn
         @click="bayarNanti()"
         flat
@@ -116,6 +142,7 @@ const router = useRouter();
 const route = useRoute();
 const pendaftaranStore = usePendaftaranStore();
 const pembayaranStore = usePembayaranStore();
+const isLoading = ref(true);
 
 // Get Pendaftaran
 const pendaftaran = ref([]);
@@ -123,6 +150,7 @@ const getPendaftaran = async (slug) => {
   try {
     const res = await pendaftaranStore.showPendaftaran(slug);
     pendaftaran.value = res.data.data;
+    isLoading.value = false;
   } catch (error) {
     console.error("Error fetching data:", error);
   }
