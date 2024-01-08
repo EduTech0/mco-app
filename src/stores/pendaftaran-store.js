@@ -74,9 +74,13 @@ export const usePendaftaranStore = defineStore("pendaftaran", {
 
     async addJadwal(data) {
       try {
-        return await server.put(`api/pendaftaran/addjadwal/${data.slug}`, data, {
-          headers,
-        });
+        return await server.put(
+          `api/pendaftaran/addjadwal/${data.slug}`,
+          data,
+          {
+            headers,
+          }
+        );
       } catch (error) {
         if (error) throw error;
       }
@@ -84,17 +88,21 @@ export const usePendaftaranStore = defineStore("pendaftaran", {
 
     async editJadwal(data) {
       try {
-        return await server.put(`api/pendaftaran/editjadwal/${data.slug}`, data, {
-          headers,
-        });
+        return await server.put(
+          `api/pendaftaran/editjadwal/${data.slug}`,
+          data,
+          {
+            headers,
+          }
+        );
       } catch (error) {
         if (error) throw error;
       }
     },
 
-    async verificationPendaftaran(id) {
+    async verificationPendaftaran(slug) {
       try {
-        return await server.put(`api/pendaftaran/verification/${id}`, {
+        return await server.put(`api/pendaftaran/verification/${slug}`, {
           headers,
         });
       } catch (error) {

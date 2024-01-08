@@ -23,7 +23,7 @@ export const usePembayaranStore = defineStore("pembayaran", {
   actions: {
     async createPembayaran(data) {
       try {
-        return await server.post(`api/pembayaran/checkout/${data.id}`, data, {
+        return await server.post(`api/pembayaran/checkout/${data.slug}`, data, {
           headers,
         });
       } catch (error) {

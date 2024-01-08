@@ -208,7 +208,11 @@
     transition-show="slide-up"
     transition-hide="slide-down"
   >
-    <ChooseJadwal :pendaftaran="pendaftaran" :method="method" />
+    <ChooseJadwal
+      :pendaftaran="pendaftaran"
+      :method="method"
+      @created="chooseJadwal = false"
+    />
   </q-dialog>
 
   <!-- Keluhan -->

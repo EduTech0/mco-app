@@ -95,6 +95,7 @@
 
 <script setup>
 import { ref, defineProps, computed, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import { useQuasar } from "quasar";
 import { useJadwalStore } from "src/stores/jadwal-store";
 import { usePendaftaranStore } from "src/stores/pendaftaran-store";
@@ -102,6 +103,8 @@ import { usePembayaranStore } from "src/stores/pembayaran-store";
 
 const $q = useQuasar();
 const { pendaftaran, method } = defineProps(["pendaftaran", "method"]);
+const emits = defineEmits(["created"]);
+const router = useRouter();
 const pendaftaranStore = usePendaftaranStore();
 const pembayaranStore = usePembayaranStore();
 const jadwalStore = useJadwalStore();
@@ -219,8 +222,6 @@ const thisJadwal = async (jadwalId) => {
         });
       }
     }
-
-    router.push(`/beranda/pembayaran/${pendaftaran.id}`);
   } catch (error) {
     console.log(error);
     $q.notify({
@@ -237,6 +238,7 @@ const thisJadwal = async (jadwalId) => {
 const midtrans = async () => {
   const data = ref({
     id: pendaftaran.id,
+    slug: pendaftaran.slug,
     first_name: pendaftaran.nama_lengkap,
     address: pendaftaran.alamat,
     phone: pendaftaran.nomor,
@@ -259,6 +261,10 @@ const midtrans = async () => {
         color: "negative",
       });
     }
+
+    router.push(`/beranda/pembayaran/${pendaftaran.slug}`);
+    jadwalSelected.value = false;
+    emits("created");
   } catch (error) {
     console.log(error);
     $q.notify({
