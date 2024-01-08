@@ -1,5 +1,5 @@
 <template>
-  <q-page>
+  <!-- <q-page>
     <div class="q-fullscreen">
       <q-carousel
         v-model="slide"
@@ -67,35 +67,37 @@
         </q-carousel-slide>
       </q-carousel>
     </div>
-  </q-page>
+  </q-page> -->
+  <LoginPage />
 </template>
 
 <script setup>
-import { ref } from "vue";
+import LoginPage from "./LoginPage.vue";
+// import { ref } from "vue";
 
-const slide = ref("style");
+// const slide = ref("style");
 
-const prevSlide = () => {
-  if (slide.value === "style") {
-    slide.value = "tv";
-  } else {
-    slide.value = "style";
-  }
-};
-const nextSlide = () => {
-  if (slide.value === "style") {
-    slide.value = "tv";
-  } else {
-    slide.value = "style";
-  }
-};
+// const prevSlide = () => {
+//   if (slide.value === "style") {
+//     slide.value = "tv";
+//   } else {
+//     slide.value = "style";
+//   }
+// };
+// const nextSlide = () => {
+//   if (slide.value === "style") {
+//     slide.value = "tv";
+//   } else {
+//     slide.value = "style";
+//   }
+// };
 </script>
 
-<style>
+<!-- <style>
 .q-fullscreen {
   position: relative;
   width: 100%;
   height: 100vh;
   overflow: hidden;
 }
-</style>
+</style> -->
