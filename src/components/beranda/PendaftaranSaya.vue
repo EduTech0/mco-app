@@ -126,7 +126,7 @@
                   class="text_data"
                   style="font-family: sans-serif; margin-top: -4px"
                 >
-                  {{ ticket.pembayaran.status && ticket.status_pembayaran }}
+                  {{ ticket.status_pembayaran }}
                 </div>
               </div>
             </div>
@@ -157,7 +157,7 @@
               v-if="
                 ticket.jadwal &&
                 ticket.jadwal.length > 0 &&
-                ticket.status_pembayaran === 'Belum Dibayar'
+                ticket.pembayaran.status === 'Unpaid'
               "
               @click="editJadwal(ticket)"
             />

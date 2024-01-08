@@ -140,19 +140,21 @@ const bayarNanti = () => {
 const bayarSekarang = () => {
   window.snap.pay(pendaftaran.value.pembayaran.snapToken, {
     onSuccess: function (result) {
-      onSuccess(pendaftaran.value.pembayaran.id);
+      onSuccess(pendaftaran.value.pembayaran.id, pendaftaran.value.slug);
       console.log(result);
     },
   });
 };
-const onSuccess = async (id) => {
-  await pembayaranStore.callback(id);
+const onSuccess = async (id, slug) => {
+  await pembayaranStore.callback(id, slug);
 
   $q.notify({
     message: "Pembayaran Berhasil",
     icon: "check",
     color: "positive",
   });
+
+  router.push({ name: "riwayat" });
 };
 </script>
 
@@ -160,5 +162,6 @@ const onSuccess = async (id) => {
 .high {
   max-width: 500px;
   margin: auto;
+  margin-bottom: 80px;
 }
 </style>

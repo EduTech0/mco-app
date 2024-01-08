@@ -39,9 +39,9 @@ export const usePembayaranStore = defineStore("pembayaran", {
       }
     },
 
-    async callback(id) {
+    async callback(id, slug) {
       try {
-        return await server.put(`api/pembayaran/callback/${id}`, {
+        return await server.put(`api/pembayaran/callback/${id}/${slug}`, {
           headers,
         });
       } catch (error) {
