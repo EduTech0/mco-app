@@ -28,9 +28,10 @@ export default ({ router }) => {
     // }
 
     // Dashboard
-    else if (to.name === "home" && token) {
-      next("/beranda");
-    } else if (to.name === "customer" && token) {
+    // else if (to.name === "home" && token) {
+    //   next("/beranda");
+    // } 
+    else if (to.name === "customer" && token) {
       next("/beranda");
     } else if (to.name === "cedera" && token) {
       next("/beranda");
