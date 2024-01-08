@@ -157,7 +157,7 @@
               v-if="
                 ticket.jadwal &&
                 ticket.jadwal.length > 0 &&
-                ticket.status_pembayran === 'Belum Dibayar'
+                ticket.status_pembayaran === 'Belum Dibayar'
               "
               @click="editJadwal(ticket)"
             />
