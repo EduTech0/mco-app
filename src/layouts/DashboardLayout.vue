@@ -62,7 +62,7 @@
     >
       <q-list>
         <!-- Home -->
-        <q-item
+        <!-- <q-item
           :to="{ name: 'home' }"
           active-class="q-item-no-link-highlighting"
         >
@@ -72,7 +72,7 @@
           <q-item-section>
             <q-item-label>Home</q-item-label>
           </q-item-section>
-        </q-item>
+        </q-item> -->
 
         <!-- Customer -->
         <q-item

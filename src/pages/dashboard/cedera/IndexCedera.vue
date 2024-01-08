@@ -97,7 +97,7 @@
       </template>
 
       <!-- Image -->
-      <template #body-cell-image="props">
+      <!-- <template #body-cell-image="props">
         <q-td :props="props">
           <div text-color="white" dense square>
             <img
@@ -107,7 +107,7 @@
             />
           </div>
         </q-td>
-      </template>
+      </template> -->
 
       <!-- Action -->
       <template #body-cell-action="props">
@@ -171,7 +171,7 @@
                   </div>
 
                   <!-- Image -->
-                  <div
+                  <!-- <div
                     v-else-if="col.name === 'image'"
                     text-color="white"
                     dense
@@ -182,7 +182,7 @@
                       alt="Cedera Image"
                       width="80"
                     />
-                  </div>
+                  </div> -->
 
                   <!-- Action -->
                   <div v-else-if="col.name === 'action'">
@@ -333,12 +333,12 @@ const currencyColumns = [
     align: "center",
     sortable: true,
   },
-  {
-    name: "image",
-    field: "image",
-    label: "Image",
-    align: "left",
-  },
+  // {
+  //   name: "image",
+  //   field: "image",
+  //   label: "Image",
+  //   align: "left",
+  // },
   {
     name: "action",
     field: "action",

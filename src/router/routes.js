@@ -58,7 +58,7 @@ const routes = [
     children: [
       {
         path: "",
-        component: () => import("pages/dashboard/HomeDashboardPage.vue"),
+        component: () => import("pages/dashboard/customer/IndexCustomer.vue"),
         name: "home",
       },
       {
