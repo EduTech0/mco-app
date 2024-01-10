@@ -7,7 +7,7 @@ import axios from "axios";
 // good idea to move this instance creation inside of the
 // "export default () => {}" function below (which runs individually
 // for each client)
-const urlServer = "http://localhost:8000/";
+const urlServer = "https://be-ech.timewebid.com";
 const server = axios.create({ baseURL: urlServer });
 server.defaults.withCredentials = true;
 
