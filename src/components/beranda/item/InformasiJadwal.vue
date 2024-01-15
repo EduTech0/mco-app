@@ -12,29 +12,18 @@
         <div v-for="(dateGroup, date) in sortedGroupedJadwals" :key="date">
           <!-- Header Tanggal -->
           <div class="column items-center">
-            <div
-              class="bg-grey-3 text-black"
-              style="padding: 2px 30px; font-size: 11px; border-radius: 100px"
-            >
+            <div class="bg-grey-3 text-black" style="padding: 2px 30px; font-size: 11px; border-radius: 100px">
               {{ date }}
             </div>
           </div>
 
           <!-- Kartu Jadwal untuk Tanggal Ini -->
           <div v-for="jadwal in dateGroup" :key="jadwal.id">
-            <q-card
-              class="q-my-md"
-              :style="
-                jadwal.tersisa === 0
-                  ? 'border-right: 4px solid #ff0000a8;'
-                  : 'border-right: 4px solid #00aa00;'
-              "
-            >
-              <q-card-section
-                horizontal
-                class="q-px-md q-py-sm"
-                style="font-size: 10px"
-              >
+            <q-card class="q-my-md" :style="jadwal.tersisa === '0'
+                ? 'border-right: 4px solid #ff0000a8;'
+                : 'border-right: 4px solid #00aa00;'
+              ">
+              <q-card-section horizontal class="q-px-md q-py-sm" style="font-size: 10px">
                 <div class="col-8">
                   <div class="text-grey-7">Tanggal</div>
                   <div class="q-mb-sm">{{ jadwal.tanggal }}</div>
@@ -109,6 +98,7 @@ const sortedGroupedJadwals = computed(() => {
   max-width: 500px;
   margin: auto;
 }
+
 .shadow {
   position: fixed;
   top: 0;
