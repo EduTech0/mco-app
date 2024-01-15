@@ -26,7 +26,7 @@ const routes = [
   {
     path: "/beranda",
     component: () => import("layouts/MainLayout.vue"),
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, roles: ["Admin", "Member"] },
     children: [
       {
         path: "",
@@ -54,7 +54,7 @@ const routes = [
   {
     path: "/dashboard",
     component: () => import("layouts/DashboardLayout.vue"),
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, roles: ["Admin"] },
     children: [
       {
         path: "",

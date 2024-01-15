@@ -60,5 +60,13 @@ export const useJadwalStore = defineStore("jadwal", {
         if (error) throw error;
       }
     },
+
+    async dashboardJadwals() {
+      try {
+        return await server.get("api/dashboard/jadwals", { headers });
+      } catch (error) {
+        if (error) throw error;
+      }
+    },
   },
 });

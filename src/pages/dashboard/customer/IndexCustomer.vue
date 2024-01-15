@@ -179,20 +179,25 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import { useQuasar } from "quasar";
 import { useCustomerStore } from "src/stores/customer-store";
 import AddCustomer from "./CreateCustomer.vue";
 import EditCustomer from "./EditCustomer.vue";
 
 const $q = useQuasar();
+const router = useRouter();
 const customerStore = useCustomerStore();
 
 // Get Customer
 const customers = ref([]);
 const getCustomer = async () => {
   try {
-    const res = await customerStore.allCustomer();
+    const res = await customerStore.dashboardCustomers();
     customers.value = res.data.data;
+    if (res.data.response === "Gagal") {
+      router.push("/notfound");
+    }
   } catch (error) {
     console.error("Error fetching data:", error);
   }

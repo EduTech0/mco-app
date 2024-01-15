@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { server } from "../boot/axios";
 
 const token = localStorage.getItem("token");
+const role = localStorage.getItem("role");
 const headers = {
   Authorization: `Bearer ${token}`,
 };
@@ -41,7 +42,8 @@ export const useAuthStore = defineStore("auth", {
 
     async logout() {
       try {
-        return localStorage.removeItem("token");
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
       } catch (error) {
         if (error) throw error;
       }

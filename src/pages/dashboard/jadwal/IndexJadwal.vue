@@ -179,20 +179,25 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import { useQuasar } from "quasar";
 import { useJadwalStore } from "src/stores/jadwal-store";
 import AddJadwal from "./CreateJadwal.vue";
 import EditJadwal from "./EditJadwal.vue";
 
 const $q = useQuasar();
+const router = useRouter();
 const jadwalStore = useJadwalStore();
 
 // Get Jadwal
 const jadwals = ref([]);
 const getJadwal = async () => {
   try {
-    const res = await jadwalStore.allJadwal();
+    const res = await jadwalStore.dashboardJadwals();
     jadwals.value = res.data.data;
+    if (res.data.response === "Gagal") {
+      router.push("/notfound");
+    }
   } catch (error) {
     console.error("Error fetching data:", error);
   }

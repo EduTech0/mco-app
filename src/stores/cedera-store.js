@@ -3,7 +3,7 @@ import { server } from "../boot/axios";
 
 const token = localStorage.getItem("token");
 const headers = {
-  Authorization: `Bearer ${token}`
+  Authorization: `Bearer ${token}`,
 };
 
 export const useCederaStore = defineStore("cedera", {
@@ -48,6 +48,14 @@ export const useCederaStore = defineStore("cedera", {
     async deleteCedera(id) {
       try {
         return await server.delete(`api/cedera/delete/${id}`, { headers });
+      } catch (error) {
+        if (error) throw error;
+      }
+    },
+
+    async dashboardCederas() {
+      try {
+        return await server.get("api/dashboard/cederas", { headers });
       } catch (error) {
         if (error) throw error;
       }

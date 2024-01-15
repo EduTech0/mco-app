@@ -124,6 +124,7 @@ const submit = async () => {
 
     if (res.data.status === "Success") {
       localStorage.setItem("token", res.data.data.token);
+      localStorage.setItem("role", res.data.data.role);
       router.push({ name: "beranda" });
 
       $q.notify({

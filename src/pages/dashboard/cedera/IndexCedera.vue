@@ -231,6 +231,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import { useQuasar } from "quasar";
 import { urlServer } from "src/boot/axios";
 import { useCederaStore } from "src/stores/cedera-store";
@@ -238,14 +239,18 @@ import AddCedera from "./CreateCedera.vue";
 import EditCedera from "./EditCedera.vue";
 
 const $q = useQuasar();
+const router = useRouter();
 const cederaStore = useCederaStore();
 
 // Get Cedera
 const cederas = ref([]);
 const getCedera = async () => {
   try {
-    const res = await cederaStore.allCedera();
+    const res = await cederaStore.dashboardCederas();
     cederas.value = res.data.data;
+    if (res.data.response === "Gagal") {
+      router.push("/notfound");
+    }
   } catch (error) {
     console.error("Error fetching data:", error);
   }

@@ -70,5 +70,13 @@ export const useCustomerStore = defineStore("customer", {
         if (error) throw error;
       }
     },
+
+    async dashboardCustomers() {
+      try {
+        return await server.get("api/dashboard/customers", { headers });
+      } catch (error) {
+        if (error) throw error;
+      }
+    },
   },
 });

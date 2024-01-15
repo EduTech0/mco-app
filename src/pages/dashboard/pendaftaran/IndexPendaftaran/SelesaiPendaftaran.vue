@@ -231,19 +231,24 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import { useQuasar } from "quasar";
 import { usePendaftaranStore } from "src/stores/pendaftaran-store";
 import AddPendaftaran from "./../CreatePendaftaran.vue";
 
 const $q = useQuasar();
+const router = useRouter();
 const pendaftaranStore = usePendaftaranStore();
 
 // Get Pendaftaran
 const pendaftarans = ref([]);
 const getPendaftaran = async () => {
   try {
-    const res = await pendaftaranStore.allPendaftaran();
+    const res = await pendaftaranStore.dashboardPendaftarans();
     const data = res.data.data;
+    if (res.data.response === "Gagal") {
+      router.push("/notfound");
+    }
 
     // Filter data berdasarkan status
     const dataTerverifikasi = data.filter((item) => item.status === "Selesai");

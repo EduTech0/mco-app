@@ -117,5 +117,13 @@ export const usePendaftaranStore = defineStore("pendaftaran", {
         if (error) throw error;
       }
     },
+
+    async dashboardPendaftarans() {
+      try {
+        return await server.get("api/dashboard/pendaftarans", { headers });
+      } catch (error) {
+        if (error) throw error;
+      }
+    },
   },
 });
