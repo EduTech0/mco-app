@@ -11,30 +11,15 @@
         <div v-for="(dateGroup, date) in sortedGroupedJadwals" :key="date">
           <!-- Header Tanggal -->
           <div class="column items-center">
-            <div
-              class="bg-grey-3 text-black"
-              style="padding: 2px 30px; font-size: 11px; border-radius: 100px"
-            >
+            <div class="bg-grey-3 text-black" style="padding: 2px 30px; font-size: 11px; border-radius: 100px">
               {{ date }}
             </div>
           </div>
 
           <!-- Kartu Jadwal untuk Tanggal Ini -->
           <div v-for="jadwal in dateGroup" :key="jadwal.id">
-            <q-card
-              class="q-my-md cursor-pointer"
-              :style="
-                jadwal.tersisa === 0
-                  ? 'border-right: 4px solid #ff0000a8;'
-                  : 'border-right: 4px solid #00aa00;'
-              "
-              @click="choose(jadwal)"
-            >
-              <q-card-section
-                horizontal
-                class="q-px-md q-py-sm items-center"
-                style="font-size: 10px"
-              >
+            <q-card class="q-my-md cursor-pointer" :style="getCardStyle(jadwal)" @click="choose(jadwal)">
+              <q-card-section horizontal class="q-px-md q-py-sm items-center" style="font-size: 10px">
                 <div class="col-8">
                   <div class="text-grey-7">Tanggal</div>
                   <div class="q-mb-sm">{{ jadwal.tanggal }}</div>
@@ -71,22 +56,8 @@
           Apakah anda yakin memilih jadwal ini ?
         </div>
         <div class="q-mt-sm">
-          <q-btn
-            outline
-            rounded
-            color="dark"
-            label="Tidak"
-            class="q-mx-lg"
-            v-close-popup
-          />
-          <q-btn
-            rounded
-            color="primary"
-            label="Ya"
-            class="q-mx-lg"
-            :disable="loading"
-            @click="bayar(jadwalChoosed.id)"
-          />
+          <q-btn outline rounded color="dark" label="Tidak" class="q-mx-lg" v-close-popup />
+          <q-btn rounded color="primary" label="Ya" class="q-mx-lg" :disable="loading" @click="bayar(jadwalChoosed.id)" />
         </div>
       </q-card-section>
     </q-card>
@@ -112,6 +83,12 @@ const ticket = ref({});
 
 const loading = ref(false);
 const jadwalSelected = ref(false);
+
+const getCardStyle = (jadwal) => {
+  return {
+    'border-right': `4px solid ${jadwal.tersisa === "0" ? 'red' : 'green'}`,
+  };
+};
 
 // Get Jadwal
 const jadwals = ref([]);
@@ -154,7 +131,7 @@ const sortedGroupedJadwals = computed(() => {
 const jadwalChoosed = ref("");
 const choose = async (jadwal) => {
   jadwalChoosed.value = jadwal;
-  if (jadwal.tersisa === 0) {
+  if (jadwal.tersisa === "0") {
     $q.dialog({
       title: "Gagal",
       message:
